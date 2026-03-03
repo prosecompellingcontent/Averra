@@ -1,8 +1,8 @@
-import { ImageWithFallback } from '.allback'import { ImageWithFallback } from 'how-it-works.png';
-import beautyImage from 'how-it-works.png';
-import { motion, useInView } from 'motion/react';
-import { useRef } from 'react';
-import { useIsMobile } from '@/app/hooks/useIsMobile';
+import { ImageWithFallback } from "./ImageWithFallback";
+import howItWorksImage from "/how-it-works.png";
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 export function HowItWorks() {
   const isMobile = useIsMobile();
