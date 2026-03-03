@@ -1,5 +1,4 @@
 import { Navigation } from "@/app/components/Navigation";
-import heroImage from "figma:asset/829cbe7a267747eaa059c2b902a68a3db645730e.png";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 export function AboutPage() {
@@ -14,8 +13,7 @@ export function AboutPage() {
         <div 
           className="fixed inset-0 z-0"
           style={{
-            backgroundImage: `url(${heroImage})`,
-            backgroundSize: 'cover',
+backgroundImage: `url("/about-hero.png")`,            backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
