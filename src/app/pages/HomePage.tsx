@@ -1,8 +1,8 @@
-import { Navigation } from "@/app/components/Navigation";
-import { Link } from "react-router";
-import heroImage from "public/about-hero.png";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { useState, memo, useCallback, lazy, Suspense } from "react";
+export function HomePage() {
+  const isMobile = useIsMobile();
+  const heroImage = "public/about-hero.png";
+  const [heroImageError, setHeroImageError] = useState(false);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
 // Lazy load heavy components - they load AFTER initial render
 const QuickShowcase = lazy(() => import("@/app/components/QuickShowcase").then(m => ({ default: m.QuickShowcase })));
