@@ -1,5 +1,5 @@
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
-import brandImage from "figma:asset/1ef8a1ec5e0d7d5cd1a4d0167d246f979c8caa6e.png";
+import brandImage from "/about-ABOUT.png";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ArrowRight } from "lucide-react";
 
