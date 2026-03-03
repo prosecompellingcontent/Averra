@@ -1,6 +1,6 @@
 import { Navigation } from "@/app/components/Navigation";
 import { Link } from "react-router";
-import heroImage from "figma:asset/f131d8d45e4acd6517784eeee955c98b5846bee6.png";
+import heroImage from "public/about-hero.png";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useState, memo, useCallback, lazy, Suspense } from "react";
 
