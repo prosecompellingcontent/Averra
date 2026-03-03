@@ -1,5 +1,5 @@
-import { ImageWithFallback } from "./ImageWithFallback";
-import howItWorksImage from "/how-it-works.png";
+import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
+const howItWorksImage = "/how-it-works.png";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
