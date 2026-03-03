@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from "react";
 import { Navigation } from "@/app/components/Navigation";
 import { Link } from "react-router";
 import { ArrowLeft } from "lucide-react";
-import backgroundImage from "/quiz-hero.png";
 import { trackQuizCompletion, trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 
@@ -114,6 +113,8 @@ export function QuizPage() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
   const isMobile = useIsMobile();
+
+  const backgroundImage = "/quiz-hero.png";
 
   const handleAnswer = (optionIndex: number) => {
     const newAnswers = [...answers, optionIndex];
