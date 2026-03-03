@@ -1,6 +1,6 @@
 // src/app/pages/HomePage.tsx
 import React, { Suspense, lazy, useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { Navigation } from '@/app/components/Navigation';
 import { useIsMobile } from '@/app/hooks/useIsMobile';
