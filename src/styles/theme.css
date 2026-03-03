@@ -1,0 +1,428 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --card: #ffffff;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-[#2d1810] text-neutral-100;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  html {
+    font-size: var(--font-size);
+    overflow-x: hidden;
+    /* Mobile: Faster scrolling performance */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent font size adjustments on orientation change */
+    -webkit-text-size-adjust: 100%;
+    /* Enable hardware acceleration */
+    transform: translateZ(0);
+  }
+  
+  /* Critical: Optimize initial paint */
+  body {
+    /* Prevent layout shifts during load */
+    min-height: 100vh;
+    /* Note: transform removed to allow position: fixed to work correctly */
+  }
+  
+  /* Optimize images for faster loading */
+  img {
+    /* Prevent layout shift */
+    max-width: 100%;
+    height: auto;
+    /* Enable native lazy loading */
+    loading: lazy;
+    /* Improve rendering performance */
+    image-rendering: -webkit-optimize-contrast;
+  }
+  
+  /* Priority load for hero images */
+  img[loading="eager"] {
+    content-visibility: auto;
+  }
+  
+  /* Mobile: Speed up all transitions */
+  @media (max-width: 767px) {
+    * {
+      transition-duration: 0.15s !important;
+      animation-duration: 0.3s !important;
+      /* Reduce paint complexity */
+      will-change: auto;
+    }
+    
+    /* Remove the old "Disable pulse animations on mobile" block */
+    /* Animations are now safe with fake blur technique */
+    
+    /* Optimize fixed backgrounds on mobile */
+    [style*="fixed"] {
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+    
+    /* Exception: Keep carousel transitions smooth */
+    .ken-burns-container,
+    [class*="opacity-"] {
+      transition-duration: 0.8s !important;
+    }
+    
+    /* Reduce vertical padding for faster scrolling */
+    section {
+      scroll-margin-top: 60px;
+      /* Enable content-visibility for off-screen sections */
+      content-visibility: auto;
+      contain-intrinsic-size: 0 500px;
+    }
+    
+    /* Instant button/link feedback */
+    button, a, [role="button"] {
+      transition-duration: 0.1s !important;
+    }
+    
+    /* Reduce complexity on mobile */
+    * {
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-perspective: 1000;
+      perspective: 1000;
+    }
+  }
+  
+  /* Critical: Disable expensive effects during scrolling */
+  body.is-scrolling * {
+    pointer-events: none !important;
+    animation-play-state: paused !important;
+    transition: none !important;
+  }
+  
+  /* Re-enable critical interactive elements */
+  body.is-scrolling button,
+  body.is-scrolling a,
+  body.is-scrolling input,
+  body.is-scrolling [role="button"] {
+    pointer-events: auto !important;
+  }
+  
+  /* ===== LUXURY EDITORIAL FAKE BLUR ===== */
+  /* High-end sites don't use real blur - they fake it with layered effects */
+  
+  /* Base fake blur: white fill + noise + shadow */
+  .glass-effect {
+    background: 
+      /* Subtle noise texture */
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.03) 2px,
+        rgba(255, 255, 255, 0.03) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.03) 2px,
+        rgba(255, 255, 255, 0.03) 4px
+      ),
+      /* 10-15% white fill */
+      rgba(255, 255, 255, 0.12);
+    
+    /* Soft shadow for depth */
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    
+    /* No GPU cost - pure CSS compositing */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  /* Darker variant for more contrast */
+  .glass-effect-dark {
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.04) 2px,
+        rgba(255, 255, 255, 0.04) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.04) 2px,
+        rgba(255, 255, 255, 0.04) 4px
+      ),
+      rgba(255, 255, 255, 0.15);
+    
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      0 2px 6px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  /* Light variant for subtle sections */
+  .glass-effect-light {
+    background: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 3px,
+        rgba(255, 255, 255, 0.02) 3px,
+        rgba(255, 255, 255, 0.02) 6px
+      ),
+      rgba(255, 255, 255, 0.08);
+    
+    box-shadow: 
+      0 2px 12px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.25);
+    
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  /* Desktop: Allow real blur (optional, still fake is better) */
+  @media (min-width: 768px) {
+    .glass-effect-desktop-blur {
+      /* Even on desktop, fake blur is often better for performance */
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.03) 2px,
+          rgba(255, 255, 255, 0.03) 4px
+        ),
+        rgba(255, 255, 255, 0.10);
+      
+      /* Optional: Enable real blur only on powerful desktops */
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+  }
+  
+  /* Input variant - slightly more opaque */
+  .glass-input {
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 4px,
+        rgba(255, 255, 255, 0.04) 4px,
+        rgba(255, 255, 255, 0.04) 8px
+      ),
+      rgba(255, 255, 255, 0.20);
+    
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant', serif;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  @keyframes marquee-infinite {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee-infinite {
+    animation: marquee-infinite 8s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.02);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+
+  /* Mobile Carousel Arrow Styling */
+  .mobile-carousel-arrows .slick-prev,
+  .mobile-carousel-arrows .slick-next {
+    z-index: 20;
+    width: 48px;
+    height: 48px;
+  }
+
+  .mobile-carousel-arrows .slick-prev {
+    left: 16px;
+  }
+
+  .mobile-carousel-arrows .slick-next {
+    right: 16px;
+  }
+
+  .mobile-carousel-arrows .slick-prev:before,
+  .mobile-carousel-arrows .slick-next:before {
+    font-size: 32px;
+    color: rgba(220, 218, 204, 0.9);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+}

@@ -1,0 +1,19 @@
+import { Navigation } from "@/app/components/Navigation";
+
+export function ShopPage() {
+  return (
+    <div className="min-h-screen bg-[#2d1810] text-neutral-100">
+      <Navigation />
+      <div className="flex items-center justify-center min-h-screen px-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-6xl tracking-tight" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+            Shop
+          </h1>
+          <p className="text-sm text-neutral-400 uppercase tracking-widest">
+            Collection coming soon
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

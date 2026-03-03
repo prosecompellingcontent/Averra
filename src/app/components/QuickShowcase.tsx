@@ -1,0 +1,216 @@
+import { useState, useEffect, useRef } from "react";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+// IMPORT ALL CAROUSEL IMAGES
+import image8 from "figma:asset/1843d8cb09b72f475aa2dce5d621235b71aaa7c4.png";
+import image3 from "figma:asset/6a1521ea6418eaba457712afcd97053d24ce3492.png";
+import image11 from "figma:asset/70209175c34589f23fd25d8de079d217388bb9df.png";
+import image6 from "figma:asset/d71145d9afc7564df39e9fd651a2e851e12c8927.png";
+import braidedPonytail from "figma:asset/d5c34febe63a08a0e027078f44ca684f80c0d1c9.png";
+import updoHairstyle from "figma:asset/d0b99faa79829c863a20e723463e81759f5b479a.png";
+
+// 1 Additional Unsplash image to make 7 total
+const unsplashImage1 = "https://images.unsplash.com/photo-1762745103248-093916cce084?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBiZWF1dHklMjBzYWxvbiUyMG1vZGVsfGVufDF8fHx8MTc3MjMxNDM2NXww&ixlib=rb-4.1.0&q=80&w=1080";
+
+// 7 TOTAL IMAGES
+const allImages = [
+  image8, 
+  image3, 
+  image11, 
+  image6, 
+  braidedPonytail,
+  updoHairstyle,
+  unsplashImage1
+];
+
+export function QuickShowcase() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0])); // Start with first image
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const isMobile = useIsMobile();
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  // Handle touch gestures on mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isMobile) return;
+    
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swiped left - next image
+        setCurrentIndex((prev) => {
+          const next = (prev + 1) % allImages.length;
+          console.log('Swiped to next:', next);
+          return next;
+        });
+      } else {
+        // Swiped right - previous image
+        setCurrentIndex((prev) => {
+          const next = (prev - 1 + allImages.length) % allImages.length;
+          console.log('Swiped to previous:', next);
+          return next;
+        });
+      }
+    }
+  };
+
+  // Preload adjacent images for smooth transitions
+  useEffect(() => {
+    const preloadImage = (index: number) => {
+      if (loadedImages.has(index) || imageErrors.has(index)) return;
+      
+      const img = new Image();
+      img.onload = () => {
+        setLoadedImages(prev => new Set([...prev, index]));
+      };
+      img.onerror = () => {
+        console.error(`Failed to load image ${index}`);
+        setImageErrors(prev => new Set([...prev, index]));
+      };
+      img.src = allImages[index];
+    };
+
+    // Preload current, next, and previous images
+    preloadImage(currentIndex);
+    preloadImage((currentIndex + 1) % allImages.length);
+    preloadImage((currentIndex - 1 + allImages.length) % allImages.length);
+  }, [currentIndex, loadedImages, imageErrors]);
+
+  // Handle image load
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
+
+  // Handle image error
+  const handleImageError = () => {
+    console.error(`Image ${currentIndex} failed to load`);
+    setImageErrors(prev => new Set([...prev, currentIndex]));
+    setIsImageLoading(false);
+  };
+
+  // DESKTOP: Full carousel experience with 8 original Figma + 2 new images
+  return (
+    <section 
+      className="relative min-h-screen overflow-hidden bg-black"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* 8 ORIGINAL FIGMA + 2 NEW = 10 TOTAL */}
+      <div className="absolute inset-0 z-0">
+        {allImages.map((image, index) => {
+          const isActive = currentIndex === index;
+          // On mobile, only render current image and adjacent ones for performance
+          const isAdjacent = isMobile && (
+            index === (currentIndex + 1) % allImages.length ||
+            index === (currentIndex - 1 + allImages.length) % allImages.length
+          );
+          
+          // Skip rendering if mobile and not current/adjacent
+          if (isMobile && !isActive && !isAdjacent) {
+            return null;
+          }
+          
+          // Second to last image (index 7 = unsplashImage2) and last image (index 8 = duoShot)
+          const isSecondToLast = index === allImages.length - 2;
+          const isLast = index === allImages.length - 1;
+          
+          return (
+            <div
+              key={index}
+              className="absolute inset-0 transition-opacity duration-1000"
+              style={{
+                opacity: isActive ? 1 : 0,
+                zIndex: isActive ? 1 : 0,
+              }}
+            >
+              <img
+                src={image}
+                alt={`AI Model ${index + 1}`}
+                className="w-full h-full object-cover"
+                style={(isSecondToLast || isLast) ? { objectPosition: 'center 35%' } : undefined}
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </div>
+          );
+        })}
+        {/* Dark overlay for text */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/40 z-10" />
+      </div>
+
+      {/* Content Overlay */}
+      <div className="relative z-20 flex items-center justify-center min-h-screen py-32 px-8">
+        <div className="text-center max-w-4xl">
+          <p className="text-[10px] uppercase tracking-[0.4em] text-[#BFBBA7] font-light mb-4">
+            AI Model Gallery
+          </p>
+          <h2 className="text-[clamp(2.5rem,8vw,6rem)] text-[#DCDACC] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+            See The Transformation
+          </h2>
+          <p className="text-lg text-[#BFBBA7] max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Cormorant, serif' }}>
+            You deserve branding that matches your talent. AVERRA creates it.
+          </p>
+
+          {/* Carousel Indicators */}
+          <div className="flex gap-2 justify-center mt-12">
+            {allImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-1 rounded-full transition-all ${index === currentIndex ? 'bg-[#DCDACC] w-12' : 'bg-[#BFBBA7]/40 w-8'}`}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Buttons */}
+      <button
+        onClick={() => {
+          setCurrentIndex((prev) => {
+            const next = (prev - 1 + allImages.length) % allImages.length;
+            console.log(`Previous clicked: ${prev} -> ${next} (total: ${allImages.length})`);
+            return next;
+          });
+        }}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 bg-black/40 hover:bg-black/60 text-white p-3 md:p-4 rounded-full transition-all backdrop-blur-sm"
+        aria-label="Previous image"
+      >
+        <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
+      </button>
+
+      <button
+        onClick={() => {
+          setCurrentIndex((prev) => {
+            const next = (prev + 1) % allImages.length;
+            console.log(`Next clicked: ${prev} -> ${next} (total: ${allImages.length})`);
+            return next;
+          });
+        }}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 bg-black/40 hover:bg-black/60 text-white p-3 md:p-4 rounded-full transition-all backdrop-blur-sm"
+        aria-label="Next image"
+      >
+        <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
+      </button>
+
+      {/* Debug indicator - shows current index */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 bg-black/60 text-white px-3 py-1 rounded text-sm">
+        {currentIndex + 1} / {allImages.length}
+      </div>
+    </section>
+  );
+}
