@@ -3,12 +3,15 @@ import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // IMPORT ALL CAROUSEL IMAGES
-import image8 from "figma:asset/1843d8cb09b72f475aa2dce5d621235b71aaa7c4.png";
-import image3 from "figma:asset/6a1521ea6418eaba457712afcd97053d24ce3492.png";
-import image11 from "figma:asset/70209175c34589f23fd25d8de079d217388bb9df.png";
-import image6 from "figma:asset/d71145d9afc7564df39e9fd651a2e851e12c8927.png";
-import braidedPonytail from "figma:asset/d5c34febe63a08a0e027078f44ca684f80c0d1c9.png";
-import updoHairstyle from "figma:asset/d0b99faa79829c863a20e723463e81759f5b479a.png";
+// IMPORT ALL CAROUSEL IMAGES
+import carousel1 from "/carousel-1.webp";
+import carousel2 from "/carousel-2.webp";
+import carousel3 from "/carousel-3.webp";
+import carousel4 from "/carousel-4.webp";
+import carousel5 from "/carousel-5.webp";
+import carousel6 from "/carousel-6.webp";
+import carousel7 from "/carousel-7.webp";
+import carousel8 from "/carousel-8.webp";
 
 // 1 Additional Unsplash image to make 7 total
 const unsplashImage1 = "https://images.unsplash.com/photo-1762745103248-093916cce084?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBiZWF1dHklMjBzYWxvbiUyMG1vZGVsfGVufDF8fHx8MTc3MjMxNDM2NXww&ixlib=rb-4.1.0&q=80&w=1080";
