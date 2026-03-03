@@ -1,18 +1,24 @@
+// Lazy load heavy components - OUTSIDE the component
+const QuickShowcase = lazy(() =>
+  import("@/app/components/QuickShowcase")
+    .then(m => ({ default: m.QuickShowcase }))
+);
+
+const AboutAVERRA = lazy(() =>
+  import("@/app/components/AboutAVERRA")
+    .then(m => ({ default: m.AboutAVERRA }))
+);
+
+// ... other lazy components
+
 export function HomePage() {
   const isMobile = useIsMobile();
-  const heroImage = "public/about-hero.png";
+  const heroImage = "/about-hero.png"; // fixed path
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
-// Lazy load heavy components - they load AFTER initial render
-const QuickShowcase = lazy(() => import("@/app/components/QuickShowcase").then(m => ({ default: m.QuickShowcase })));
-const AboutAVERRA = lazy(() => import("@/app/components/AboutAVERRA").then(m => ({ default: m.AboutAVERRA })));
-const CTAFooter = lazy(() => import("@/app/components/CTAFooter").then(m => ({ default: m.CTAFooter })));
-const ServiceTeaser = lazy(() => import("@/app/components/ServiceTeaser").then(m => ({ default: m.ServiceTeaser })));
-const TestimonialStrip = lazy(() => import("@/app/components/TestimonialStrip").then(m => ({ default: m.TestimonialStrip })));
-const BenefitsStrip = lazy(() => import("@/app/components/BenefitsStrip").then(m => ({ default: m.BenefitsStrip })));
-const HowItWorks = lazy(() => import("@/app/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
-const MobileDebug = lazy(() => import("@/app/components/MobileDebug").then(m => ({ default: m.MobileDebug })));
+  // rest of your code...
+}
 
 export function HomePage() {
   const isMobile = useIsMobile();
