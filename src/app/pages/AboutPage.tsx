@@ -13,7 +13,7 @@ export function AboutPage() {
         <div 
           className="fixed inset-0 z-0"
           style={{
-backgroundImage: `url("/about-hero.png")`,            backgroundSize: 'cover',
+backgroundImage: `public/about-ABOUT.png',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
