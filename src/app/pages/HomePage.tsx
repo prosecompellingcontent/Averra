@@ -1,56 +1,43 @@
-// app/page.tsx
-'use client';
-
-import React, { useCallback, useState } from 'react';
-import dynamic from 'next/dynamic';
-import Link from 'next/link';
+// src/app/pages/HomePage.tsx
+import React, { Suspense, lazy, useCallback, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Navigation } from '@/app/components/Navigation';
 import { useIsMobile } from '@/app/hooks/useIsMobile';
 
-const LoadingBlock = ({ label }: { label: string }) => (
-  <div className="w-full py-10 text-center text-white/40 text-sm">{label}</div>
+// Lazy load heavy components - OUTSIDE the component
+const QuickShowcase = lazy(() =>
+  import('@/app/components/QuickShowcase').then((m) => ({ default: m.QuickShowcase }))
 );
 
-const QuickShowcase = dynamic(
-  () => import('@/app/components/QuickShowcase').then((m) => m.QuickShowcase),
-  { ssr: false, loading: () => <LoadingBlock label="Loading showcase..." /> }
+const ServiceTeaser = lazy(() =>
+  import('@/app/components/ServiceTeaser').then((m) => ({ default: m.ServiceTeaser }))
 );
 
-const ServiceTeaser = dynamic(
-  () => import('@/app/components/ServiceTeaser').then((m) => m.ServiceTeaser),
-  { ssr: false, loading: () => <LoadingBlock label="Loading services..." /> }
+const HowItWorks = lazy(() =>
+  import('@/app/components/HowItWorks').then((m) => ({ default: m.HowItWorks }))
 );
 
-const HowItWorks = dynamic(
-  () => import('@/app/components/HowItWorks').then((m) => m.HowItWorks),
-  { ssr: false, loading: () => <LoadingBlock label="Loading how it works..." /> }
+const BenefitsStrip = lazy(() =>
+  import('@/app/components/BenefitsStrip').then((m) => ({ default: m.BenefitsStrip }))
 );
 
-const BenefitsStrip = dynamic(
-  () => import('@/app/components/BenefitsStrip').then((m) => m.BenefitsStrip),
-  { ssr: false, loading: () => <LoadingBlock label="Loading benefits..." /> }
+const AboutAVERRA = lazy(() =>
+  import('@/app/components/AboutAVERRA').then((m) => ({ default: m.AboutAVERRA }))
 );
 
-const AboutAVERRA = dynamic(
-  () => import('@/app/components/AboutAVERRA').then((m) => m.AboutAVERRA),
-  { ssr: false, loading: () => <LoadingBlock label="Loading about..." /> }
+const CTAFooter = lazy(() =>
+  import('@/app/components/CTAFooter').then((m) => ({ default: m.CTAFooter }))
 );
 
-const CTAFooter = dynamic(
-  () => import('@/app/components/CTAFooter').then((m) => m.CTAFooter),
-  { ssr: false, loading: () => <LoadingBlock label="Loading footer..." /> }
+const MobileDebug = lazy(() =>
+  import('@/app/components/MobileDebug').then((m) => ({ default: m.MobileDebug }))
 );
 
-const MobileDebug = dynamic(
-  () => import('@/app/components/MobileDebug').then((m) => m.MobileDebug),
-  { ssr: false, loading: () => <LoadingBlock label="Loading mobile debug..." /> }
-);
-
-export default function HomePage() {
+export function HomePage() {
   const isMobile = useIsMobile();
 
-  const heroImage = '/about-hero.png';
+  const heroImage = '/about-hero.png'; // ensure this exists in /public (Vite) or the correct static dir
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
@@ -59,7 +46,7 @@ export default function HomePage() {
   }, []);
 
   const handleImageError = useCallback(() => {
-    // If this fires on Vercel, the file likely isn't in /public/about-hero.png
+    // Helps debug missing asset paths in Vercel
     console.error('Hero image failed to load:', heroImage);
     setHeroImageError(true);
   }, [heroImage]);
@@ -68,7 +55,9 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#221412] text-neutral-100">
       <Navigation />
 
+      {/* Hero Section with Image Bleed */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Full Bleed Background Image */}
         <div className="absolute inset-0 bg-[#2d1810]">
           {!heroImageError ? (
             <>
@@ -98,6 +87,7 @@ export default function HomePage() {
                 }
               />
 
+              {/* Soft gradient overlay from top to bottom */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/40" />
             </>
           ) : (
@@ -107,7 +97,8 @@ export default function HomePage() {
           )}
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
+        {/* AVERRA Background Text - Behind Models - NOW ON MOBILE TOO */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <h2
             className={`whitespace-nowrap text-white/10 select-none ${
               isMobile
@@ -125,28 +116,20 @@ export default function HomePage() {
           </h2>
         </div>
 
-        <div
-          className={`relative max-w-3xl mx-auto z-10 px-8 ${
-            isMobile ? 'mt-[11rem]' : 'mt-32'
-          }`}
-        >
+        {/* Hero Text Content - Layered directly on top of AVERRA */}
+        <div className={`relative max-w-3xl mx-auto z-10 px-8 ${isMobile ? 'mt-[11rem]' : 'mt-31'}`}>
           <div className={`space-y-2 ${isMobile ? '' : 'mb-6'}`}>
             <p
               className={`leading-relaxed text-white/95 text-center ${
-                isMobile
-                  ? 'text-[clamp(1.75rem,6vw,6rem)]'
-                  : 'text-4xl xl:text-5xl 2xl:text-6xl'
+                isMobile ? 'text-[clamp(1.75rem,6vw,6rem)]' : 'text-4xl xl:text-5xl 2xl:text-6xl'
               }`}
               style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}
             >
               Beauty&apos;s New Blueprint
             </p>
-
             <p
               className={`text-white/80 tracking-wide text-center ${
-                isMobile
-                  ? 'text-[clamp(1.125rem,2.5vw,2rem)]'
-                  : 'text-xl xl:text-2xl'
+                isMobile ? 'text-[clamp(1.125rem,2.5vw,2rem)]' : 'text-xl xl:text-2xl'
               }`}
               style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
             >
@@ -156,7 +139,7 @@ export default function HomePage() {
 
           <div className={`space-y-4 text-center ${isMobile ? 'mt-8' : ''}`}>
             <Link
-              href="/quiz"
+              to="/quiz"
               className={`inline-block px-12 py-4 bg-[#DCDACC] text-[#301710] uppercase tracking-[0.3em] ${
                 !isMobile ? 'hover:bg-[#BFBBA7] transition-all duration-300' : ''
               } shadow-2xl`}
@@ -172,9 +155,7 @@ export default function HomePage() {
 
             <p
               className={`text-white/80 tracking-wide ${
-                isMobile
-                  ? 'text-[clamp(1.125rem,2.5vw,2rem)]'
-                  : 'text-xl xl:text-2xl'
+                isMobile ? 'text-[clamp(1.125rem,2.5vw,2rem)]' : 'text-xl xl:text-2xl'
               }`}
               style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
             >
@@ -184,13 +165,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      <QuickShowcase />
-      <ServiceTeaser />
-      {!isMobile && <HowItWorks />}
-      <BenefitsStrip />
-      <AboutAVERRA />
-      <CTAFooter />
-      {isMobile && <MobileDebug />}
+      <Suspense fallback={<div>Loading...</div>}>
+        <QuickShowcase />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <ServiceTeaser />
+      </Suspense>
+
+      {!isMobile && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <HowItWorks />
+        </Suspense>
+      )}
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <BenefitsStrip />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <AboutAVERRA />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <CTAFooter />
+      </Suspense>
+
+      {isMobile && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <MobileDebug />
+        </Suspense>
+      )}
     </div>
   );
 }
