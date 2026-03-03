@@ -3,10 +3,15 @@ import { Link, useNavigate } from "react-router";
 import { Check } from "lucide-react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useCart } from "@/app/context/CartContext";
-import { CTAFooter } from '@/app/components/CTAFooter';
-import heroImage from "/services-hero.png";
-import { MarqueeScroll } from '@/app/components/MarqueeScroll';
-import { trackAction } from '@/utils/analytics';
+import { CTAFooter } from "@/app/components/CTAFooter";
+import { MarqueeScroll } from "@/app/components/MarqueeScroll";
+import { trackAction } from "@/utils/analytics";
+
+export function ServicesPage() {
+  const isMobile = useIsMobile();
+  const heroImage = "/services-hero.png";
+  const navigate = useNavigate();
+  const { addItem } = useCart();
 
 const tiers = [
   {
