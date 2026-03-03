@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useCart } from "@/app/context/CartContext";
 import { CTAFooter } from '@/app/components/CTAFooter';
-import heroImage from "figma:asset/d9ea55b5e5aad583801b931fbe211a544c2e76c3.png";
+import heroImage from "/services-hero.png";
 import { MarqueeScroll } from '@/app/components/MarqueeScroll';
 import { trackAction } from '@/utils/analytics';
 
