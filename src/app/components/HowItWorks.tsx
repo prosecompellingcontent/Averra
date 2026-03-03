@@ -1,5 +1,5 @@
-import { ImageWithFallback } from './figma/ImageWithFallback';
-import beautyImage from 'figma:asset/5f36e17c7308a679d105d58b8b8427fe6c15b9ce.png';
+import { ImageWithFallback } from '.allback'import { ImageWithFallback } from 'how-it-works.png';
+import beautyImage from 'how-it-works.png';
 import { motion, useInView } from 'motion/react';
 import { useRef } from 'react';
 import { useIsMobile } from '@/app/hooks/useIsMobile';
