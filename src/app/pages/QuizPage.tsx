@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Navigation } from "@/app/components/Navigation";
 import { Link } from "react-router";
 import { ArrowLeft } from "lucide-react";
-import backgroundImage from "figma:asset/214c2b016db690fb0dd99d0f7471d9b6e6a4567d.png";
+import backgroundImage from "/quiz-hero.png";
 import { trackQuizCompletion, trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 
