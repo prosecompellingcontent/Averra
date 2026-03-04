@@ -1,7 +1,9 @@
+// src/app/components/HowItWorks.tsx
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { assetUrl } from "@/utils/assets";
 
 export function HowItWorks() {
   const isMobile = useIsMobile();
@@ -35,7 +37,7 @@ export function HowItWorks() {
       {/* Background Image with Overlay - Creates translucent bleed-through effect */}
       <div className="absolute inset-0">
         <ImageWithFallback
-          src="/how-it-works.png"
+          src={assetUrl("how-it-works.png")}
           alt="Luxury abstract beauty visual"
           className="w-full h-full object-cover scale-x-[-1]"
           loading="lazy"
@@ -148,6 +150,10 @@ export function HowItWorks() {
             return <StepWithAnimation key={step.number} />;
           })}
         </div>
+      </div>
+    </section>
+  );
+}
       </div>
     </section>
   );
