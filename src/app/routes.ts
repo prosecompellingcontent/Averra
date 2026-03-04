@@ -1,4 +1,7 @@
-import { createBrowserRouter } from "react-router";
+// src/app/routes.tsx
+import React from "react";
+import { createBrowserRouter } from "react-router-dom";
+
 import { RootLayout } from "./layouts/RootLayout";
 import { HomePage } from "./pages/HomePage";
 import { AccessPage } from "./pages/AccessPage";
@@ -17,60 +20,21 @@ import { AnalyticsPage } from "./pages/AnalyticsPage";
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayout,
+    element: <RootLayout />,
     children: [
-      {
-        index: true,
-        Component: HomePage,
-      },
-      {
-        path: "quiz",
-        Component: QuizPage,
-      },
-      {
-        path: "services",
-        Component: ServicesPage,
-      },
-      {
-        path: "shop",
-        Component: ShopPage,
-      },
-      {
-        path: "access",
-        Component: AccessPage,
-      },
-      {
-        path: "about",
-        Component: AboutPage,
-      },
-      {
-        path: "contact",
-        Component: ContactPage,
-      },
-      {
-        path: "cart",
-        Component: CartPage,
-      },
-      {
-        path: "brand-intake",
-        Component: BrandIntakeForm,
-      },
-      {
-        path: "checkout",
-        Component: CheckoutPage,
-      },
-      {
-        path: "checkout/success",
-        Component: CheckoutSuccessPage,
-      },
-      {
-        path: "terms-of-service",
-        Component: TermsPage,
-      },
-      {
-        path: "analytics",
-        Component: AnalyticsPage,
-      },
+      { index: true, element: <HomePage /> },
+      { path: "quiz", element: <QuizPage /> },
+      { path: "services", element: <ServicesPage /> },
+      { path: "shop", element: <ShopPage /> },
+      { path: "access", element: <AccessPage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "contact", element: <ContactPage /> },
+      { path: "cart", element: <CartPage /> },
+      { path: "brand-intake", element: <BrandIntakeForm /> },
+      { path: "checkout", element: <CheckoutPage /> },
+      { path: "checkout/success", element: <CheckoutSuccessPage /> },
+      { path: "terms-of-service", element: <TermsPage /> },
+      { path: "analytics", element: <AnalyticsPage /> },
     ],
   },
 ]);
