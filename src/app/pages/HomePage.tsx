@@ -1,43 +1,44 @@
 // src/app/pages/HomePage.tsx
-import React, { Suspense, lazy, useCallback, useState } from 'react';
-import { Link } from 'react-router';
+import React, { Suspense, lazy, useCallback, useState } from "react";
+// CHANGED: remove Link import (can be undefined depending on router setup)
+// import { Link } from "react-router";
 
-import { Navigation } from '@/app/components/Navigation';
-import { useIsMobile } from '@/app/hooks/useIsMobile';
+import { Navigation } from "@/app/components/Navigation";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 // Lazy load heavy components - OUTSIDE the component
 const QuickShowcase = lazy(() =>
-  import('@/app/components/QuickShowcase').then((m) => ({ default: m.QuickShowcase }))
+  import("@/app/components/QuickShowcase").then((m) => ({ default: m.QuickShowcase }))
 );
 
 const ServiceTeaser = lazy(() =>
-  import('@/app/components/ServiceTeaser').then((m) => ({ default: m.ServiceTeaser }))
+  import("@/app/components/ServiceTeaser").then((m) => ({ default: m.ServiceTeaser }))
 );
 
 const HowItWorks = lazy(() =>
-  import('@/app/components/HowItWorks').then((m) => ({ default: m.HowItWorks }))
+  import("@/app/components/HowItWorks").then((m) => ({ default: m.HowItWorks }))
 );
 
 const BenefitsStrip = lazy(() =>
-  import('@/app/components/BenefitsStrip').then((m) => ({ default: m.BenefitsStrip }))
+  import("@/app/components/BenefitsStrip").then((m) => ({ default: m.BenefitsStrip }))
 );
 
 const AboutAVERRA = lazy(() =>
-  import('@/app/components/AboutAVERRA').then((m) => ({ default: m.AboutAVERRA }))
+  import("@/app/components/AboutAVERRA").then((m) => ({ default: m.AboutAVERRA }))
 );
 
 const CTAFooter = lazy(() =>
-  import('@/app/components/CTAFooter').then((m) => ({ default: m.CTAFooter }))
+  import("@/app/components/CTAFooter").then((m) => ({ default: m.CTAFooter }))
 );
 
 const MobileDebug = lazy(() =>
-  import('@/app/components/MobileDebug').then((m) => ({ default: m.MobileDebug }))
+  import("@/app/components/MobileDebug").then((m) => ({ default: m.MobileDebug }))
 );
 
 export function HomePage() {
   const isMobile = useIsMobile();
 
-  const heroImage = '/about-hero.png'; // ensure this exists in /public (Vite) or the correct static dir
+  const heroImage = "/about-hero.png"; // unchanged
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
@@ -46,8 +47,7 @@ export function HomePage() {
   }, []);
 
   const handleImageError = useCallback(() => {
-    // Helps debug missing asset paths in Vercel
-    console.error('Hero image failed to load:', heroImage);
+    console.error("Hero image failed to load:", heroImage);
     setHeroImageError(true);
   }, [heroImage]);
 
@@ -78,10 +78,10 @@ export function HomePage() {
                 style={
                   isMobile
                     ? {
-                        imageRendering: 'auto',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        willChange: 'auto',
+                        imageRendering: "auto",
+                        transform: "translateZ(0)",
+                        backfaceVisibility: "hidden",
+                        willChange: "auto",
                       }
                     : undefined
                 }
@@ -98,18 +98,17 @@ export function HomePage() {
         </div>
 
         {/* AVERRA Background Text - Behind Models - NOW ON MOBILE TOO */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
+          {/* CHANGED: z-5 -> z-[5] (valid Tailwind, same intended layering) */}
           <h2
             className={`whitespace-nowrap text-white/10 select-none ${
-              isMobile
-                ? 'text-[clamp(6rem,14vw,16rem)]'
-                : 'text-[10rem] xl:text-[12rem] 2xl:text-[14rem]'
+              isMobile ? "text-[clamp(6rem,14vw,16rem)]" : "text-[10rem] xl:text-[12rem] 2xl:text-[14rem]"
             }`}
             style={{
-              fontFamily: 'Cormorant Garamond, Cormorant, serif',
+              fontFamily: "Cormorant Garamond, Cormorant, serif",
               fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
             }}
           >
             AVERRA
@@ -117,47 +116,49 @@ export function HomePage() {
         </div>
 
         {/* Hero Text Content - Layered directly on top of AVERRA */}
-        <div className={`relative max-w-3xl mx-auto z-10 px-8 ${isMobile ? 'mt-[11rem]' : 'mt-31'}`}>
-          <div className={`space-y-2 ${isMobile ? '' : 'mb-6'}`}>
+        <div className={`relative max-w-3xl mx-auto z-10 px-8 ${isMobile ? "mt-[11rem]" : "mt-32"}`}>
+          {/* CHANGED: mt-31 -> mt-32 (valid Tailwind; mt-31 was likely no-op) */}
+          <div className={`space-y-2 ${isMobile ? "" : "mb-6"}`}>
             <p
               className={`leading-relaxed text-white/95 text-center ${
-                isMobile ? 'text-[clamp(1.75rem,6vw,6rem)]' : 'text-4xl xl:text-5xl 2xl:text-6xl'
+                isMobile ? "text-[clamp(1.75rem,6vw,6rem)]" : "text-4xl xl:text-5xl 2xl:text-6xl"
               }`}
-              style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}
+              style={{ fontFamily: "Cormorant, serif", fontWeight: 400 }}
             >
               Beauty&apos;s New Blueprint
             </p>
             <p
               className={`text-white/80 tracking-wide text-center ${
-                isMobile ? 'text-[clamp(1.125rem,2.5vw,2rem)]' : 'text-xl xl:text-2xl'
+                isMobile ? "text-[clamp(1.125rem,2.5vw,2rem)]" : "text-xl xl:text-2xl"
               }`}
-              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+              style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}
             >
               Hesitation Is Expensive.
             </p>
           </div>
 
-          <div className={`space-y-4 text-center ${isMobile ? 'mt-8' : ''}`}>
-            <Link
-              to="/quiz"
+          <div className={`space-y-4 text-center ${isMobile ? "mt-8" : ""}`}>
+            {/* CHANGED: Link -> a (same styling, avoids undefined component error) */}
+            <a
+              href="/quiz"
               className={`inline-block px-12 py-4 bg-[#DCDACC] text-[#301710] uppercase tracking-[0.3em] ${
-                !isMobile ? 'hover:bg-[#BFBBA7] transition-all duration-300' : ''
+                !isMobile ? "hover:bg-[#BFBBA7] transition-all duration-300" : ""
               } shadow-2xl`}
               style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '0.875rem',
+                fontFamily: "Inter, sans-serif",
+                fontSize: "0.875rem",
                 fontWeight: 600,
-                letterSpacing: '0.15em',
+                letterSpacing: "0.15em",
               }}
             >
               Start Your Brand Quiz
-            </Link>
+            </a>
 
             <p
               className={`text-white/80 tracking-wide ${
-                isMobile ? 'text-[clamp(1.125rem,2.5vw,2rem)]' : 'text-xl xl:text-2xl'
+                isMobile ? "text-[clamp(1.125rem,2.5vw,2rem)]" : "text-xl xl:text-2xl"
               }`}
-              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}
+              style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}
             >
               No Shoots. No Designers. No Stress.
             </p>
