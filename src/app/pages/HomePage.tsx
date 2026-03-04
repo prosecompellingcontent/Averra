@@ -1,9 +1,7 @@
 // src/app/pages/HomePage.tsx
 import React, { useCallback, useState } from "react";
-
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-
 import { QuickShowcase } from "@/app/components/QuickShowcase";
 import { ServiceTeaser } from "@/app/components/ServiceTeaser";
 import { HowItWorks } from "@/app/components/HowItWorks";
@@ -13,11 +11,8 @@ import { CTAFooter } from "@/app/components/CTAFooter";
 import { MobileDebug } from "@/app/components/MobileDebug";
 
 type AnyComponent = unknown;
-
 function assertComponent(name: string, c: AnyComponent) {
-  if (!c) {
-    throw new Error(`[Import Error] ${name} is undefined. Fix the export/import for this component.`);
-  }
+  if (!c) throw new Error(`[Import Error] ${name} is undefined.`);
 }
 
 export function HomePage() {
@@ -31,17 +26,12 @@ export function HomePage() {
   assertComponent("MobileDebug", MobileDebug);
 
   const isMobile = useIsMobile();
-
-  // UPDATED: loads src/public/about-hero.webp (no helper file needed)
   const heroImage = new URL("../../../public/about-hero.webp", import.meta.url).toString();
 
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
-  const handleImageLoad = useCallback(() => {
-    setHeroImageLoaded(true);
-  }, []);
-
+  const handleImageLoad = useCallback(() => setHeroImageLoaded(true), []);
   const handleImageError = useCallback(() => {
     console.error("Hero image failed to load:", heroImage);
     setHeroImageError(true);
@@ -51,9 +41,7 @@ export function HomePage() {
     <div className="min-h-screen bg-[#221412] text-neutral-100">
       <Navigation />
 
-      {/* Hero Section with Image Bleed */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Full Bleed Background Image */}
         <div className="absolute inset-0 bg-[#2d1810]">
           {!heroImageError ? (
             <>
@@ -83,7 +71,6 @@ export function HomePage() {
                 }
               />
 
-              {/* Soft gradient overlay from top to bottom */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/40" />
             </>
           ) : (
@@ -93,7 +80,6 @@ export function HomePage() {
           )}
         </div>
 
-        {/* AVERRA Background Text - Behind Models - NOW ON MOBILE TOO */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <h2
             className={`whitespace-nowrap text-white/10 select-none ${
@@ -112,14 +98,11 @@ export function HomePage() {
           </h2>
         </div>
 
-        {/* Hero Text Content */}
         <div className={`relative max-w-3xl mx-auto z-10 px-8 ${isMobile ? "mt-[11rem]" : "mt-31"}`}>
           <div className={`space-y-2 ${isMobile ? "" : "mb-6"}`}>
             <p
               className={`leading-relaxed text-white/95 text-center ${
-                isMobile
-                  ? "text-[clamp(1.75rem,6vw,6rem)]"
-                  : "text-4xl xl:text-5xl 2xl:text-6xl"
+                isMobile ? "text-[clamp(1.75rem,6vw,6rem)]" : "text-4xl xl:text-5xl 2xl:text-6xl"
               }`}
               style={{ fontFamily: "Cormorant, serif", fontWeight: 400 }}
             >
