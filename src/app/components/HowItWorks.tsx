@@ -1,3 +1,4 @@
+// src/app/components/HowItWorks.tsx
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
@@ -32,7 +33,6 @@ export function HowItWorks() {
 
   return (
     <section className="relative bg-[#2d1810] py-28 px-8 overflow-hidden">
-      {/* Background Image with Overlay - Creates translucent bleed-through effect */}
       <div className="absolute inset-0">
         <ImageWithFallback
           src="/how-it-works.png"
@@ -44,7 +44,6 @@ export function HowItWorks() {
       </div>
 
       <div className="relative max-w-4xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-20">
           <p className="text-[10px] uppercase tracking-[0.4em] text-white font-semibold mb-6">The Process</p>
           <h2
@@ -61,7 +60,6 @@ export function HowItWorks() {
           </p>
         </div>
 
-        {/* Steps */}
         <div className="space-y-0 mb-20">
           {steps.map((step, index) => {
             const StepWithAnimation = () => {
