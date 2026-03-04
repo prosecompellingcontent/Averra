@@ -12,6 +12,9 @@ import { AboutAVERRA } from "@/app/components/AboutAVERRA";
 import { CTAFooter } from "@/app/components/CTAFooter";
 import { MobileDebug } from "@/app/components/MobileDebug";
 
+// ✅ ADDED: use src/public assets via Vite bundling
+import { assetUrl } from "@/utils/assets";
+
 type AnyComponent = unknown;
 
 function assertComponent(name: string, c: AnyComponent) {
@@ -21,7 +24,6 @@ function assertComponent(name: string, c: AnyComponent) {
 }
 
 export function HomePage() {
-  // ADDED: import guards (no visual changes when working)
   assertComponent("Navigation", Navigation);
   assertComponent("QuickShowcase", QuickShowcase);
   assertComponent("ServiceTeaser", ServiceTeaser);
@@ -33,7 +35,8 @@ export function HomePage() {
 
   const isMobile = useIsMobile();
 
-  const heroImage = "/about-hero.png"; // unchanged
+  // ✅ CHANGED: was "/about-hero.png"
+  const heroImage = assetUrl("about-hero.webp");
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
@@ -116,9 +119,7 @@ export function HomePage() {
           <div className={`space-y-2 ${isMobile ? "" : "mb-6"}`}>
             <p
               className={`leading-relaxed text-white/95 text-center ${
-                isMobile
-                  ? "text-[clamp(1.75rem,6vw,6rem)]"
-                  : "text-4xl xl:text-5xl 2xl:text-6xl"
+                isMobile ? "text-[clamp(1.75rem,6vw,6rem)]" : "text-4xl xl:text-5xl 2xl:text-6xl"
               }`}
               style={{ fontFamily: "Cormorant, serif", fontWeight: 400 }}
             >
@@ -135,7 +136,6 @@ export function HomePage() {
           </div>
 
           <div className={`space-y-4 text-center ${isMobile ? "mt-8" : ""}`}>
-            {/* unchanged styling; only Link->a earlier */}
             <a
               href="/quiz"
               className={`inline-block px-12 py-4 bg-[#DCDACC] text-[#301710] uppercase tracking-[0.3em] ${
