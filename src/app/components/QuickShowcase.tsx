@@ -6,8 +6,6 @@ import { useIsMobile } from "@/app/hooks/useIsMobile";
 export function HowItWorks() {
   const isMobile = useIsMobile();
 
-  // FIX: define inside component so it is always in-scope where JSX uses it
-
   const steps = [
     {
       number: "01",
@@ -37,7 +35,7 @@ export function HowItWorks() {
       {/* Background Image with Overlay - Creates translucent bleed-through effect */}
       <div className="absolute inset-0">
         <ImageWithFallback
-src="/how-it-works.png"
+          src="/how-it-works.png"
           alt="Luxury abstract beauty visual"
           className="w-full h-full object-cover scale-x-[-1]"
           loading="lazy"
@@ -77,10 +75,7 @@ src="/how-it-works.png"
                   {...(!isMobile && {
                     initial: { opacity: 0, y: 20 },
                     animate: isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
-                    transition: {
-                      duration: 0.5,
-                      ease: "easeOut",
-                    },
+                    transition: { duration: 0.5, ease: "easeOut" },
                   })}
                 >
                   <div>
@@ -109,11 +104,7 @@ src="/how-it-works.png"
                               <p
                                 key={lineIndex}
                                 className="text-base md:text-lg text-white leading-relaxed"
-                                style={{
-                                  fontFamily: "Cormorant, serif",
-                                  fontWeight: 600,
-                                  fontStyle: "italic",
-                                }}
+                                style={{ fontFamily: "Cormorant, serif", fontWeight: 600, fontStyle: "italic" }}
                               >
                                 {line}
                               </p>
