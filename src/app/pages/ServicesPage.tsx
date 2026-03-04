@@ -336,7 +336,10 @@ const membershipTiers = [
 
 export function ServicesPage() {
   const isMobile = useIsMobile();
-  const heroImage = new URL("../../../public/services-hero.png", import.meta.url).toString();
+
+  // ✅ UPDATED: your file is in /public as services-hero.png, so use the root URL path
+  const heroImage = "/services-hero.png";
+
   const navigate = useNavigate();
   const { addItem } = useCart();
 
