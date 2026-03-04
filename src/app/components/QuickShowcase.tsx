@@ -7,7 +7,6 @@ export function HowItWorks() {
   const isMobile = useIsMobile();
 
   // FIX: define inside component so it is always in-scope where JSX uses it
-  const beautyImage = "/how-it-works.png";
 
   const steps = [
     {
@@ -38,7 +37,7 @@ export function HowItWorks() {
       {/* Background Image with Overlay - Creates translucent bleed-through effect */}
       <div className="absolute inset-0">
         <ImageWithFallback
-          src={beautyImage}
+src="/how-it-works.png"
           alt="Luxury abstract beauty visual"
           className="w-full h-full object-cover scale-x-[-1]"
           loading="lazy"
