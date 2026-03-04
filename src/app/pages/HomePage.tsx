@@ -1,39 +1,17 @@
 // src/app/pages/HomePage.tsx
-import React, { Suspense, lazy, useCallback, useState } from "react";
-// CHANGED: remove Link import (can be undefined depending on router setup)
-// import { Link } from "react-router";
+import React, { useCallback, useState } from "react";
 
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 
-// Lazy load heavy components - OUTSIDE the component
-const QuickShowcase = lazy(() =>
-  import("@/app/components/QuickShowcase").then((m) => ({ default: m.QuickShowcase }))
-);
-
-const ServiceTeaser = lazy(() =>
-  import("@/app/components/ServiceTeaser").then((m) => ({ default: m.ServiceTeaser }))
-);
-
-const HowItWorks = lazy(() =>
-  import("@/app/components/HowItWorks").then((m) => ({ default: m.HowItWorks }))
-);
-
-const BenefitsStrip = lazy(() =>
-  import("@/app/components/BenefitsStrip").then((m) => ({ default: m.BenefitsStrip }))
-);
-
-const AboutAVERRA = lazy(() =>
-  import("@/app/components/AboutAVERRA").then((m) => ({ default: m.AboutAVERRA }))
-);
-
-const CTAFooter = lazy(() =>
-  import("@/app/components/CTAFooter").then((m) => ({ default: m.CTAFooter }))
-);
-
-const MobileDebug = lazy(() =>
-  import("@/app/components/MobileDebug").then((m) => ({ default: m.MobileDebug }))
-);
+// CHANGED: remove lazy/Suspense, use direct imports (no visual changes)
+import { QuickShowcase } from "@/app/components/QuickShowcase";
+import { ServiceTeaser } from "@/app/components/ServiceTeaser";
+import { HowItWorks } from "@/app/components/HowItWorks";
+import { BenefitsStrip } from "@/app/components/BenefitsStrip";
+import { AboutAVERRA } from "@/app/components/AboutAVERRA";
+import { CTAFooter } from "@/app/components/CTAFooter";
+import { MobileDebug } from "@/app/components/MobileDebug";
 
 export function HomePage() {
   const isMobile = useIsMobile();
@@ -98,8 +76,7 @@ export function HomePage() {
         </div>
 
         {/* AVERRA Background Text - Behind Models - NOW ON MOBILE TOO */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
-          {/* CHANGED: z-5 -> z-[5] (valid Tailwind, same intended layering) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <h2
             className={`whitespace-nowrap text-white/10 select-none ${
               isMobile ? "text-[clamp(6rem,14vw,16rem)]" : "text-[10rem] xl:text-[12rem] 2xl:text-[14rem]"
@@ -116,8 +93,7 @@ export function HomePage() {
         </div>
 
         {/* Hero Text Content - Layered directly on top of AVERRA */}
-        <div className={`relative max-w-3xl mx-auto z-10 px-8 ${isMobile ? "mt-[11rem]" : "mt-32"}`}>
-          {/* CHANGED: mt-31 -> mt-32 (valid Tailwind; mt-31 was likely no-op) */}
+        <div className={`relative max-w-3xl mx-auto z-10 px-8 ${isMobile ? "mt-[11rem]" : "mt-31"}`}>
           <div className={`space-y-2 ${isMobile ? "" : "mb-6"}`}>
             <p
               className={`leading-relaxed text-white/95 text-center ${
@@ -138,7 +114,7 @@ export function HomePage() {
           </div>
 
           <div className={`space-y-4 text-center ${isMobile ? "mt-8" : ""}`}>
-            {/* CHANGED: Link -> a (same styling, avoids undefined component error) */}
+            {/* CHANGED earlier: use <a> to avoid router Link undefined; keep classes identical */}
             <a
               href="/quiz"
               className={`inline-block px-12 py-4 bg-[#DCDACC] text-[#301710] uppercase tracking-[0.3em] ${
@@ -166,37 +142,13 @@ export function HomePage() {
         </div>
       </section>
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <QuickShowcase />
-      </Suspense>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <ServiceTeaser />
-      </Suspense>
-
-      {!isMobile && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <HowItWorks />
-        </Suspense>
-      )}
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <BenefitsStrip />
-      </Suspense>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <AboutAVERRA />
-      </Suspense>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <CTAFooter />
-      </Suspense>
-
-      {isMobile && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <MobileDebug />
-        </Suspense>
-      )}
+      <QuickShowcase />
+      <ServiceTeaser />
+      {!isMobile && <HowItWorks />}
+      <BenefitsStrip />
+      <AboutAVERRA />
+      <CTAFooter />
+      {isMobile && <MobileDebug />}
     </div>
   );
 }
