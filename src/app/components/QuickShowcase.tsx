@@ -1,30 +1,33 @@
+// src/app/components/QuickShowcase.tsx
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// IMPORT ALL CAROUSEL IMAGES
-// IMPORT ALL CAROUSEL IMAGES
-import carousel1 from "/carousel-1.webp";
-import carousel2 from "/carousel-2.webp";
-import carousel3 from "/carousel-3.webp";
-import carousel4 from "/carousel-4.webp";
-import carousel5 from "/carousel-5.webp";
-import carousel6 from "/carousel-6.webp";
-import carousel7 from "/carousel-7.webp";
-import carousel8 from "/carousel-8.webp";
+// CHANGED: Public assets should be referenced by URL strings (not imported as modules)
+const carousel1 = "/carousel-1.webp";
+const carousel2 = "/carousel-2.webp";
+const carousel3 = "/carousel-3.webp";
+const carousel4 = "/carousel-4.webp";
+const carousel5 = "/carousel-5.webp";
+const carousel6 = "/carousel-6.webp";
+const carousel7 = "/carousel-7.webp";
+const carousel8 = "/carousel-8.webp";
 
-// 1 Additional Unsplash image to make 7 total
-const unsplashImage1 = "https://images.unsplash.com/photo-1762745103248-093916cce084?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBiZWF1dHklMjBzYWxvbiUyMG1vZGVsfGVufDF8fHx8MTc3MjMxNDM2NXww&ixlib=rb-4.1.0&q=80&w=1080";
+// 1 Additional Unsplash image
+const unsplashImage1 =
+  "https://images.unsplash.com/photo-1762745103248-093916cce084?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBiZWF1dHklMjBzYWxvbiUyMG1vZGVsfGVufDF8fHx8MTc3MjMxNDM2NXww&ixlib=rb-4.1.0&q=80&w=1080";
 
-// 7 TOTAL IMAGES
+// CHANGED: Replace undefined image8/image3/... with your new carousel files
 const allImages = [
-  image8, 
-  image3, 
-  image11, 
-  image6, 
-  braidedPonytail,
-  updoHairstyle,
-  unsplashImage1
+  carousel1,
+  carousel2,
+  carousel3,
+  carousel4,
+  carousel5,
+  carousel6,
+  carousel7,
+  carousel8,
+  unsplashImage1,
 ];
 
 export function QuickShowcase() {
@@ -47,23 +50,23 @@ export function QuickShowcase() {
 
   const handleTouchEnd = () => {
     if (!isMobile) return;
-    
+
     const swipeThreshold = 50;
     const diff = touchStartX.current - touchEndX.current;
-    
+
     if (Math.abs(diff) > swipeThreshold) {
       if (diff > 0) {
         // Swiped left - next image
         setCurrentIndex((prev) => {
           const next = (prev + 1) % allImages.length;
-          console.log('Swiped to next:', next);
+          console.log("Swiped to next:", next);
           return next;
         });
       } else {
         // Swiped right - previous image
         setCurrentIndex((prev) => {
           const next = (prev - 1 + allImages.length) % allImages.length;
-          console.log('Swiped to previous:', next);
+          console.log("Swiped to previous:", next);
           return next;
         });
       }
@@ -74,14 +77,14 @@ export function QuickShowcase() {
   useEffect(() => {
     const preloadImage = (index: number) => {
       if (loadedImages.has(index) || imageErrors.has(index)) return;
-      
+
       const img = new Image();
       img.onload = () => {
-        setLoadedImages(prev => new Set([...prev, index]));
+        setLoadedImages((prev) => new Set([...prev, index]));
       };
       img.onerror = () => {
         console.error(`Failed to load image ${index}`);
-        setImageErrors(prev => new Set([...prev, index]));
+        setImageErrors((prev) => new Set([...prev, index]));
       };
       img.src = allImages[index];
     };
@@ -100,37 +103,32 @@ export function QuickShowcase() {
   // Handle image error
   const handleImageError = () => {
     console.error(`Image ${currentIndex} failed to load`);
-    setImageErrors(prev => new Set([...prev, currentIndex]));
+    setImageErrors((prev) => new Set([...prev, currentIndex]));
     setIsImageLoading(false);
   };
 
-  // DESKTOP: Full carousel experience with 8 original Figma + 2 new images
   return (
-    <section 
+    <section
       className="relative min-h-screen overflow-hidden bg-black"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 8 ORIGINAL FIGMA + 2 NEW = 10 TOTAL */}
       <div className="absolute inset-0 z-0">
         {allImages.map((image, index) => {
           const isActive = currentIndex === index;
-          // On mobile, only render current image and adjacent ones for performance
-          const isAdjacent = isMobile && (
-            index === (currentIndex + 1) % allImages.length ||
-            index === (currentIndex - 1 + allImages.length) % allImages.length
-          );
-          
-          // Skip rendering if mobile and not current/adjacent
+          const isAdjacent =
+            isMobile &&
+            (index === (currentIndex + 1) % allImages.length ||
+              index === (currentIndex - 1 + allImages.length) % allImages.length);
+
           if (isMobile && !isActive && !isAdjacent) {
             return null;
           }
-          
-          // Second to last image (index 7 = unsplashImage2) and last image (index 8 = duoShot)
+
           const isSecondToLast = index === allImages.length - 2;
           const isLast = index === allImages.length - 1;
-          
+
           return (
             <div
               key={index}
@@ -144,36 +142,43 @@ export function QuickShowcase() {
                 src={image}
                 alt={`AI Model ${index + 1}`}
                 className="w-full h-full object-cover"
-                style={(isSecondToLast || isLast) ? { objectPosition: 'center 35%' } : undefined}
+                style={(isSecondToLast || isLast) ? { objectPosition: "center 35%" } : undefined}
                 loading={index === 0 ? "eager" : "lazy"}
+                onLoad={isActive ? handleImageLoad : undefined}
+                onError={isActive ? handleImageError : undefined}
               />
             </div>
           );
         })}
-        {/* Dark overlay for text */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/40 z-10" />
       </div>
 
-      {/* Content Overlay */}
       <div className="relative z-20 flex items-center justify-center min-h-screen py-32 px-8">
         <div className="text-center max-w-4xl">
           <p className="text-[10px] uppercase tracking-[0.4em] text-[#BFBBA7] font-light mb-4">
             AI Model Gallery
           </p>
-          <h2 className="text-[clamp(2.5rem,8vw,6rem)] text-[#DCDACC] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+          <h2
+            className="text-[clamp(2.5rem,8vw,6rem)] text-[#DCDACC] mb-8"
+            style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+          >
             See The Transformation
           </h2>
-          <p className="text-lg text-[#BFBBA7] max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Cormorant, serif' }}>
+          <p
+            className="text-lg text-[#BFBBA7] max-w-2xl mx-auto leading-relaxed"
+            style={{ fontFamily: "Cormorant, serif" }}
+          >
             You deserve branding that matches your talent. AVERRA creates it.
           </p>
 
-          {/* Carousel Indicators */}
           <div className="flex gap-2 justify-center mt-12">
             {allImages.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-1 rounded-full transition-all ${index === currentIndex ? 'bg-[#DCDACC] w-12' : 'bg-[#BFBBA7]/40 w-8'}`}
+                className={`h-1 rounded-full transition-all ${
+                  index === currentIndex ? "bg-[#DCDACC] w-12" : "bg-[#BFBBA7]/40 w-8"
+                }`}
                 aria-label={`Go to image ${index + 1}`}
               />
             ))}
@@ -181,7 +186,6 @@ export function QuickShowcase() {
         </div>
       </div>
 
-      {/* Navigation Buttons */}
       <button
         onClick={() => {
           setCurrentIndex((prev) => {
@@ -210,7 +214,6 @@ export function QuickShowcase() {
         <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
       </button>
 
-      {/* Debug indicator - shows current index */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 bg-black/60 text-white px-3 py-1 rounded text-sm">
         {currentIndex + 1} / {allImages.length}
       </div>
