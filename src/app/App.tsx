@@ -1,8 +1,9 @@
+// src/app/App.tsx
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { useEffect, useState } from "react";
-import { logger } from "@/utils/logger";
+import { CartProvider } from "@/app/context/CartContext";
+import { useEffect } from "react";
 import { performanceMonitor } from "@/utils/performance";
 import { scrollOptimizer } from "@/utils/scrollOptimizer";
 import { setupMemoryManagement, monitorMemory } from "@/utils/mobileOptimizer";
@@ -16,38 +17,34 @@ function assertDefined(name: string, v: AnyThing) {
 }
 
 export default function App() {
-  // ✅ Added: these do NOT change visuals unless something is broken
   assertDefined("RouterProvider", RouterProvider);
   assertDefined("router", router);
   assertDefined("ErrorBoundary", ErrorBoundary);
+  assertDefined("CartProvider", CartProvider);
 
-  const [isMounted, setIsMounted] = useState(false);
-
+  // ✅ Only run diagnostics in development
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
+    if (import.meta.env.MODE !== "production") {
       performanceMonitor.init();
+      monitorMemory();
     }
   }, []);
 
   useEffect(() => {
+    // ✅ Always safe-guarded by scrollOptimizer.init() returning cleanup
     const cleanup = scrollOptimizer.init();
     return cleanup;
   }, []);
 
   useEffect(() => {
     setupMemoryManagement();
-    if (process.env.NODE_ENV !== "production") {
-      monitorMemory();
-    }
-  }, []);
-
-  useEffect(() => {
-    setIsMounted(true);
   }, []);
 
   return (
     <ErrorBoundary>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </ErrorBoundary>
   );
 }
