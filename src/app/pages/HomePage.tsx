@@ -4,7 +4,6 @@ import React, { useCallback, useState } from "react";
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 
-// CHANGED: remove lazy/Suspense, use direct imports (no visual changes)
 import { QuickShowcase } from "@/app/components/QuickShowcase";
 import { ServiceTeaser } from "@/app/components/ServiceTeaser";
 import { HowItWorks } from "@/app/components/HowItWorks";
@@ -13,7 +12,25 @@ import { AboutAVERRA } from "@/app/components/AboutAVERRA";
 import { CTAFooter } from "@/app/components/CTAFooter";
 import { MobileDebug } from "@/app/components/MobileDebug";
 
+type AnyComponent = unknown;
+
+function assertComponent(name: string, c: AnyComponent) {
+  if (!c) {
+    throw new Error(`[Import Error] ${name} is undefined. Fix the export/import for this component.`);
+  }
+}
+
 export function HomePage() {
+  // ADDED: import guards (no visual changes when working)
+  assertComponent("Navigation", Navigation);
+  assertComponent("QuickShowcase", QuickShowcase);
+  assertComponent("ServiceTeaser", ServiceTeaser);
+  assertComponent("HowItWorks", HowItWorks);
+  assertComponent("BenefitsStrip", BenefitsStrip);
+  assertComponent("AboutAVERRA", AboutAVERRA);
+  assertComponent("CTAFooter", CTAFooter);
+  assertComponent("MobileDebug", MobileDebug);
+
   const isMobile = useIsMobile();
 
   const heroImage = "/about-hero.png"; // unchanged
@@ -79,7 +96,9 @@ export function HomePage() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <h2
             className={`whitespace-nowrap text-white/10 select-none ${
-              isMobile ? "text-[clamp(6rem,14vw,16rem)]" : "text-[10rem] xl:text-[12rem] 2xl:text-[14rem]"
+              isMobile
+                ? "text-[clamp(6rem,14vw,16rem)]"
+                : "text-[10rem] xl:text-[12rem] 2xl:text-[14rem]"
             }`}
             style={{
               fontFamily: "Cormorant Garamond, Cormorant, serif",
@@ -97,7 +116,9 @@ export function HomePage() {
           <div className={`space-y-2 ${isMobile ? "" : "mb-6"}`}>
             <p
               className={`leading-relaxed text-white/95 text-center ${
-                isMobile ? "text-[clamp(1.75rem,6vw,6rem)]" : "text-4xl xl:text-5xl 2xl:text-6xl"
+                isMobile
+                  ? "text-[clamp(1.75rem,6vw,6rem)]"
+                  : "text-4xl xl:text-5xl 2xl:text-6xl"
               }`}
               style={{ fontFamily: "Cormorant, serif", fontWeight: 400 }}
             >
@@ -114,7 +135,7 @@ export function HomePage() {
           </div>
 
           <div className={`space-y-4 text-center ${isMobile ? "mt-8" : ""}`}>
-            {/* CHANGED earlier: use <a> to avoid router Link undefined; keep classes identical */}
+            {/* unchanged styling; only Link->a earlier */}
             <a
               href="/quiz"
               className={`inline-block px-12 py-4 bg-[#DCDACC] text-[#301710] uppercase tracking-[0.3em] ${
