@@ -26,7 +26,9 @@ export function HomePage() {
   assertComponent("MobileDebug", MobileDebug);
 
   const isMobile = useIsMobile();
-  const heroImage = new URL("../../../public/about-hero.webp", import.meta.url).toString();
+
+  // ✅ UPDATED: your file is in /public as about-hero.webp, so use the root URL path
+  const heroImage = "/about-hero.webp";
 
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
