@@ -3,10 +3,11 @@ import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 
-const beautyImage = "/how-it-works.png";
-
 export function HowItWorks() {
   const isMobile = useIsMobile();
+
+  // MUST be inside the component so it cannot be out-of-scope
+  const beautyImage = "/how-it-works.png";
 
   const steps = [
     {
@@ -82,16 +83,20 @@ export function HowItWorks() {
                 >
                   <div>
                     <div className={`relative text-center ${index === 0 ? "pt-0" : "pt-0"}`}>
-                      {/* Step Number */}
                       <div className="mb-4">
-                        <span className="text-6xl md:text-7xl text-white" style={{ fontFamily: "Cormorant, serif", fontWeight: 700 }}>
+                        <span
+                          className="text-6xl md:text-7xl text-white"
+                          style={{ fontFamily: "Cormorant, serif", fontWeight: 700 }}
+                        >
                           {step.number}
                         </span>
                       </div>
 
-                      {/* Step Content */}
                       <div>
-                        <h3 className="text-2xl md:text-3xl text-white mb-4" style={{ fontFamily: "Cormorant, serif", fontWeight: 700 }}>
+                        <h3
+                          className="text-2xl md:text-3xl text-white mb-4"
+                          style={{ fontFamily: "Cormorant, serif", fontWeight: 700 }}
+                        >
                           {step.title}
                         </h3>
                         <div className="space-y-3 max-w-2xl mx-auto">
@@ -112,7 +117,6 @@ export function HowItWorks() {
                       </div>
                     </div>
 
-                    {/* Arrow between steps */}
                     {index < steps.length - 1 && (
                       <div className="flex justify-center my-8">
                         <svg
@@ -144,10 +148,6 @@ export function HowItWorks() {
             return <StepWithAnimation key={step.number} />;
           })}
         </div>
-      </div>
-    </section>
-  );
-}
       </div>
     </section>
   );
