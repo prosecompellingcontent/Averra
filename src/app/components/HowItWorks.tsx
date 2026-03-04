@@ -37,12 +37,12 @@ export function HowItWorks() {
     <section className="relative bg-[#2d1810] py-28 px-8 overflow-hidden">
       {/* Background Image with Overlay - Creates translucent bleed-through effect */}
       <div className="absolute inset-0">
-        <ImageWithFallback
-          src={beautyImage}
-          alt="Luxury abstract beauty visual"
-          className="w-full h-full object-cover scale-x-[-1]"
-          loading="lazy"
-        />
+      <ImageWithFallback
+  src="/how-it-works.png"
+  alt="Luxury abstract beauty visual"
+  className="w-full h-full object-cover scale-x-[-1]"
+  loading="lazy"
+/>
         <div className="absolute inset-0 bg-[#DCDACC]/[0.15]" />
       </div>
 
