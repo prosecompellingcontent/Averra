@@ -1,0 +1,259 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#221412">
+  
+  <link rel="canonical" href="{{ canonical_url }}">
+  
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Cormorant:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+  
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+  
+  {% render 'meta-tags' %}
+  
+  {{ content_for_header }}
+  
+  <style>
+    :root {
+      --color-primary: #DCDACC;
+      --color-secondary: #301710;
+      --color-accent: #BFBBA7;
+      --color-bg-1: #221412;
+      --color-bg-2: #2d1810;
+      --color-border: #654331;
+      
+      --font-heading: 'Cormorant Garamond', 'Cormorant', serif;
+      --font-body: 'Cormorant', serif;
+      --font-sans: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg-1);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .page-width {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section-padding {
+      padding: 8rem 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .section-padding {
+        padding: 4rem 1rem;
+      }
+    }
+
+    .button {
+      display: inline-block;
+      padding: 1rem 3rem;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+    }
+
+    .button--primary {
+      background-color: var(--color-primary);
+      color: var(--color-secondary);
+    }
+
+    .button--primary:hover {
+      background-color: var(--color-accent);
+    }
+
+    .button--secondary {
+      background-color: transparent;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+    }
+
+    .button--secondary:hover {
+      background-color: var(--color-primary);
+      color: var(--color-secondary);
+    }
+
+    .heading-lg {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--color-primary);
+    }
+
+    .heading-md {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--color-primary);
+    }
+
+    .label-text {
+      font-family: var(--font-sans);
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: var(--color-accent);
+    }
+
+    .body-lg {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: var(--color-accent);
+    }
+
+    .grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .grid--2 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid--3 {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    @media (min-width: 768px) {
+      .grid--2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .grid--3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(220, 218, 204, 0.1);
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-0.5rem);
+      border-color: rgba(220, 218, 204, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-to-content-link:focus {
+      position: relative;
+      width: auto;
+      height: auto;
+      clip: auto;
+    }
+  </style>
+  
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'averra-theme.css' | asset_url | stylesheet_tag }}
+  
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
+  <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+    Skip to content
+  </a>
+
+  {% section 'announcement-bar' %}
+  {% section 'header' %}
+
+  <main id="MainContent" class="content-for-layout" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'footer' %}
+
+  <script src="{{ 'global.js' | asset_url }}" defer></script>
+
+  <script>
+    window.shopUrl = '{{ request.origin }}';
+    window.routes = {
+      cart_add_url: '{{ routes.cart_add_url }}',
+      cart_change_url: '{{ routes.cart_change_url }}',
+      cart_update_url: '{{ routes.cart_update_url }}',
+      cart_url: '{{ routes.cart_url }}'
+    };
+
+    window.cartStrings = {
+      error: `{{ 'sections.cart.cart_error' | t }}`,
+      quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+    };
+
+    window.variantStrings = {
+      addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+      soldOut: `{{ 'products.product.sold_out' | t }}`,
+      unavailable: `{{ 'products.product.unavailable' | t }}`
+    };
+  </script>
+</body>
+</html>
