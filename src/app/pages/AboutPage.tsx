@@ -14,8 +14,8 @@ export function AboutPage() {
         className="fixed inset-0 z-0"
         style={{
           ...getBackgroundImageStyle('/about-ABOUT.png'),
-          backgroundSize: 'center',
-          backgroundPosition: 'top'
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }}
       >
         <div className="absolute inset-0 bg-[#DCDACC]/40" />
