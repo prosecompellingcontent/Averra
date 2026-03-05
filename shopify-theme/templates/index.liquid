@@ -1,0 +1,33 @@
+{% comment %}
+  AVERRA AI MODEL STUDIO - Homepage Template
+  Luxury editorial homepage for beauty professionals
+{% endcomment %}
+
+<div class="averra-homepage">
+  {% section 'announcement-bar' %}
+  {% section 'hero-averra' %}
+  {% section 'quick-showcase' %}
+  {% section 'service-teaser' %}
+  {% section 'how-it-works' %}
+  {% section 'benefits-strip' %}
+  {% section 'about-averra' %}
+  {% section 'testimonials-averra' %}
+  {% section 'cta-founding-members' %}
+</div>
+
+<script>
+  // Mobile detection and optimization
+  (function() {
+    const isMobile = window.innerWidth < 768;
+    document.documentElement.classList.toggle('is-mobile', isMobile);
+    
+    // Performance optimization for mobile
+    if (isMobile) {
+      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.style.imageRendering = 'auto';
+        img.style.transform = 'translateZ(0)';
+        img.style.backfaceVisibility = 'hidden';
+      });
+    }
+  })();
+</script>

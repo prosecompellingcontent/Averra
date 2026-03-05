@@ -1,8 +1,8 @@
-import { Link, useSearchParams } from 'react-router';
-import { Navigation } from '@/app/components/Navigation';
-import { CheckCircle } from 'lucide-react';
-import { useEffect } from 'react';
-import { useCart } from '@/app/context/CartContext';
+import { Link, useSearchParams } from "react-router";
+import { Navigation } from "@/app/components/Navigation";
+import { CheckCircle } from "lucide-react";
+import { useEffect } from "react";
+import { useCart } from "@/app/context/CartContext";
 
 export function CheckoutSuccessPage() {
   const [searchParams] = useSearchParams();

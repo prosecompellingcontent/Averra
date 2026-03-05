@@ -1,0 +1,259 @@
+{% comment %}
+  Service Teaser Section - Showcase AVERRA Service Tiers
+{% endcomment %}
+
+<section class="service-teaser section-padding">
+  <div class="page-width">
+    <div class="service-teaser-header">
+      <p class="label-text">{{ section.settings.label }}</p>
+      <h2 class="heading-lg">{{ section.settings.title }}</h2>
+      <p class="body-lg">{{ section.settings.description }}</p>
+    </div>
+
+    <div class="service-grid grid grid--3">
+      {% for block in section.blocks %}
+        <div class="service-card card" {{ block.shopify_attributes }}>
+          {% if block.settings.icon %}
+            <div class="service-icon">
+              <img src="{{ block.settings.icon | image_url: width: 80 }}" alt="{{ block.settings.title }}" loading="lazy">
+            </div>
+          {% endif %}
+
+          <h3 class="card-title">{{ block.settings.title }}</h3>
+          
+          {% if block.settings.price %}
+            <p class="service-price">{{ block.settings.price }}</p>
+          {% endif %}
+
+          <div class="card-text rte">
+            {{ block.settings.description }}
+          </div>
+
+          {% if block.settings.features %}
+            <ul class="service-features">
+              {% assign features = block.settings.features | split: ',' %}
+              {% for feature in features %}
+                <li>✓ {{ feature | strip }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if block.settings.cta_link %}
+            <a href="{{ block.settings.cta_link }}" class="button button--primary">
+              {{ block.settings.cta_text | default: 'Learn More' }}
+            </a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if section.settings.bottom_cta_link %}
+      <div class="service-teaser-footer">
+        <a href="{{ section.settings.bottom_cta_link }}" class="button button--secondary">
+          {{ section.settings.bottom_cta_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .service-teaser {
+    background: linear-gradient(135deg, rgba(45, 24, 16, 0.5) 0%, rgba(34, 20, 18, 0.8) 100%);
+  }
+
+  .service-teaser-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .service-teaser-header .label-text {
+    margin-bottom: 1rem;
+  }
+
+  .service-teaser-header .heading-lg {
+    margin-bottom: 1.5rem;
+  }
+
+  .service-grid {
+    margin-bottom: 4rem;
+  }
+
+  .service-card {
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .service-icon {
+    margin-bottom: 2rem;
+  }
+
+  .service-icon img {
+    margin: 0 auto;
+    width: 80px;
+    height: 80px;
+  }
+
+  .service-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 1rem 0;
+  }
+
+  .service-features {
+    list-style: none;
+    margin: 2rem 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  .service-features li {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+  }
+
+  .service-card .button {
+    margin-top: 2rem;
+  }
+
+  .service-teaser-footer {
+    text-align: center;
+    margin-top: 4rem;
+  }
+
+  @media (max-width: 768px) {
+    .service-card {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Service Teaser",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Our Services"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Choose Your Package"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Professional branding packages designed for beauty professionals"
+    },
+    {
+      "type": "text",
+      "id": "bottom_cta_text",
+      "label": "Bottom CTA Text",
+      "default": "View All Services"
+    },
+    {
+      "type": "url",
+      "id": "bottom_cta_link",
+      "label": "Bottom CTA Link",
+      "default": "/collections/services"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service Tier",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Service Name"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "$499"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "textarea",
+          "id": "features",
+          "label": "Features (comma separated)",
+          "info": "Example: Feature 1, Feature 2, Feature 3"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "CTA Button Text",
+          "default": "Learn More"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "CTA Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Service Teaser",
+      "blocks": [
+        {
+          "type": "service",
+          "settings": {
+            "title": "AVERRA Essentials",
+            "price": "$499",
+            "description": "Perfect for getting started with professional AI branding",
+            "features": "10 AI model images, Brand color palette, 2 logo variations, Basic guidelines",
+            "cta_text": "Get Started"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "AVERRA Signature",
+            "price": "$999",
+            "description": "Complete branding solution for established professionals",
+            "features": "25 AI model images, Full brand guidelines, 5 logo variations, Social media templates, Priority support",
+            "cta_text": "Choose Signature"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "title": "AVERRA Muse",
+            "price": "$1,999",
+            "description": "Premium luxury experience with unlimited possibilities",
+            "features": "50 AI model images, Complete brand identity, Unlimited variations, Dedicated support, Exclusive assets",
+            "cta_text": "Go Premium"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

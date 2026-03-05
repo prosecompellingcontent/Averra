@@ -185,7 +185,7 @@ Your luxury AVERRA AI MODEL STUDIO is now live at:
 
 ---
 
-## 💰 Current Pricing (Until March 31, 2026)
+## 💰 Current Pricing (March 3rd to May 31st, 2026)
 
 **Branding Services:**
 - AVERRA Essentials: $100 (reg. $200)

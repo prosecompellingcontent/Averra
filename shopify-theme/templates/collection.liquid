@@ -1,0 +1,236 @@
+{% comment %}
+  AVERRA Collection Template
+  For displaying service tiers and digital product collections
+{% endcomment %}
+
+{% paginate collection.products by 12 %}
+
+<div class="collection-wrapper">
+  <!-- Collection Header -->
+  <div class="collection-header page-width">
+    <h1 class="collection-title">{{ collection.title }}</h1>
+    
+    {% if collection.description != blank %}
+      <div class="collection-description rte">
+        {{ collection.description }}
+      </div>
+    {% endif %}
+
+    <!-- Filtering & Sorting -->
+    <div class="collection-toolbar">
+      <div class="collection-filter-wrapper">
+        <label for="sort-by">Sort by:</label>
+        <select id="sort-by" class="collection-sort" aria-label="Sort collection">
+          <option value="manual">Featured</option>
+          <option value="best-selling">Best Selling</option>
+          <option value="title-ascending">A-Z</option>
+          <option value="title-descending">Z-A</option>
+          <option value="price-ascending">Price: Low to High</option>
+          <option value="price-descending">Price: High to Low</option>
+          <option value="created-ascending">Date: Old to New</option>
+          <option value="created-descending">Date: New to Old</option>
+        </select>
+      </div>
+
+      <div class="collection-product-count">
+        {{ collection.products_count }} 
+        {% if collection.products_count == 1 %}
+          Product
+        {% else %}
+          Products
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="collection-products page-width">
+    {% if collection.products.size > 0 %}
+      <div class="product-grid product-grid--{{ settings.products_per_row }}">
+        {% for product in collection.products %}
+          <div class="product-grid-item">
+            {% render 'product-card', product: product %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if paginate.pages > 1 %}
+        <div class="pagination-wrapper">
+          <nav class="pagination" role="navigation" aria-label="Pagination">
+            {% if paginate.previous %}
+              <a href="{{ paginate.previous.url }}" class="pagination-previous">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M12 4l-8 8 8 8" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+                Previous
+              </a>
+            {% endif %}
+
+            <div class="pagination-pages">
+              {% for part in paginate.parts %}
+                {% if part.is_link %}
+                  <a href="{{ part.url }}" class="pagination-page">{{ part.title }}</a>
+                {% else %}
+                  <span class="pagination-page pagination-page--current">{{ part.title }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            {% if paginate.next %}
+              <a href="{{ paginate.next.url }}" class="pagination-next">
+                Next
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M8 4l8 8-8 8" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+              </a>
+            {% endif %}
+          </nav>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="collection-empty">
+        <p>No products in this collection yet.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button button--primary">
+          Browse All Products
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endpaginate %}
+
+<script>
+  // Collection sorting
+  (function() {
+    const sortSelect = document.getElementById('sort-by');
+    if (!sortSelect) return;
+
+    // Set current sort
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSort = urlParams.get('sort_by');
+    if (currentSort) {
+      sortSelect.value = currentSort;
+    }
+
+    sortSelect.addEventListener('change', function() {
+      const sortValue = this.value;
+      const url = new URL(window.location);
+      
+      if (sortValue === 'manual') {
+        url.searchParams.delete('sort_by');
+      } else {
+        url.searchParams.set('sort_by', sortValue);
+      }
+      
+      window.location.href = url.toString();
+    });
+  })();
+
+  // Filter toggle for mobile
+  (function() {
+    const isMobile = window.innerWidth < 768;
+    if (!isMobile) return;
+
+    const toolbar = document.querySelector('.collection-toolbar');
+    if (toolbar) {
+      toolbar.classList.add('mobile-toolbar');
+    }
+  })();
+</script>
+
+<style>
+  .collection-wrapper {
+    padding: 4rem 0;
+  }
+
+  .collection-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .collection-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 2rem;
+  }
+
+  .collection-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 80rem;
+    margin: 0 auto 3rem;
+  }
+
+  .collection-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(220, 218, 204, 0.2);
+    border-bottom: 1px solid rgba(220, 218, 204, 0.2);
+  }
+
+  .collection-filter-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .collection-filter-wrapper label {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .collection-sort {
+    padding: 0.8rem 3rem 0.8rem 1.2rem;
+    background-color: rgba(220, 218, 204, 0.1);
+    border: 1px solid rgba(220, 218, 204, 0.3);
+    color: var(--color-primary);
+    font-size: 1.4rem;
+    border-radius: 0;
+    cursor: pointer;
+  }
+
+  .collection-product-count {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+
+  @media (max-width: 768px) {
+    .collection-toolbar {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .product-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .collection-empty {
+    text-align: center;
+    padding: 8rem 2rem;
+  }
+
+  .collection-empty p {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+</style>

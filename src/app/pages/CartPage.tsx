@@ -1,7 +1,7 @@
-import { useCart } from '@/app/context/CartContext';
-import { Link } from 'react-router';
-import { X } from 'lucide-react';
-import { Navigation } from '@/app/components/Navigation';
+import { useCart } from "@/app/context/CartContext";
+import { Link } from "react-router";
+import { X } from "lucide-react";
+import { Navigation } from "@/app/components/Navigation";
 
 export function CartPage() {
   const { items, removeItem, clearCart, totalPrice } = useCart();

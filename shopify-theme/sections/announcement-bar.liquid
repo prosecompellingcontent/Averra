@@ -1,0 +1,131 @@
+{% comment %}
+  Announcement Bar Section
+{% endcomment %}
+
+{% if section.settings.show_announcement %}
+  <div class="announcement-bar" style="background-color: {{ section.settings.background_color }}; color: {{ section.settings.text_color }};">
+    <div class="announcement-bar-inner page-width">
+      {% if section.settings.announcement_link != blank %}
+        <a href="{{ section.settings.announcement_link }}" class="announcement-text">
+          {{ section.settings.announcement_text }}
+        </a>
+      {% else %}
+        <p class="announcement-text">
+          {{ section.settings.announcement_text }}
+        </p>
+      {% endif %}
+
+      {% if section.settings.show_close_button %}
+        <button class="announcement-close" aria-label="Close announcement">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <line x1="2" y1="2" x2="14" y2="14" stroke="currentColor" stroke-width="2"/>
+            <line x1="14" y1="2" x2="2" y2="14" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <style>
+    .announcement-bar {
+      width: 100%;
+      padding: 0.75rem 0;
+      text-align: center;
+      position: relative;
+      z-index: 999;
+    }
+
+    .announcement-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .announcement-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      margin: 0;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .announcement-text:hover {
+      opacity: 0.8;
+    }
+
+    .announcement-close {
+      position: absolute;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0.5rem;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .announcement-close:hover {
+      opacity: 1;
+    }
+
+    @media (max-width: 767px) {
+      .announcement-text {
+        font-size: 0.75rem;
+        padding-right: 2rem;
+      }
+    }
+  </style>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show Announcement Bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement Text",
+      "default": "🎉 Founding Member Pricing: March 3rd to May 31st, 2026"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement Link (Optional)"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#DCDACC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#301710"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close_button",
+      "label": "Show Close Button",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar"
+    }
+  ]
+}
+{% endschema %}

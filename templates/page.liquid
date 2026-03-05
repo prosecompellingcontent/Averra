@@ -1,0 +1,90 @@
+{% comment %}
+  Standard Page Template
+{% endcomment %}
+
+<div class="page-template">
+  <div class="page-width">
+    <div class="page-header">
+      <h1 class="page-title">{{ page.title }}</h1>
+    </div>
+
+    <div class="page-content rte">
+      {{ page.content }}
+    </div>
+  </div>
+</div>
+
+<style>
+  .page-template {
+    padding: 6rem 2rem;
+    background-color: var(--color-bg-1);
+    min-height: 60vh;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .page-content {
+    max-width: 900px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+
+  .rte h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .rte h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .rte p {
+    margin-bottom: 1.5rem;
+  }
+
+  .rte ul, .rte ol {
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .rte li {
+    margin-bottom: 0.5rem;
+  }
+
+  .rte a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  .rte a:hover {
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 767px) {
+    .page-template {
+      padding: 4rem 1rem;
+    }
+  }
+</style>

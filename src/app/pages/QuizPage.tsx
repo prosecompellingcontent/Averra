@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { Navigation } from "@/app/components/Navigation";
 import { Link } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { trackQuizCompletion, trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { useMemo } from "react";
 
 const questions = [
   {
@@ -114,8 +115,6 @@ export function QuizPage() {
   const [showResults, setShowResults] = useState(false);
   const isMobile = useIsMobile();
 
-  const backgroundImage = "/quiz-hero.png";
-
   const handleAnswer = (optionIndex: number) => {
     const newAnswers = [...answers, optionIndex];
     setAnswers(newAnswers);
@@ -124,7 +123,6 @@ export function QuizPage() {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResults(true);
-      // Track quiz completion with the final answers
       const avgAnswer = newAnswers.reduce((a, b) => a + b, 0) / newAnswers.length;
       const tier = avgAnswer < 1 ? "AVERRA Muse" : avgAnswer < 2 ? "AVERRA Signature" : "AVERRA Essentials";
       trackQuizCompletion(tier, newAnswers);
@@ -195,7 +193,6 @@ export function QuizPage() {
           ]
         };
       } else {
-        // AVERRA Signature
         return {
           subtitle: "You're ready to elevate your presence and attract the clients who value what you offer.",
           sections: [
@@ -220,7 +217,7 @@ export function QuizPage() {
         };
       }
     };
-  }, []); // Empty deps = compute once
+  }, []);
 
   const getColorScheme = useMemo(() => {
     return () => {
@@ -239,32 +236,27 @@ export function QuizPage() {
     const colorScheme = getColorScheme();
     const tierContent = getTierContent(tier);
 
-    // Luxury editorial fake blur - looks the same, zero GPU cost
     const cardClass = "glass-effect border border-white/30 p-8 md:p-12";
 
     return (
       <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
-        {/* Background Image - DESKTOP ONLY */}
         {!isMobile && (
           <div 
             className="fixed inset-0 z-0"
             style={{
-              backgroundImage: `url(${backgroundImage})`,
+              backgroundImage: "url(/quiz-hero.png)",
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat'
             }}
           >
-            {/* Lighter overlay to let more of the image show through */}
             <div className="absolute inset-0 bg-[#DCDACC]/30" />
           </div>
         )}
 
-        {/* Content */}
         <div className="relative z-10">
           <Navigation />
           <div className="max-w-4xl mx-auto px-8 py-32">
-            {/* Header Section */}
             <div className="text-center mb-20">
               <h1 className="text-[clamp(3rem,8vw,5rem)] text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
                 Your Brand Blueprint
@@ -272,7 +264,6 @@ export function QuizPage() {
             </div>
 
             <div className="space-y-16">
-              {/* Recommended Tier Section */}
               <div className={cardClass}>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#301710] mb-6 font-semibold">
                   Your Recommended Level
@@ -285,7 +276,6 @@ export function QuizPage() {
                 </p>
               </div>
 
-              {/* Tier-Specific Content Sections */}
               {tierContent.sections.map((section, index) => (
                 <div key={index} className={cardClass}>
                   <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
@@ -302,7 +292,6 @@ export function QuizPage() {
                 </div>
               ))}
 
-              {/* Next Steps */}
               <div className="text-center pt-12 space-y-8">
                 <div>
                   <h3 className="text-4xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>

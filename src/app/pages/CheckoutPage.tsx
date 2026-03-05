@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router';
-import { useCart } from '@/app/context/CartContext';
-import { Navigation } from '@/app/components/Navigation';
-import { projectId, publicAnonKey } from '/utils/supabase/info';
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router";
+import { useCart } from "@/app/context/CartContext";
+import { Navigation } from "@/app/components/Navigation";
+import { projectId, publicAnonKey } from "/utils/supabase/info";
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -54,6 +54,17 @@ export function CheckoutPage() {
       // Get the current URL origin for success/cancel URLs
       const origin = window.location.origin;
       
+      // Get brand intake data if it exists
+      const brandIntakeDataString = sessionStorage.getItem('brandIntakeData');
+      const brandIntakeId = sessionStorage.getItem('brandIntakeId');
+      
+      let brandIntakeData = brandIntakeDataString ? JSON.parse(brandIntakeDataString) : null;
+      
+      // Add intake ID to brand intake data for database tracking
+      if (brandIntakeData && brandIntakeId) {
+        brandIntakeData = { ...brandIntakeData, intakeId: brandIntakeId };
+      }
+      
       // Create Stripe Checkout Session
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-61755bec/create-checkout-session`,
@@ -68,6 +79,7 @@ export function CheckoutPage() {
             customerInfo: formData,
             successUrl: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${origin}/checkout`,
+            brandIntakeData: brandIntakeData, // Include brand intake data with intakeId
           }),
           signal: controller.signal,
         }
@@ -87,11 +99,11 @@ export function CheckoutPage() {
       }
 
       // Store brand intake data if it exists (will be retrieved after payment)
-      const brandIntakeData = sessionStorage.getItem('brandIntakeData');
-      if (brandIntakeData) {
+      if (brandIntakeDataString) {
         try {
-          localStorage.setItem('pendingBrandIntakeData', brandIntakeData);
+          localStorage.setItem('pendingBrandIntakeData', brandIntakeDataString);
           sessionStorage.removeItem('brandIntakeData');
+          sessionStorage.removeItem('brandIntakeId');
         } catch (storageError) {
           console.error('Failed to store brand intake data:', storageError);
           // Continue anyway - not critical

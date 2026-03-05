@@ -1,0 +1,420 @@
+{% comment %}
+  Collection Template - For displaying service tiers and digital products
+{% endcomment %}
+
+<div class="collection-page">
+  <!-- Hero Section -->
+  <div class="collection-hero">
+    {% if collection.image %}
+      <div class="collection-hero__bg">
+        <img src="{{ collection.image | image_url: width: 1920 }}" alt="{{ collection.title }}">
+        <div class="collection-hero__overlay"></div>
+      </div>
+    {% endif %}
+    
+    <div class="page-width collection-hero__content">
+      <p class="label-text">{{ collection.metafields.custom.label | default: 'Collection' }}</p>
+      <h1 class="heading-lg">{{ collection.title }}</h1>
+      <div class="collection-description">
+        {{ collection.description }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Founding Members Banner (if enabled) -->
+  {% if collection.metafields.custom.show_founding_banner %}
+    <div class="founding-banner">
+      <div class="page-width founding-banner__content">
+        <div class="founding-badge">Exclusive Offer</div>
+        <h3 class="founding-title">Founding Members</h3>
+        <div class="founding-label">First 50 Only</div>
+        <p class="founding-text">Early access never looked this good.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Products Grid -->
+  <div class="page-width collection-products">
+    <div class="products-grid">
+      {% for product in collection.products %}
+        <div class="product-card-full">
+          <!-- Featured Badge -->
+          {% if product.tags contains 'featured' or product.tags contains 'most-popular' %}
+            <div class="product-badge-featured">Most Popular</div>
+          {% endif %}
+
+          <div class="product-card-full__grid">
+            <!-- Left Side: Info & CTA -->
+            <div class="product-info-section">
+              <div class="product-info-header">
+                <h2 class="product-card-title-lg">{{ product.title }}</h2>
+                <p class="product-subtitle">{{ product.metafields.custom.subtitle }}</p>
+                <p class="product-description-lg">{{ product.metafields.custom.description }}</p>
+              </div>
+
+              <!-- Pricing -->
+              <div class="product-pricing-large">
+                {% if product.compare_at_price > product.price %}
+                  <span class="price-original">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+                <span class="price-sale">{{ product.price | money }}</span>
+              </div>
+
+              <!-- CTA Button -->
+              <a href="{{ product.url }}" class="button button--primary button--full">
+                Get Started
+              </a>
+            </div>
+
+            <!-- Right Side: Features -->
+            <div class="product-features-section">
+              <p class="features-label">What's Included</p>
+              <div class="features-grid">
+                {% assign features_list = product.metafields.custom.features_list %}
+                {% if features_list %}
+                  {% for feature in features_list %}
+                    <div class="feature-item">
+                      <svg class="feature-check" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <div class="feature-content">
+                        <p class="feature-name">{{ feature.name }}</p>
+                        <p class="feature-detail">{{ feature.detail }}</p>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .collection-page {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    min-height: 100vh;
+  }
+
+  .collection-hero {
+    position: relative;
+    text-align: center;
+    padding: 8rem 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .collection-hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .collection-hero__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  .collection-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(220, 218, 204, 0.6),
+      rgba(220, 218, 204, 0.7),
+      rgba(220, 218, 204, 1)
+    );
+  }
+
+  .collection-hero__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .collection-hero .label-text {
+    margin-bottom: 1.5rem;
+    display: block;
+    color: var(--color-border);
+  }
+
+  .collection-hero .heading-lg {
+    color: var(--color-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .collection-description {
+    font-size: 1.125rem;
+    font-weight: 300;
+    color: var(--color-border);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Founding Members Banner */
+  .founding-banner {
+    background-color: var(--color-secondary);
+    padding: 4rem 2rem;
+    margin-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .founding-banner::before,
+  .founding-banner::after {
+    content: '';
+    position: absolute;
+    width: 6rem;
+    height: 6rem;
+    border: 2px solid rgba(191, 187, 167, 0.3);
+  }
+
+  .founding-banner::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .founding-banner::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+  }
+
+  .founding-banner__content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .founding-badge {
+    display: inline-block;
+    padding: 0.75rem 7rem;
+    border: 2px solid;
+    border-image: linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1;
+    background: linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    margin-bottom: 1.5rem;
+  }
+
+  .founding-title {
+    font-family: var(--font-body);
+    font-size: clamp(2.5rem, 6vw, 3rem);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .founding-label {
+    display: inline-block;
+    padding: 0.5rem 2rem;
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+  }
+
+  .founding-text {
+    font-size: 1.125rem;
+    font-weight: 300;
+    color: var(--color-primary);
+    line-height: 1.6;
+  }
+
+  /* Products Grid */
+  .collection-products {
+    padding: 0 2rem 8rem;
+  }
+
+  .products-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .product-card-full {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 3rem;
+    position: relative;
+    box-shadow: 
+      -2px -2px 0px 0px rgba(34, 20, 18, 0.4),
+      8px 8px 0px 0px rgba(34, 20, 18, 0.8),
+      16px 16px 0px 0px rgba(34, 20, 18, 0.4);
+  }
+
+  .product-card-full.featured {
+    background: white;
+    border: 2px solid var(--color-border);
+    box-shadow: 
+      12px 12px 0px 0px rgba(34, 20, 18, 0.85),
+      24px 24px 0px 0px rgba(34, 20, 18, 0.5);
+  }
+
+  .product-badge-featured {
+    display: inline-block;
+    padding: 0.25rem 1rem;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    font-size: 0.5625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin-bottom: 2rem;
+  }
+
+  .product-card-full__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .product-card-full__grid {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+
+  .product-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .product-card-title-lg {
+    font-family: var(--font-body);
+    font-size: 1.875rem;
+    font-weight: 300;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .product-subtitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-border);
+    margin-bottom: 1rem;
+  }
+
+  .product-description-lg {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--color-border);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .product-pricing-large {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .price-original {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: rgba(101, 67, 49, 0.4);
+    text-decoration: line-through;
+  }
+
+  .price-sale {
+    font-family: var(--font-body);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--color-secondary);
+  }
+
+  .button--full {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 3rem;
+  }
+
+  .product-features-section {
+  }
+
+  .features-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--color-border);
+    margin-bottom: 2rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .feature-check {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+    color: var(--color-secondary);
+  }
+
+  .feature-content {
+    flex: 1;
+  }
+
+  .feature-name {
+    font-size: 1rem;
+    color: var(--color-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .feature-detail {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--color-border);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 767px) {
+    .collection-hero {
+      padding: 4rem 1rem;
+    }
+
+    .founding-banner {
+      padding: 3rem 1rem;
+    }
+
+    .collection-products {
+      padding: 0 1rem 4rem;
+    }
+
+    .product-card-full {
+      padding: 2rem;
+    }
+  }
+</style>

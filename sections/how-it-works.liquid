@@ -1,0 +1,311 @@
+{% comment %}
+  How It Works Section - Converted from React HowItWorks.tsx
+{% endcomment %}
+
+<section class="how-it-works">
+  {% if section.settings.background_image %}
+    <div class="how-it-works__bg">
+      <img
+        src="{{ section.settings.background_image | image_url: width: 1920 }}"
+        srcset="
+          {{ section.settings.background_image | image_url: width: 600 }} 600w,
+          {{ section.settings.background_image | image_url: width: 1200 }} 1200w,
+          {{ section.settings.background_image | image_url: width: 1920 }} 1920w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.background_image.alt | escape }}"
+        loading="lazy"
+        class="how-it-works__bg-img"
+      >
+      <div class="how-it-works__overlay"></div>
+    </div>
+  {% endif %}
+
+  <div class="page-width how-it-works__content">
+    <div class="how-it-works__header">
+      <p class="label-text">{{ section.settings.label }}</p>
+      <h2 class="heading-lg">{{ section.settings.title }}</h2>
+      <p class="how-it-works__subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+
+    <div class="how-it-works__steps">
+      {% for block in section.blocks %}
+        <div class="step-item" {{ block.shopify_attributes }}>
+          <div class="step-number">{{ block.settings.number }}</div>
+          
+          <div class="step-content">
+            <h3 class="step-title">{{ block.settings.title }}</h3>
+            
+            <div class="step-description">
+              {% assign lines = block.settings.description | newline_to_br | split: '<br />' %}
+              {% for line in lines %}
+                {% if line != blank %}
+                  <p>{{ line }}</p>
+                {% else %}
+                  <div class="step-spacer"></div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% unless forloop.last %}
+            <div class="step-arrow">
+              <svg width="48" height="{% if forloop.index == 1 %}135{% else %}165{% endif %}" viewBox="0 0 48 {% if forloop.index == 1 %}135{% else %}165{% endif %}" fill="none">
+                {% if forloop.index == 1 %}
+                  <path d="M24 0 L24 120 M24 120 L14 110 M24 120 L34 110" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                {% else %}
+                  <path d="M24 0 L24 150 M24 150 L14 140 M24 150 L34 140" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                {% endif %}
+              </svg>
+            </div>
+          {% endunless %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .how-it-works {
+    position: relative;
+    background-color: var(--color-bg-2);
+    padding: 7rem 2rem;
+    overflow: hidden;
+  }
+
+  .how-it-works__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .how-it-works__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+  }
+
+  .how-it-works__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(220, 218, 204, 0.15);
+  }
+
+  .how-it-works__content {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+  }
+
+  .how-it-works__header {
+    text-align: center;
+    margin-bottom: 5rem;
+  }
+
+  .how-it-works__header .label-text {
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .how-it-works__header .heading-lg {
+    margin-bottom: 2rem;
+    color: white;
+  }
+
+  .how-it-works__subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    font-weight: 600;
+    font-style: italic;
+    color: white;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .how-it-works__steps {
+    margin-bottom: 5rem;
+  }
+
+  .step-item {
+    text-align: center;
+  }
+
+  .step-number {
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 10vw, 4.5rem);
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .step-content {
+    margin-bottom: 2rem;
+  }
+
+  .step-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .step-description {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .step-description p {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    font-weight: 600;
+    font-style: italic;
+    color: white;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .step-spacer {
+    height: 0.5rem;
+  }
+
+  .step-arrow {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (max-width: 767px) {
+    .how-it-works {
+      padding: 4rem 1rem;
+    }
+
+    .how-it-works__header {
+      margin-bottom: 3rem;
+    }
+
+    .how-it-works__steps {
+      margin-bottom: 3rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .step-item {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .step-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .step-item:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .step-item:nth-child(3) {
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "How It Works",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "The Process"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "How It Works"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Your brand shouldn't go quiet when bookings slow down."
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Step Number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Step Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "info": "Use line breaks to separate paragraphs. Empty lines create spacing."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "How It Works",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "number": "01",
+            "title": "Choose Your Tier",
+            "description": "Essentials, Signature, or Muse.\nBuilt for where you are now\nand where you're headed."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "number": "02",
+            "title": "Strategize",
+            "description": "Answer a few quick questions at checkout.\nAfter checkout, complete a short brand customization form.\n\nClarity first.\nCreation second."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "number": "03",
+            "title": "Get Your Visuals",
+            "description": "Delivered in 7–10 business days.\n\nReady to use.\nReady to elevate."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

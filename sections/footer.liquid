@@ -1,0 +1,302 @@
+{% comment %}
+  AVERRA Footer
+{% endcomment %}
+
+{%- style -%}
+  .footer-averra {
+    background-color: #2C2420;
+    color: #F5F1ED;
+    padding: 80px 40px 40px;
+  }
+
+  .footer-averra__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .footer-averra__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+
+  .footer-averra__brand {
+    max-width: 400px;
+  }
+
+  .footer-averra__logo {
+    font-family: var(--font-heading-family);
+    font-size: 28px;
+    font-weight: 500;
+    color: #F5F1ED;
+    margin-bottom: 24px;
+    letter-spacing: 2px;
+  }
+
+  .footer-averra__description {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #C9BFB5;
+    margin-bottom: 32px;
+  }
+
+  .footer-averra__social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-averra__social-link {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #5C5855;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #F5F1ED;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .footer-averra__social-link:hover {
+    background-color: #8B7355;
+    border-color: #8B7355;
+  }
+
+  .footer-averra__column-title {
+    font-family: var(--font-heading-family);
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #F5F1ED;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .footer-averra__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-averra__link {
+    margin-bottom: 12px;
+  }
+
+  .footer-averra__link a {
+    color: #C9BFB5;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.3s ease;
+  }
+
+  .footer-averra__link a:hover {
+    color: #8B7355;
+  }
+
+  .footer-averra__bottom {
+    padding-top: 40px;
+    border-top: 1px solid #5C5855;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #8B7355;
+  }
+
+  .footer-averra__payment-icons {
+    display: flex;
+    gap: 12px;
+  }
+
+  @media (max-width: 968px) {
+    .footer-averra {
+      padding: 60px 24px 40px;
+    }
+
+    .footer-averra__grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .footer-averra__bottom {
+      flex-direction: column;
+      gap: 24px;
+      text-align: center;
+    }
+  }
+{%- endstyle -%}
+
+<footer class="footer-averra">
+  <div class="footer-averra__container">
+    <div class="footer-averra__grid">
+      <div class="footer-averra__brand">
+        <h3 class="footer-averra__logo">
+          {% if section.settings.footer_logo_text != blank %}
+            {{ section.settings.footer_logo_text }}
+          {% else %}
+            {{ shop.name }}
+          {% endif %}
+        </h3>
+        
+        {% if section.settings.footer_description != blank %}
+          <p class="footer-averra__description">{{ section.settings.footer_description }}</p>
+        {% endif %}
+
+        <div class="footer-averra__social">
+          {% if section.settings.instagram_url != blank %}
+            <a href="{{ section.settings.instagram_url }}" class="footer-averra__social-link" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM16.5 8.5C16.5 8.224 16.724 8 17 8C17.276 8 17.5 8.224 17.5 8.5C17.5 8.776 17.276 9 17 9C16.724 9 16.5 8.776 16.5 8.5ZM12 9C13.657 9 15 10.343 15 12C15 13.657 13.657 15 12 15C10.343 15 9 13.657 9 12C9 10.343 10.343 9 12 9ZM12 7C9.239 7 7 9.239 7 12C7 14.761 9.239 17 12 17C14.761 17 17 14.761 17 12C17 9.239 14.761 7 12 7Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if section.settings.facebook_url != blank %}
+            <a href="{{ section.settings.facebook_url }}" class="footer-averra__social-link" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12C2 16.991 5.657 21.128 10.438 21.878V14.891H7.898V12H10.438V9.797C10.438 7.291 11.93 5.907 14.215 5.907C15.309 5.907 16.453 6.102 16.453 6.102V8.562H15.193C13.95 8.562 13.563 9.333 13.563 10.124V12H16.336L15.893 14.891H13.563V21.878C18.343 21.128 22 16.991 22 12C22 6.477 17.523 2 12 2Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if section.settings.twitter_url != blank %}
+            <a href="{{ section.settings.twitter_url }}" class="footer-averra__social-link" target="_blank" rel="noopener" aria-label="Twitter">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23 3.00005C22.0424 3.67552 20.9821 4.19216 19.86 4.53005C19.2577 3.83756 18.4573 3.34674 17.567 3.12397C16.6767 2.90121 15.7395 2.95724 14.8821 3.28445C14.0247 3.61166 13.2884 4.19445 12.773 4.95376C12.2575 5.71308 11.9877 6.61238 12 7.53005V8.53005C10.2426 8.57561 8.50127 8.18586 6.93101 7.39549C5.36074 6.60513 4.01032 5.43868 3 4.00005C3 4.00005 -1 13 8 17C5.94053 18.398 3.48716 19.099 1 19C10 24 21 19 21 7.50005C20.9991 7.2215 20.9723 6.94364 20.92 6.67005C21.9406 5.66354 22.6608 4.39276 23 3.00005Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if section.settings.pinterest_url != blank %}
+            <a href="{{ section.settings.pinterest_url }}" class="footer-averra__social-link" target="_blank" rel="noopener" aria-label="Pinterest">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12C2 16.237 4.636 19.855 8.356 21.312C8.29 20.55 8.228 19.393 8.413 18.563L9.562 13.812C9.562 13.812 9.252 13.175 9.252 12.225C9.252 10.725 10.122 9.612 11.212 9.612C12.142 9.612 12.592 10.3 12.592 11.125C12.592 12.05 11.992 13.45 11.682 14.75C11.432 15.8 12.202 16.662 13.232 16.662C15.092 16.662 16.532 14.7 16.532 11.875C16.532 9.362 14.732 7.612 11.952 7.612C8.762 7.612 6.892 10 6.892 12.512C6.892 13.437 7.242 14.437 7.682 14.987C7.782 15.112 7.792 15.212 7.762 15.337L7.412 16.775C7.362 16.975 7.242 17.025 7.032 16.925C5.692 16.3 4.852 14.4 4.852 12.462C4.852 8.837 7.412 5.5 12.242 5.5C16.112 5.5 19.122 8.2 19.122 11.825C19.122 15.612 16.812 18.625 13.502 18.625C12.392 18.625 11.352 18.05 10.992 17.362L10.242 20.287C9.952 21.387 9.152 22.787 8.632 23.662C9.722 23.987 10.852 24.162 12.002 24.162C17.525 24.162 22.002 19.685 22.002 14.162C22 6.477 17.523 2 12 2Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% for block in section.blocks %}
+        <div class="footer-averra__column">
+          <h4 class="footer-averra__column-title">{{ block.settings.title }}</h4>
+          <ul class="footer-averra__links">
+            {% assign links = block.settings.links | split: '|' %}
+            {% assign urls = block.settings.urls | split: '|' %}
+            {% for link in links %}
+              <li class="footer-averra__link">
+                <a href="{{ urls[forloop.index0] }}">{{ link }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="footer-averra__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      
+      <div class="footer-averra__payment-icons">
+        {% if section.settings.show_payment_icons %}
+          {{ shop.enabled_payment_types | payment_type_svg_tag }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "footer_logo_text",
+      "label": "Footer Logo Text",
+      "default": "AVERRA"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_description",
+      "label": "Footer Description",
+      "default": "Luxury branding for beauty professionals. Elevating your presence from hustle to high-end."
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "twitter_url",
+      "label": "Twitter URL"
+    },
+    {
+      "type": "url",
+      "id": "pinterest_url",
+      "label": "Pinterest URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show Payment Icons",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Footer Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Column Title",
+          "default": "Quick Links"
+        },
+        {
+          "type": "textarea",
+          "id": "links",
+          "label": "Link Titles (separate with |)",
+          "default": "Services|Products|About|Contact",
+          "info": "Use | to separate each link"
+        },
+        {
+          "type": "textarea",
+          "id": "urls",
+          "label": "Link URLs (separate with |)",
+          "default": "/pages/services|/collections/all|/pages/about|/pages/contact",
+          "info": "Use | to separate each URL. Must match order of Link Titles"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "link_list",
+        "settings": {
+          "title": "Services",
+          "links": "AVERRA Essentials|AVERRA Signature|AVERRA Muse",
+          "urls": "/pages/essentials|/pages/signature|/pages/muse"
+        }
+      },
+      {
+        "type": "link_list",
+        "settings": {
+          "title": "Company",
+          "links": "About|Portfolio|Contact|Privacy Policy",
+          "urls": "/pages/about|/pages/portfolio|/pages/contact|/pages/privacy"
+        }
+      }
+    ]
+  }
+}
+{% endschema %}

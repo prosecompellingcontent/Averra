@@ -1,0 +1,251 @@
+{% comment %}
+  About AVERRA Section
+{% endcomment %}
+
+<section class="about-averra section-padding">
+  <div class="page-width">
+    <div class="about-grid">
+      <!-- Text Content -->
+      <div class="about-content">
+        {% if section.settings.label %}
+          <p class="label-text">{{ section.settings.label }}</p>
+        {% endif %}
+
+        <h2 class="heading-lg">{{ section.settings.title }}</h2>
+
+        <div class="about-text rte">
+          {{ section.settings.content }}
+        </div>
+
+        {% if section.settings.cta_link %}
+          <div class="about-cta">
+            <a href="{{ section.settings.cta_link }}" class="button button--primary">
+              {{ section.settings.cta_text }}
+            </a>
+          </div>
+        {% endif %}
+
+        <!-- Stats/Features -->
+        {% if section.blocks.size > 0 %}
+          <div class="about-stats">
+            {% for block in section.blocks %}
+              <div class="stat-item" {{ block.shopify_attributes }}>
+                <p class="stat-value">{{ block.settings.value }}</p>
+                <p class="stat-label">{{ block.settings.label }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Image -->
+      <div class="about-image">
+        {% if section.settings.image %}
+          <img
+            src="{{ section.settings.image | image_url: width: 800 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 400 }} 400w,
+              {{ section.settings.image | image_url: width: 600 }} 600w,
+              {{ section.settings.image | image_url: width: 800 }} 800w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            alt="{{ section.settings.image.alt | escape }}"
+            loading="lazy"
+          >
+        {% else %}
+          <div class="about-image-placeholder">
+            <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
+              <rect width="200" height="200" fill="rgba(255,255,255,0.05)"/>
+              <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.3)" font-size="16">Image</text>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-averra {
+    background: linear-gradient(135deg, rgba(34, 20, 18, 0.8) 0%, rgba(45, 24, 16, 0.6) 100%);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .about-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+    }
+  }
+
+  .about-content .label-text {
+    margin-bottom: 1rem;
+  }
+
+  .about-content .heading-lg {
+    margin-bottom: 2rem;
+  }
+
+  .about-text {
+    margin-bottom: 2rem;
+  }
+
+  .about-cta {
+    margin: 3rem 0;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(220, 218, 204, 0.2);
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .about-image {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .about-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .about-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+  }
+
+  @media (max-width: 1023px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "About AVERRA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "About Us"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Redefining Beauty Branding"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>AVERRA uses cutting-edge AI to create luxury branding that matches your talent. No photoshoots, no designer fees, no stress.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button Link",
+      "default": "/pages/about"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Statistic",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "1000+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Happy Clients"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About AVERRA",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "value": "1000+",
+            "label": "Beauty Pros"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "24hrs",
+            "label": "Delivery"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "100%",
+            "label": "Satisfaction"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

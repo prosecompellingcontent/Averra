@@ -1,0 +1,218 @@
+{% comment %}
+  Benefits Strip Section - Converted from React BenefitsStrip.tsx
+{% endcomment %}
+
+<section class="benefits-strip">
+  <div class="page-width">
+    <div class="benefits-grid">
+      {% for block in section.blocks %}
+        <div class="benefit-card" {{ block.shopify_attributes }}>
+          <div class="benefit-icon">
+            {% if block.settings.icon_svg %}
+              {{ block.settings.icon_svg }}
+            {% elsif block.settings.icon == 'trending' %}
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+            {% elsif block.settings.icon == 'sparkles' %}
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                <path d="M5 3v4"></path>
+                <path d="M19 17v4"></path>
+                <path d="M3 5h4"></path>
+                <path d="M17 19h4"></path>
+              </svg>
+            {% elsif block.settings.icon == 'package' %}
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.5 4.27 9 5.15"></path>
+                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+                <path d="m3.3 7 8.7 5 8.7-5"></path>
+                <path d="M12 22V12"></path>
+              </svg>
+            {% endif %}
+          </div>
+          
+          <div class="benefit-content">
+            <h3 class="benefit-title">{{ block.settings.title }}</h3>
+            <div class="benefit-description">{{ block.settings.description }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .benefits-strip {
+    background-color: var(--color-bg-1);
+    padding: 8rem 2rem;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 768px) {
+    .benefits-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .benefit-card {
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .benefit-card:hover {
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  .benefit-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .benefit-icon > div,
+  .benefit-icon > svg {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+    transition: all 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .benefit-card:hover .benefit-icon > div,
+    .benefit-card:hover .benefit-icon > svg {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+  }
+
+  .benefit-icon svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .benefit-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .benefit-title {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--color-primary);
+  }
+
+  .benefit-description {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--color-accent);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 767px) {
+    .benefits-strip {
+      padding: 4rem 1rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Benefits Strip",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "trending",
+              "label": "Trending Up"
+            },
+            {
+              "value": "sparkles",
+              "label": "Sparkles"
+            },
+            {
+              "value": "package",
+              "label": "Package"
+            }
+          ],
+          "default": "sparkles"
+        },
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Custom Icon SVG",
+          "info": "Optional: Add custom SVG code to override the icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Benefit Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Benefit description goes here."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits Strip",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "trending",
+            "title": "More Bookings",
+            "description": "Showcase Your Work."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "sparkles",
+            "title": "AI-Powered Branding",
+            "description": "Keep Content Consistent. Even With No Clients."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "package",
+            "title": "Client-Ready Kits",
+            "description": "No Footwork, No Hassle. No Stress."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

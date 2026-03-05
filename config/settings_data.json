@@ -1,0 +1,71 @@
+{
+  "current": {
+    "color_primary": "#DCDACC",
+    "color_secondary": "#301710",
+    "color_accent": "#BFBBA7",
+    "color_background_1": "#221412",
+    "color_background_2": "#2d1810",
+    "heading_scale": 100,
+    "body_scale": 100,
+    "products_per_row": 3,
+    "show_vendor": false,
+    "show_quick_add": true,
+    "cart_type": "page",
+    "cart_notes_enable": false,
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "show_announcement": true,
+          "announcement_text": "🎉 Founding Member Pricing: March 3rd to May 31st, 2026",
+          "background_color": "#DCDACC",
+          "text_color": "#301710",
+          "show_close_button": true
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_text": "AVERRA",
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "footer_logo_text": "AVERRA",
+          "tagline": "Luxury AI branding for beauty professionals",
+          "show_social": true,
+          "show_newsletter": true,
+          "newsletter_heading": "Stay Connected",
+          "newsletter_text": "Get exclusive branding tips and special offers",
+          "newsletter_placeholder": "Your email",
+          "newsletter_success_message": "Thanks for subscribing!",
+          "copyright_text": "All rights reserved.",
+          "show_payment_icons": true
+        },
+        "blocks": {
+          "footer-0": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Quick Links",
+              "menu": "footer"
+            }
+          },
+          "footer-1": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Services",
+              "menu": "services"
+            }
+          }
+        },
+        "block_order": [
+          "footer-0",
+          "footer-1"
+        ]
+      }
+    },
+    "content_for_index": []
+  }
+}

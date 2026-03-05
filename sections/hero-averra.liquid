@@ -1,0 +1,236 @@
+{% comment %}
+  AVERRA Hero Section - Luxury Editorial Homepage Hero
+{% endcomment %}
+
+{%- style -%}
+  .hero-averra {
+    background-color: #F5F1ED;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-averra__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    width: 100%;
+  }
+
+  .hero-averra__content {
+    max-width: 700px;
+  }
+
+  .hero-averra__eyebrow {
+    font-family: var(--font-heading-family);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8B7355;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .hero-averra__title {
+    font-family: var(--font-heading-family);
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 1.1;
+    color: #2C2420;
+    margin: 0 0 32px 0;
+    font-weight: 400;
+    letter-spacing: -1px;
+  }
+
+  .hero-averra__description {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #5C5855;
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+
+  .hero-averra__cta-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .hero-averra__button {
+    padding: 18px 48px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-heading-family);
+    font-weight: 500;
+  }
+
+  .hero-averra__button--primary {
+    background-color: #2C2420;
+    color: #F5F1ED;
+  }
+
+  .hero-averra__button--primary:hover {
+    background-color: #8B7355;
+  }
+
+  .hero-averra__button--secondary {
+    background-color: transparent;
+    color: #2C2420;
+    border: 2px solid #2C2420;
+  }
+
+  .hero-averra__button--secondary:hover {
+    background-color: #2C2420;
+    color: #F5F1ED;
+  }
+
+  .hero-averra__badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #8B7355 0%, #A0866F 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .hero-averra {
+      min-height: 80vh;
+    }
+
+    .hero-averra__container {
+      padding: 60px 24px;
+    }
+
+    .hero-averra__title {
+      font-size: 48px;
+    }
+
+    .hero-averra__description {
+      font-size: 18px;
+    }
+
+    .hero-averra__cta-group {
+      flex-direction: column;
+    }
+
+    .hero-averra__button {
+      text-align: center;
+      width: 100%;
+    }
+  }
+{%- endstyle -%}
+
+<section class="hero-averra">
+  <div class="hero-averra__container">
+    <div class="hero-averra__content">
+      {% if section.settings.show_badge %}
+        <span class="hero-averra__badge">
+          {{ section.settings.badge_text }}
+        </span>
+      {% endif %}
+
+      {% if section.settings.eyebrow != blank %}
+        <p class="hero-averra__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.title != blank %}
+        <h1 class="hero-averra__title">{{ section.settings.title }}</h1>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <p class="hero-averra__description">{{ section.settings.description }}</p>
+      {% endif %}
+
+      <div class="hero-averra__cta-group">
+        {% if section.settings.primary_button_text != blank %}
+          <a href="{{ section.settings.primary_button_link }}" class="hero-averra__button hero-averra__button--primary">
+            {{ section.settings.primary_button_text }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.secondary_button_text != blank %}
+          <a href="{{ section.settings.secondary_button_link }}" class="hero-averra__button hero-averra__button--secondary">
+            {{ section.settings.secondary_button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero AVERRA",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "✨ Founding Member Pricing: March 3rd to May 31st, 2026"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "AVERRA AI MODEL STUDIO"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "From Hustle to High-End"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Luxury branding for beauty professionals ready to command premium rates and attract dream clients effortlessly."
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary Button Text",
+      "default": "Explore Services"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary Button Link",
+      "default": "/pages/services"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary Button Text",
+      "default": "View Portfolio"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary Button Link",
+      "default": "/pages/portfolio"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero AVERRA"
+    }
+  ]
+}
+{% endschema %}

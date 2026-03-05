@@ -1,5 +1,4 @@
-// src/app/components/CartPreviewWrapper.tsx
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useCart } from "@/app/context/CartContext";
 import { CartPreviewPopup } from "@/app/components/CartPreviewPopup";
 
@@ -12,7 +11,7 @@ export function CartPreviewWrapper() {
       items={items}
       isVisible={showPreview}
       onClose={() => setShowPreview(false)}
-      onNavigateToCart={() => navigate("/cart")}
+      onNavigateToCart={() => navigate('/cart')}
     />
   );
 }

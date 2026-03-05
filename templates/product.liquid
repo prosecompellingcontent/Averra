@@ -1,0 +1,495 @@
+{% comment %}
+  Product Template - Individual product/service page
+{% endcomment %}
+
+<div class="product-template">
+  <div class="page-width">
+    <div class="product-layout">
+      <!-- Product Images -->
+      <div class="product-media">
+        {% if product.featured_media %}
+          <div class="product-main-image">
+            <img
+              src="{{ product.featured_media | image_url: width: 800 }}"
+              srcset="
+                {{ product.featured_media | image_url: width: 400 }} 400w,
+                {{ product.featured_media | image_url: width: 800 }} 800w,
+                {{ product.featured_media | image_url: width: 1200 }} 1200w
+              "
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              alt="{{ product.featured_media.alt | escape }}"
+              loading="eager"
+            >
+          </div>
+          
+          {% if product.media.size > 1 %}
+            <div class="product-thumbnails">
+              {% for media in product.media limit: 4 %}
+                <button class="thumbnail-button" data-media-id="{{ media.id }}">
+                  <img src="{{ media | image_url: width: 150 }}" alt="{{ media.alt | escape }}">
+                </button>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="product-placeholder">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <rect width="100" height="100" fill="rgba(255,255,255,0.1)"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="product-breadcrumb">
+          <a href="/collections/all">All Products</a>
+          <span>/</span>
+          <span>{{ product.title }}</span>
+        </div>
+
+        {% if product.tags contains 'featured' %}
+          <div class="product-badge-inline">Most Popular</div>
+        {% endif %}
+
+        <h1 class="product-title">{{ product.title }}</h1>
+        
+        {% if product.metafields.custom.subtitle %}
+          <p class="product-subtitle-inline">{{ product.metafields.custom.subtitle }}</p>
+        {% endif %}
+
+        <!-- Price -->
+        <div class="product-price">
+          {% if product.compare_at_price > product.price %}
+            <span class="price-compare">{{ product.compare_at_price | money }}</span>
+          {% endif %}
+          <span class="price-current">{{ product.selected_or_first_available_variant.price | money }}</span>
+        </div>
+
+        <!-- Description -->
+        {% if product.description != blank %}
+          <div class="product-description rte">
+            {{ product.description }}
+          </div>
+        {% endif %}
+
+        <!-- Add to Cart Form -->
+        <form method="post" action="/cart/add" id="product-form" class="product-form">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          {% unless product.has_only_default_variant %}
+            <div class="product-variants">
+              {% for option in product.options_with_values %}
+                <div class="variant-option">
+                  <label for="option-{{ option.position }}">{{ option.name }}</label>
+                  <select 
+                    id="option-{{ option.position }}"
+                    name="options[{{ option.name | escape }}]"
+                    class="variant-select"
+                  >
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}">{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <div class="product-quantity">
+            <label for="quantity">Quantity</label>
+            <input 
+              type="number" 
+              id="quantity" 
+              name="quantity" 
+              value="1" 
+              min="1"
+              class="quantity-input"
+            >
+          </div>
+
+          <button 
+            type="submit" 
+            name="add" 
+            class="button button--primary button--full"
+            {% unless product.available %}disabled{% endunless %}
+          >
+            {% if product.available %}
+              Add to Cart
+            {% else %}
+              Sold Out
+            {% endif %}
+          </button>
+        </form>
+
+        <!-- Features List -->
+        {% if product.metafields.custom.features_list %}
+          <div class="product-features-list">
+            <h3 class="features-heading">What's Included</h3>
+            <div class="features-list">
+              {% for feature in product.metafields.custom.features_list %}
+                <div class="feature-list-item">
+                  <svg class="feature-check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <div>
+                    <p class="feature-name-inline">{{ feature.name }}</p>
+                    {% if feature.detail %}
+                      <p class="feature-detail-inline">{{ feature.detail }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Trust Badges -->
+        <div class="product-trust">
+          <div class="trust-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Secure Checkout</span>
+          </div>
+          <div class="trust-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Commercial License</span>
+          </div>
+          <div class="trust-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>7-10 Day Delivery</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-template {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    padding: 4rem 2rem;
+    min-height: 100vh;
+  }
+
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 1024px) {
+    .product-layout {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Media */
+  .product-media {
+    position: sticky;
+    top: 2rem;
+    align-self: start;
+  }
+
+  .product-main-image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 1rem;
+  }
+
+  .product-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+
+  .thumbnail-button {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 0.3s ease;
+  }
+
+  .thumbnail-button:hover,
+  .thumbnail-button.active {
+    border-color: var(--color-secondary);
+  }
+
+  .thumbnail-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-placeholder {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Info */
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .product-breadcrumb {
+    font-size: 0.875rem;
+    color: var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .product-breadcrumb a {
+    color: var(--color-border);
+    transition: color 0.3s ease;
+  }
+
+  .product-breadcrumb a:hover {
+    color: var(--color-secondary);
+  }
+
+  .product-badge-inline {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+  }
+
+  .product-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 600;
+    color: var(--color-secondary);
+    line-height: 1.2;
+  }
+
+  .product-subtitle-inline {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-border);
+  }
+
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(101, 67, 49, 0.2);
+    border-bottom: 1px solid rgba(101, 67, 49, 0.2);
+  }
+
+  .price-compare {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    color: rgba(101, 67, 49, 0.5);
+    text-decoration: line-through;
+  }
+
+  .price-current {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+  }
+
+  .product-description {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-border);
+  }
+
+  .product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .product-variants {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .variant-option label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-secondary);
+  }
+
+  .variant-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    background-color: white;
+    font-size: 1rem;
+    color: var(--color-secondary);
+  }
+
+  .product-quantity label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-secondary);
+  }
+
+  .quantity-input {
+    width: 100px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    background-color: white;
+    font-size: 1rem;
+    color: var(--color-secondary);
+  }
+
+  .product-features-list {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(101, 67, 49, 0.2);
+  }
+
+  .features-heading {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--color-border);
+    margin-bottom: 1.5rem;
+  }
+
+  .features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .feature-list-item {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .feature-check-icon {
+    flex-shrink: 0;
+    color: var(--color-secondary);
+    margin-top: 0.25rem;
+  }
+
+  .feature-name-inline {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .feature-detail-inline {
+    font-size: 0.875rem;
+    color: var(--color-border);
+    line-height: 1.6;
+  }
+
+  .product-trust {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(101, 67, 49, 0.2);
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-border);
+  }
+
+  .trust-item svg {
+    color: var(--color-secondary);
+  }
+
+  @media (max-width: 767px) {
+    .product-template {
+      padding: 2rem 1rem;
+    }
+
+    .product-layout {
+      gap: 2rem;
+    }
+  }
+</style>
+
+<script>
+  // Thumbnail switching
+  document.querySelectorAll('.thumbnail-button').forEach(button => {
+    button.addEventListener('click', function() {
+      document.querySelectorAll('.thumbnail-button').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      const mediaId = this.dataset.mediaId;
+      // Switch main image logic here
+    });
+  });
+
+  // Add to cart form
+  document.getElementById('product-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const button = this.querySelector('button[type="submit"]');
+    const originalText = button.textContent;
+    
+    button.textContent = 'Adding...';
+    button.disabled = true;
+
+    try {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        button.textContent = 'Added!';
+        setTimeout(() => {
+          window.location.href = '/cart';
+        }, 500);
+      } else {
+        throw new Error('Failed to add to cart');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      button.textContent = originalText;
+      button.disabled = false;
+      alert('Error adding to cart. Please try again.');
+    }
+  });
+</script>

@@ -1,7 +1,9 @@
-// src/app/pages/HomePage.tsx
 import React, { useCallback, useState } from "react";
+
 import { Navigation } from "@/app/components/Navigation";
+import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+
 import { QuickShowcase } from "@/app/components/QuickShowcase";
 import { ServiceTeaser } from "@/app/components/ServiceTeaser";
 import { HowItWorks } from "@/app/components/HowItWorks";
@@ -10,30 +12,19 @@ import { AboutAVERRA } from "@/app/components/AboutAVERRA";
 import { CTAFooter } from "@/app/components/CTAFooter";
 import { MobileDebug } from "@/app/components/MobileDebug";
 
-type AnyComponent = unknown;
-function assertComponent(name: string, c: AnyComponent) {
-  if (!c) throw new Error(`[Import Error] ${name} is undefined.`);
-}
-
 export function HomePage() {
-  assertComponent("Navigation", Navigation);
-  assertComponent("QuickShowcase", QuickShowcase);
-  assertComponent("ServiceTeaser", ServiceTeaser);
-  assertComponent("HowItWorks", HowItWorks);
-  assertComponent("BenefitsStrip", BenefitsStrip);
-  assertComponent("AboutAVERRA", AboutAVERRA);
-  assertComponent("CTAFooter", CTAFooter);
-  assertComponent("MobileDebug", MobileDebug);
-
   const isMobile = useIsMobile();
-
-  // ✅ UPDATED: your file is in /public as about-hero.webp, so use the root URL path
-  const heroImage = "/about-hero.webp";
 
   const [heroImageError, setHeroImageError] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  
+  // Using actual image from /public folder
+  const heroImage = "/about-hero.webp";
 
-  const handleImageLoad = useCallback(() => setHeroImageLoaded(true), []);
+  const handleImageLoad = useCallback(() => {
+    setHeroImageLoaded(true);
+  }, []);
+
   const handleImageError = useCallback(() => {
     console.error("Hero image failed to load:", heroImage);
     setHeroImageError(true);
@@ -53,7 +44,7 @@ export function HomePage() {
                 </div>
               )}
 
-              <img
+              <ImageWithFallback
                 src={heroImage}
                 alt="Hero background"
                 className="w-full h-full object-cover object-center"
@@ -72,7 +63,6 @@ export function HomePage() {
                     : undefined
                 }
               />
-
               <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/40" />
             </>
           ) : (
@@ -85,9 +75,7 @@ export function HomePage() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <h2
             className={`whitespace-nowrap text-white/10 select-none ${
-              isMobile
-                ? "text-[clamp(6rem,14vw,16rem)]"
-                : "text-[10rem] xl:text-[12rem] 2xl:text-[14rem]"
+              isMobile ? "text-[clamp(6rem,14vw,16rem)]" : "text-[10rem] xl:text-[12rem] 2xl:text-[14rem]"
             }`}
             style={{
               fontFamily: "Cormorant Garamond, Cormorant, serif",

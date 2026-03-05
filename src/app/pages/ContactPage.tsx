@@ -1,8 +1,8 @@
-import { Navigation } from "@/app/components/Navigation";
-import { useState } from "react";
-import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { Link } from "react-router";
+import { useState } from "react";
+import { Navigation } from "@/app/components/Navigation";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 export function ContactPage() {
   const isMobile = useIsMobile();

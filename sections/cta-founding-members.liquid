@@ -1,0 +1,360 @@
+{% comment %}
+  CTA Founding Members Section
+{% endcomment %}
+
+{%- style -%}
+  .cta-founding-members {
+    padding: 120px 40px;
+    background: linear-gradient(135deg, #2C2420 0%, #5C5855 100%);
+    color: #F5F1ED;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-founding-members::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(139, 115, 85, 0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(139, 115, 85, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .cta-founding-members__container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-founding-members__badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #8B7355 0%, #A0866F 100%);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  .cta-founding-members__title {
+    font-family: var(--font-heading-family);
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.2;
+    color: #F5F1ED;
+    margin: 0 0 24px 0;
+    font-weight: 400;
+  }
+
+  .cta-founding-members__description {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #C9BFB5;
+    margin-bottom: 48px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-founding-members__countdown {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+
+  .cta-founding-members__countdown-item {
+    text-align: center;
+  }
+
+  .cta-founding-members__countdown-number {
+    font-size: 48px;
+    font-weight: 700;
+    color: #8B7355;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .cta-founding-members__countdown-label {
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #C9BFB5;
+  }
+
+  .cta-founding-members__buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-founding-members__button {
+    padding: 20px 52px;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-heading-family);
+    font-weight: 600;
+    border-radius: 2px;
+  }
+
+  .cta-founding-members__button--primary {
+    background-color: #8B7355;
+    color: #F5F1ED;
+  }
+
+  .cta-founding-members__button--primary:hover {
+    background-color: #A0866F;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(139, 115, 85, 0.3);
+  }
+
+  .cta-founding-members__button--secondary {
+    background-color: transparent;
+    color: #F5F1ED;
+    border: 2px solid #8B7355;
+  }
+
+  .cta-founding-members__button--secondary:hover {
+    background-color: rgba(139, 115, 85, 0.1);
+  }
+
+  .cta-founding-members__features {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+
+  .cta-founding-members__feature {
+    text-align: center;
+  }
+
+  .cta-founding-members__feature-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .cta-founding-members__feature-text {
+    font-size: 15px;
+    color: #C9BFB5;
+  }
+
+  @media (max-width: 768px) {
+    .cta-founding-members {
+      padding: 80px 24px;
+    }
+
+    .cta-founding-members__countdown {
+      gap: 20px;
+    }
+
+    .cta-founding-members__countdown-number {
+      font-size: 36px;
+    }
+
+    .cta-founding-members__buttons {
+      flex-direction: column;
+    }
+
+    .cta-founding-members__button {
+      width: 100%;
+    }
+
+    .cta-founding-members__features {
+      gap: 32px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="cta-founding-members">
+  <div class="cta-founding-members__container">
+    {% if section.settings.show_badge %}
+      <span class="cta-founding-members__badge">
+        {{ section.settings.badge_text }}
+      </span>
+    {% endif %}
+
+    {% if section.settings.title != blank %}
+      <h2 class="cta-founding-members__title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <p class="cta-founding-members__description">{{ section.settings.description }}</p>
+    {% endif %}
+
+    {% if section.settings.show_countdown %}
+      <div class="cta-founding-members__countdown">
+        <div class="cta-founding-members__countdown-item">
+          <span class="cta-founding-members__countdown-number" id="days">88</span>
+          <span class="cta-founding-members__countdown-label">Days</span>
+        </div>
+        <div class="cta-founding-members__countdown-item">
+          <span class="cta-founding-members__countdown-number" id="hours">00</span>
+          <span class="cta-founding-members__countdown-label">Hours</span>
+        </div>
+        <div class="cta-founding-members__countdown-item">
+          <span class="cta-founding-members__countdown-number" id="minutes">00</span>
+          <span class="cta-founding-members__countdown-label">Minutes</span>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="cta-founding-members__buttons">
+      {% if section.settings.primary_button_text != blank %}
+        <a href="{{ section.settings.primary_button_link }}" class="cta-founding-members__button cta-founding-members__button--primary">
+          {{ section.settings.primary_button_text }}
+        </a>
+      {% endif %}
+
+      {% if section.settings.secondary_button_text != blank %}
+        <a href="{{ section.settings.secondary_button_link }}" class="cta-founding-members__button cta-founding-members__button--secondary">
+          {{ section.settings.secondary_button_text }}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="cta-founding-members__features">
+      <div class="cta-founding-members__feature">
+        <div class="cta-founding-members__feature-icon">💎</div>
+        <p class="cta-founding-members__feature-text">Up to 60% Off</p>
+      </div>
+      <div class="cta-founding-members__feature">
+        <div class="cta-founding-members__feature-icon">⚡</div>
+        <p class="cta-founding-members__feature-text">Priority Service</p>
+      </div>
+      <div class="cta-founding-members__feature">
+        <div class="cta-founding-members__feature-icon">🎁</div>
+        <p class="cta-founding-members__feature-text">Exclusive Bonuses</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  {% if section.settings.show_countdown and section.settings.countdown_date != blank %}
+    (function() {
+      const countdownDate = new Date("{{ section.settings.countdown_date }}").getTime();
+      
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+        
+        if (distance < 0) {
+          document.getElementById('days').textContent = '00';
+          document.getElementById('hours').textContent = '00';
+          document.getElementById('minutes').textContent = '00';
+          return;
+        }
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      }
+      
+      updateCountdown();
+      setInterval(updateCountdown, 60000); // Update every minute
+    })();
+  {% endif %}
+</script>
+
+{% schema %}
+{
+  "name": "CTA Founding Members",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "🔥 Limited Time Offer"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Join as a Founding Member"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Lock in exclusive founding member pricing and be part of an elite group of beauty professionals building luxury brands. Offer ends May 31st, 2026."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show Countdown Timer",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "countdown_date",
+      "label": "Countdown End Date",
+      "default": "May 31, 2026 23:59:59",
+      "info": "Format: Month Day, Year HH:MM:SS"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary Button Text",
+      "default": "Claim Your Spot"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary Button Link",
+      "default": "/pages/services"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary Button Text",
+      "default": "View Pricing"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary Button Link",
+      "default": "/pages/pricing"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA Founding Members"
+    }
+  ]
+}
+{% endschema %}

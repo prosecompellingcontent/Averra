@@ -164,7 +164,7 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
       }, 500);
     }
 
-    const { items, customerInfo, successUrl, cancelUrl } = await c.req.json();
+    const { items, customerInfo, successUrl, cancelUrl, brandIntakeData } = await c.req.json();
 
     if (!items || !items.length) {
       return c.json({ error: "No items in cart" }, 400);
@@ -205,6 +205,24 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
       };
     });
 
+    // Prepare metadata with brand intake data if available
+    const metadata: any = {
+      customerName: customerInfo?.name || '',
+      customerEmail: customerInfo?.email || '',
+      customerPhone: customerInfo?.phone || '',
+      items: JSON.stringify(validItems.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        type: item.type,
+      }))),
+    };
+
+    // Add brand intake data to metadata if provided
+    if (brandIntakeData) {
+      metadata.brandIntakeData = JSON.stringify(brandIntakeData);
+    }
+
     // Create Stripe Checkout Session with timeout protection
     const sessionPromise = stripe.checkout.sessions.create({
       line_items: lineItems,
@@ -212,17 +230,7 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
       success_url: successUrl,
       cancel_url: cancelUrl,
       customer_email: customerInfo?.email || undefined,
-      metadata: {
-        customerName: customerInfo?.name || '',
-        customerEmail: customerInfo?.email || '',
-        customerPhone: customerInfo?.phone || '',
-        items: JSON.stringify(validItems.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          type: item.type,
-        }))),
-      },
+      metadata,
     });
 
     // Add timeout to prevent hanging requests
@@ -431,6 +439,40 @@ app.get("/make-server-61755bec/analytics-summary", async (c) => {
   }
 });
 
+// Get sales data (all sales records with brand intake information)
+app.get("/make-server-61755bec/sales-data", async (c) => {
+  try {
+    // Get all sales from Supabase KV
+    const sales = await kv.getByPrefix("sale_");
+    
+    // Filter to only sale records and sort by date (newest first)
+    const salesRecords = sales
+      .filter((item: any) => item.type === "sale")
+      .sort((a: any, b: any) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA; // Newest first
+      });
+
+    console.log("Sales data retrieved:", salesRecords.length, "records");
+
+    return c.json({
+      sales: salesRecords,
+      totalSales: salesRecords.length,
+      totalRevenue: salesRecords.reduce((sum: number, sale: any) => {
+        return sum + parseFloat(sale.totalPrice || 0);
+      }, 0),
+      lastUpdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error retrieving sales data:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Failed to retrieve sales data" },
+      500
+    );
+  }
+});
+
 // Contact form submission
 app.post("/make-server-61755bec/contact-submission", async (c) => {
   try {
@@ -505,6 +547,81 @@ app.post("/make-server-61755bec/contact-submission", async (c) => {
     console.error("Error processing contact submission:", error);
     return c.json(
       { error: error instanceof Error ? error.message : "Contact submission failed" },
+      500
+    );
+  }
+});
+
+// Submit brand intake form
+app.post("/make-server-61755bec/submit-brand-intake", async (c) => {
+  try {
+    const formData = await c.req.json();
+
+    // Validate required fields
+    const requiredFields = [
+      'tier', 'fullName', 'businessName', 'servicesOffering',
+      'businessStage', 'misalignedAspects', 'brandPerception',
+      'idealClient', 'futureGoals', 'aiStance'
+    ];
+
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        return c.json({ error: `Missing required field: ${field}` }, 400);
+      }
+    }
+
+    // Connect to Supabase using service role key
+    const { createClient } = await import("jsr:@supabase/supabase-js@2");
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Insert into brand_intakes table
+    const { data, error } = await supabase
+      .from('brand_intakes')
+      .insert({
+        tier: formData.tier,
+        full_name: formData.fullName,
+        business_name: formData.businessName,
+        instagram_handle: formData.instagramHandle || null,
+        website: formData.website || null,
+        services: formData.servicesOffering,
+        business_stage: Array.isArray(formData.businessStage) 
+          ? formData.businessStage.join(', ') 
+          : formData.businessStage,
+        brand_misalignment: Array.isArray(formData.misalignedAspects)
+          ? formData.misalignedAspects.join(', ')
+          : formData.misalignedAspects,
+        brand_feel: formData.brandPerception,
+        ideal_client: formData.idealClient,
+        plans_6_12_months: Array.isArray(formData.futureGoals)
+          ? formData.futureGoals.join(', ')
+          : formData.futureGoals,
+        ai_stance: formData.aiStance,
+        urgent_notes: formData.urgentNotes || null,
+        payment_status: 'submitted',
+        stripe_customer_email: formData.customerEmail || null
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error inserting brand intake:', error);
+      return c.json({ error: 'Failed to save brand intake form' }, 500);
+    }
+
+    console.log('✅ Brand intake form saved:', data.id);
+
+    return c.json({ 
+      success: true, 
+      intakeId: data.id,
+      message: 'Brand intake form submitted successfully'
+    });
+  } catch (error) {
+    console.error('Error submitting brand intake:', error);
+    return c.json(
+      { error: error instanceof Error ? error.message : 'Failed to submit brand intake' },
       500
     );
   }
@@ -726,6 +843,72 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
       case "checkout.session.completed": {
         const session = event.data.object;
         console.log("🛒 Checkout completed:", session.id);
+        
+        // Extract metadata
+        const customerName = session.metadata?.customerName || "N/A";
+        const customerEmail = session.metadata?.customerEmail || "N/A";
+        const customerPhone = session.metadata?.customerPhone || "N/A";
+        const items = session.metadata?.items ? JSON.parse(session.metadata.items) : [];
+        const brandIntakeData = session.metadata?.brandIntakeData ? JSON.parse(session.metadata.brandIntakeData) : null;
+        
+        // Update brand intake status in database if intake ID exists
+        if (brandIntakeData && brandIntakeData.intakeId) {
+          try {
+            const { createClient } = await import("jsr:@supabase/supabase-js@2");
+            const supabase = createClient(
+              Deno.env.get('SUPABASE_URL') ?? '',
+              Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+            );
+
+            const { error } = await supabase
+              .from('brand_intakes')
+              .update({
+                payment_status: 'paid',
+                stripe_session_id: session.id,
+                stripe_customer_email: customerEmail
+              })
+              .eq('id', brandIntakeData.intakeId);
+
+            if (error) {
+              console.error('Error updating brand intake payment status:', error);
+            } else {
+              console.log('✅ Brand intake marked as paid:', brandIntakeData.intakeId);
+            }
+          } catch (dbError) {
+            console.error('Error connecting to database:', dbError);
+          }
+        }
+        
+        // Create sale record ID
+        const saleId = `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Store complete sale data in Supabase KV
+        await kv.set(saleId, {
+          saleId,
+          orderId: session.id,
+          customerName,
+          customerEmail,
+          customerPhone,
+          items: items.map((item: any) => item.name).join(", "),
+          totalPrice: (session.amount_total / 100).toFixed(2),
+          paymentId: session.payment_intent || session.id,
+          // Brand intake form data
+          brandName: brandIntakeData?.businessName || "N/A",
+          industry: brandIntakeData?.servicesOffering || "N/A",
+          targetAudience: brandIntakeData?.idealClient || "N/A",
+          goals: brandIntakeData?.futureGoals?.join(", ") || "N/A",
+          instagramHandle: brandIntakeData?.instagramHandle || "N/A",
+          website: brandIntakeData?.website || "N/A",
+          businessStage: brandIntakeData?.businessStage?.join(", ") || "N/A",
+          brandPerception: brandIntakeData?.brandPerception || "N/A",
+          // Full brand intake data for reference
+          fullBrandIntakeData: brandIntakeData,
+          createdAt: new Date().toISOString(),
+          type: "sale"
+        });
+        
+        console.log("✅ Sale record stored in Supabase:", saleId);
+        
         break;
       }
 

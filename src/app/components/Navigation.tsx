@@ -40,6 +40,7 @@ export function Navigation() {
           >
             About
           </Link>
+          
           <Link 
             to="/contact" 
             className={`text-xs uppercase tracking-widest text-neutral-400 ${!isMobile ? 'hover:text-neutral-200 transition-colors' : ''}`}

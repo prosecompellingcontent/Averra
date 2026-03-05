@@ -1,0 +1,203 @@
+{% comment %}
+  AVERRA Header - Navigation
+{% endcomment %}
+
+{%- style -%}
+  .header-averra {
+    background-color: #F5F1ED;
+    border-bottom: 1px solid #E8E3DD;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: all 0.3s ease;
+  }
+
+  .header-averra.scrolled {
+    box-shadow: 0 2px 20px rgba(44, 36, 32, 0.08);
+  }
+
+  .header-averra__container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-averra__logo {
+    font-family: var(--font-heading-family);
+    font-size: 24px;
+    font-weight: 500;
+    color: #2C2420;
+    text-decoration: none;
+    letter-spacing: 2px;
+  }
+
+  .header-averra__nav {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .header-averra__link {
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #2C2420;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+  }
+
+  .header-averra__link:hover {
+    color: #8B7355;
+  }
+
+  .header-averra__cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #2C2420;
+    transition: color 0.3s ease;
+  }
+
+  .header-averra__cart:hover {
+    color: #8B7355;
+  }
+
+  .header-averra__cart-count {
+    background: #8B7355;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .header-averra__mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #2C2420;
+  }
+
+  @media (max-width: 968px) {
+    .header-averra__container {
+      padding: 20px 24px;
+    }
+
+    .header-averra__nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #F5F1ED;
+      flex-direction: column;
+      padding: 24px;
+      border-top: 1px solid #E8E3DD;
+      gap: 20px;
+    }
+
+    .header-averra__nav.active {
+      display: flex;
+    }
+
+    .header-averra__mobile-toggle {
+      display: block;
+    }
+
+    .header-averra__cart {
+      margin-left: auto;
+      margin-right: 60px;
+    }
+  }
+{%- endstyle -%}
+
+<header class="header-averra" id="shopify-section-header">
+  <div class="header-averra__container">
+    <a href="/" class="header-averra__logo">
+      {% if section.settings.logo != blank %}
+        <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" style="height: 40px; width: auto;">
+      {% else %}
+        {{ section.settings.logo_text | default: shop.name }}
+      {% endif %}
+    </a>
+
+    <nav class="header-averra__nav" id="header-nav">
+      {% for link in linklists[section.settings.menu].links %}
+        <a href="{{ link.url }}" class="header-averra__link">{{ link.title }}</a>
+      {% endfor %}
+
+      <a href="/cart" class="header-averra__cart" id="cart-icon-bubble">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 16C6 17.1 6.9 18 8 18C9.1 18 10 17.1 10 16C10 14.9 9.1 14 8 14C6.9 14 6 14.9 6 16ZM0 0V2H2L5.6 9.59L4.24 12.04C4.09 12.32 4 12.65 4 13C4 14.1 4.9 15 6 15H18V13H6.42C6.28 13 6.17 12.89 6.17 12.75L6.2 12.63L7.1 11H14.55C15.3 11 15.96 10.59 16.3 9.97L19.88 3.48C19.96 3.34 20 3.17 20 3C20 2.45 19.55 2 19 2H4.21L3.27 0H0ZM14 16C14 17.1 14.9 18 16 18C17.1 18 18 17.1 18 16C18 14.9 17.1 14 16 14C14.9 14 14 14.9 14 16Z" fill="currentColor"/>
+        </svg>
+        {% if cart.item_count > 0 %}
+          <span class="header-averra__cart-count">{{ cart.item_count }}</span>
+        {% endif %}
+      </a>
+    </nav>
+
+    <button class="header-averra__mobile-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+      ☰
+    </button>
+  </div>
+</header>
+
+<script>
+  // Sticky header scroll effect
+  window.addEventListener('scroll', function() {
+    const header = document.querySelector('.header-averra');
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+
+  // Mobile menu toggle
+  const mobileToggle = document.getElementById('mobile-menu-toggle');
+  const nav = document.getElementById('header-nav');
+  
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', function() {
+      nav.classList.toggle('active');
+      this.textContent = nav.classList.contains('active') ? '✕' : '☰';
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text (if no image)",
+      "default": "AVERRA"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

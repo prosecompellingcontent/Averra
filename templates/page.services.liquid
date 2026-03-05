@@ -1,0 +1,56 @@
+{% comment %}
+  Services Page Template - Custom layout for services
+{% endcomment %}
+
+<div class="services-page">
+  <div class="page-width">
+    <div class="services-header">
+      <p class="label-text">Our Services</p>
+      <h1 class="heading-lg">{{ page.title }}</h1>
+      {% if page.content != blank %}
+        <div class="services-intro">
+          {{ page.content }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% section 'featured-services' %}
+  {% section 'service-teaser' %}
+  {% section 'how-it-works' %}
+  {% section 'cta-footer' %}
+</div>
+
+<style>
+  .services-page {
+    background-color: var(--color-bg-1);
+  }
+
+  .services-header {
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+  }
+
+  .services-header .label-text {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .services-header .heading-lg {
+    margin-bottom: 2rem;
+  }
+
+  .services-intro {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 767px) {
+    .services-header {
+      padding: 4rem 1rem 2rem;
+    }
+  }
+</style>

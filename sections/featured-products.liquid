@@ -1,0 +1,324 @@
+{% comment %}
+  AVERRA Featured Products Section - 6 Digital Products
+{% endcomment %}
+
+{%- style -%}
+  .featured-products {
+    padding: 120px 40px;
+    background-color: #F5F1ED;
+  }
+
+  .featured-products__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .featured-products__header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .featured-products__eyebrow {
+    font-family: var(--font-heading-family);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8B7355;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .featured-products__title {
+    font-family: var(--font-heading-family);
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.2;
+    color: #2C2420;
+    margin: 0 0 24px 0;
+    font-weight: 400;
+  }
+
+  .featured-products__description {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #5C5855;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .featured-products__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 32px;
+  }
+
+  .product-card {
+    background: white;
+    border: 1px solid #E8E3DD;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(44, 36, 32, 0.12);
+    border-color: #8B7355;
+  }
+
+  .product-card__image-container {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    background: #F5F1ED;
+    position: relative;
+  }
+
+  .product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .product-card:hover .product-card__image {
+    transform: scale(1.05);
+  }
+
+  .product-card__badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #8B7355;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .product-card__content {
+    padding: 32px 28px;
+  }
+
+  .product-card__title {
+    font-family: var(--font-heading-family);
+    font-size: 22px;
+    color: #2C2420;
+    margin: 0 0 12px 0;
+    font-weight: 500;
+  }
+
+  .product-card__description {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #5C5855;
+    margin-bottom: 24px;
+    min-height: 60px;
+  }
+
+  .product-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #E8E3DD;
+  }
+
+  .product-card__price {
+    font-size: 28px;
+    color: #2C2420;
+    font-weight: 600;
+  }
+
+  .product-card__button {
+    padding: 12px 28px;
+    background-color: #2C2420;
+    color: #F5F1ED;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-heading-family);
+    font-weight: 500;
+  }
+
+  .product-card__button:hover {
+    background-color: #8B7355;
+  }
+
+  .featured-products__cta {
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  .featured-products__cta-button {
+    padding: 18px 48px;
+    background-color: transparent;
+    color: #2C2420;
+    border: 2px solid #2C2420;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-family: var(--font-heading-family);
+    font-weight: 500;
+  }
+
+  .featured-products__cta-button:hover {
+    background-color: #2C2420;
+    color: #F5F1ED;
+  }
+
+  @media (max-width: 768px) {
+    .featured-products {
+      padding: 80px 24px;
+    }
+
+    .featured-products__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{%- endstyle -%}
+
+<section class="featured-products">
+  <div class="featured-products__container">
+    <div class="featured-products__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="featured-products__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.title != blank %}
+        <h2 class="featured-products__title">{{ section.settings.title }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <p class="featured-products__description">{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="featured-products__grid">
+      {% if section.settings.collection != blank %}
+        {% assign collection = collections[section.settings.collection] %}
+        {% for product in collection.products limit: section.settings.products_to_show %}
+          <div class="product-card" onclick="window.location='{{ product.url }}'">
+            <div class="product-card__image-container">
+              {% if product.featured_image %}
+                <img 
+                  src="{{ product.featured_image | image_url: width: 600 }}" 
+                  alt="{{ product.featured_image.alt | escape }}"
+                  class="product-card__image"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="product-card__image" style="background: linear-gradient(135deg, #8B7355 0%, #C9BFB5 100%);"></div>
+              {% endif %}
+
+              {% if product.tags contains 'bestseller' %}
+                <span class="product-card__badge">Bestseller</span>
+              {% elsif product.tags contains 'new' %}
+                <span class="product-card__badge">New</span>
+              {% endif %}
+            </div>
+
+            <div class="product-card__content">
+              <h3 class="product-card__title">{{ product.title }}</h3>
+              
+              {% if product.description != blank %}
+                <p class="product-card__description">
+                  {{ product.description | strip_html | truncate: 100 }}
+                </p>
+              {% endif %}
+
+              <div class="product-card__footer">
+                <div class="product-card__price">
+                  {{ product.price | money }}
+                </div>
+
+                <button class="product-card__button" type="button">
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% comment %} Fallback if no collection is selected {% endcomment %}
+        <p style="text-align: center; color: #5C5855; grid-column: 1 / -1;">
+          Please select a collection in theme settings to display products.
+        </p>
+      {% endif %}
+    </div>
+
+    {% if section.settings.show_view_all %}
+      <div class="featured-products__cta">
+        <a href="/collections/{{ section.settings.collection }}" class="featured-products__cta-button">
+          {{ section.settings.view_all_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "DIGITAL PRODUCTS"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Ready-to-Use Templates"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Section Description",
+      "default": "Instantly elevate your brand with our curated collection of professional templates and resources."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Product Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "label": "Number of products to show",
+      "default": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View All' button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "'View All' button text",
+      "default": "View All Products"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}

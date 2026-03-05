@@ -1,0 +1,240 @@
+{% comment %}
+  Cart Template - Shopping Cart Page
+{% endcomment %}
+
+<div class="cart-page" style="padding: 80px 40px; max-width: 1200px; margin: 0 auto; min-height: 60vh;">
+  <h1 style="font-family: var(--font-heading-family); font-size: clamp(36px, 5vw, 56px); line-height: 1.2; color: #2C2420; margin: 0 0 48px 0; font-weight: 400; text-align: center;">
+    Shopping Cart
+  </h1>
+
+  {% if cart.item_count > 0 %}
+    <form action="/cart" method="post" novalidate>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 60px; align-items: start;">
+        
+        <!-- Cart Items -->
+        <div>
+          <div style="border-bottom: 2px solid #2C2420; padding-bottom: 16px; margin-bottom: 24px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 20px; font-family: var(--font-heading-family); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #2C2420; font-weight: 600;">
+            <div>Product</div>
+            <div>Price</div>
+            <div>Quantity</div>
+            <div>Total</div>
+            <div></div>
+          </div>
+
+          {% for item in cart.items %}
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 20px; align-items: center; padding: 24px 0; border-bottom: 1px solid #E8E3DD;">
+              
+              <!-- Product Info -->
+              <div style="display: flex; gap: 20px; align-items: center;">
+                <a href="{{ item.url }}" style="width: 100px; height: 100px; overflow: hidden; flex-shrink: 0; background: #F5F1ED;">
+                  {% if item.image %}
+                    <img 
+                      src="{{ item.image | image_url: width: 200 }}" 
+                      alt="{{ item.image.alt | escape }}"
+                      style="width: 100%; height: 100%; object-fit: cover;"
+                    >
+                  {% endif %}
+                </a>
+
+                <div>
+                  <a href="{{ item.url }}" style="font-family: var(--font-heading-family); font-size: 18px; color: #2C2420; text-decoration: none; display: block; margin-bottom: 8px; font-weight: 500;">
+                    {{ item.product.title }}
+                  </a>
+                  
+                  {% unless item.variant.title == 'Default Title' %}
+                    <p style="font-size: 14px; color: #5C5855; margin: 0;">
+                      {{ item.variant.title }}
+                    </p>
+                  {% endunless %}
+
+                  {% if item.properties.size > 0 %}
+                    {% for property in item.properties %}
+                      <p style="font-size: 13px; color: #8B7355; margin: 4px 0 0 0;">
+                        {{ property.first }}: {{ property.last }}
+                      </p>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Price -->
+              <div style="font-size: 16px; color: #2C2420; font-weight: 600;">
+                {{ item.price | money }}
+              </div>
+
+              <!-- Quantity -->
+              <div style="display: flex; border: 1px solid #E8E3DD; width: fit-content;">
+                <button 
+                  type="button" 
+                  onclick="updateQuantity({{ forloop.index }}, {{ item.quantity | minus: 1 }})"
+                  style="width: 36px; height: 44px; background: white; border: none; border-right: 1px solid #E8E3DD; cursor: pointer; font-size: 18px; color: #2C2420;"
+                >-</button>
+                <input 
+                  type="number" 
+                  name="updates[]" 
+                  id="updates_{{ forloop.index }}"
+                  value="{{ item.quantity }}" 
+                  min="0"
+                  data-index="{{ forloop.index }}"
+                  style="width: 60px; height: 44px; border: none; text-align: center; font-size: 16px; font-weight: 600; color: #2C2420;"
+                  onchange="this.form.submit()"
+                />
+                <button 
+                  type="button" 
+                  onclick="updateQuantity({{ forloop.index }}, {{ item.quantity | plus: 1 }})"
+                  style="width: 36px; height: 44px; background: white; border: none; border-left: 1px solid #E8E3DD; cursor: pointer; font-size: 18px; color: #2C2420;"
+                >+</button>
+              </div>
+
+              <!-- Line Total -->
+              <div style="font-size: 18px; color: #2C2420; font-weight: 700;">
+                {{ item.line_price | money }}
+              </div>
+
+              <!-- Remove -->
+              <button 
+                type="button" 
+                onclick="updateQuantity({{ forloop.index }}, 0)"
+                style="background: none; border: none; cursor: pointer; color: #8B7355; font-size: 20px; padding: 0;"
+                aria-label="Remove {{ item.product.title }}"
+              >×</button>
+            </div>
+          {% endfor %}
+
+          <div style="margin-top: 32px;">
+            <button 
+              type="submit" 
+              name="update"
+              style="padding: 14px 32px; background: transparent; border: 1px solid #2C2420; color: #2C2420; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; font-family: var(--font-heading-family); font-weight: 500; transition: all 0.3s ease;"
+              onmouseover="this.style.backgroundColor='#2C2420'; this.style.color='#F5F1ED'" 
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2C2420'"
+            >
+              Update Cart
+            </button>
+          </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div style="position: sticky; top: 100px;">
+          <div style="background: #F5F1ED; padding: 40px; border: 1px solid #E8E3DD;">
+            <h2 style="font-family: var(--font-heading-family); font-size: 24px; color: #2C2420; margin: 0 0 32px 0; font-weight: 500;">
+              Order Summary
+            </h2>
+
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 16px; color: #5C5855;">
+                <span>Subtotal ({{ cart.item_count }} items)</span>
+                <span style="font-weight: 600; color: #2C2420;">{{ cart.total_price | money }}</span>
+              </div>
+
+              {% if cart.cart_level_discount_applications.size > 0 %}
+                {% for discount in cart.cart_level_discount_applications %}
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 16px; color: #8B7355;">
+                    <span>Discount ({{ discount.title }})</span>
+                    <span style="font-weight: 600;">-{{ discount.total_allocated_amount | money }}</span>
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+              <p style="font-size: 14px; color: #5C5855; margin: 16px 0 0 0;">
+                Shipping & taxes calculated at checkout
+              </p>
+            </div>
+
+            <div style="padding-top: 24px; border-top: 2px solid #2C2420; margin-bottom: 32px;">
+              <div style="display: flex; justify-content: space-between; font-size: 22px; color: #2C2420; font-weight: 700;">
+                <span>Total</span>
+                <span>{{ cart.total_price | money }}</span>
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              name="checkout"
+              style="width: 100%; padding: 20px; background-color: #2C2420; color: #F5F1ED; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; border: none; cursor: pointer; font-family: var(--font-heading-family); font-weight: 600; transition: all 0.3s ease; margin-bottom: 16px;"
+              onmouseover="this.style.backgroundColor='#8B7355'" 
+              onmouseout="this.style.backgroundColor='#2C2420'"
+            >
+              Proceed to Checkout
+            </button>
+
+            <a 
+              href="/collections/all" 
+              style="display: block; text-align: center; padding: 16px; color: #2C2420; text-decoration: none; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; border: 1px solid #2C2420; transition: all 0.3s ease;"
+              onmouseover="this.style.backgroundColor='#2C2420'; this.style.color='#F5F1ED'" 
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#2C2420'"
+            >
+              Continue Shopping
+            </a>
+
+            <!-- Trust Badges -->
+            <div style="margin-top: 40px; padding-top: 32px; border-top: 1px solid #E8E3DD; display: flex; gap: 24px; justify-content: center;">
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 8px;">🔒</div>
+                <div style="font-size: 11px; color: #5C5855; text-transform: uppercase; letter-spacing: 0.5px;">Secure Payment</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 8px;">✓</div>
+                <div style="font-size: 11px; color: #5C5855; text-transform: uppercase; letter-spacing: 0.5px;">Instant Access</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 8px;">💎</div>
+                <div style="font-size: 11px; color: #5C5855; text-transform: uppercase; letter-spacing: 0.5px;">Premium Quality</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  {% else %}
+    <!-- Empty Cart -->
+    <div style="text-align: center; padding: 80px 20px;">
+      <div style="font-size: 72px; margin-bottom: 24px; opacity: 0.3;">🛍️</div>
+      <h2 style="font-family: var(--font-heading-family); font-size: 28px; color: #2C2420; margin: 0 0 16px 0; font-weight: 500;">
+        Your cart is empty
+      </h2>
+      <p style="font-size: 18px; color: #5C5855; margin-bottom: 40px;">
+        Discover our premium branding services and digital products
+      </p>
+      <a 
+        href="/collections/all" 
+        style="padding: 18px 48px; background-color: #2C2420; color: #F5F1ED; text-decoration: none; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; display: inline-block; transition: all 0.3s ease;"
+        onmouseover="this.style.backgroundColor='#8B7355'" 
+        onmouseout="this.style.backgroundColor='#2C2420'"
+      >
+        Start Shopping
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  function updateQuantity(index, quantity) {
+    const input = document.getElementById('updates_' + index);
+    input.value = quantity;
+    input.form.submit();
+  }
+</script>
+
+<style>
+  @media (max-width: 968px) {
+    .cart-page {
+      padding: 60px 24px !important;
+    }
+    .cart-page form > div {
+      grid-template-columns: 1fr !important;
+      gap: 40px !important;
+    }
+    .cart-page form > div > div:first-child > div:first-child {
+      display: none !important;
+    }
+    .cart-page form > div > div:first-child > div:nth-child(2) > div {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+    .cart-page form > div > div:last-child > div {
+      position: static !important;
+    }
+  }
+</style>

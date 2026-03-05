@@ -1,0 +1,248 @@
+{% comment %}
+  CTA Footer Section - Converted from React CTAFooter.tsx
+{% endcomment %}
+
+<section class="cta-footer">
+  <div class="page-width">
+    <div class="cta-footer__content">
+      <div class="cta-footer__text">
+        <h2 class="cta-footer__heading">{{ section.settings.heading }}</h2>
+        <p class="cta-footer__description">{{ section.settings.description }}</p>
+      </div>
+
+      <div class="cta-footer__buttons">
+        {% if section.settings.primary_button_text %}
+          <a href="{{ section.settings.primary_button_link }}" class="button button--primary">
+            {{ section.settings.primary_button_text }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.secondary_button_text %}
+          <a href="{{ section.settings.secondary_button_link }}" class="button button--secondary">
+            {{ section.settings.secondary_button_text }}
+          </a>
+        {% endif %}
+      </div>
+
+      {% if section.settings.footer_note %}
+        <div class="cta-footer__note">
+          <p>{{ section.settings.footer_note }}</p>
+        </div>
+      {% endif %}
+
+      <div class="cta-footer__legal">
+        <div class="cta-footer__links">
+          {% for block in section.blocks %}
+            <a href="{{ block.settings.link }}" class="cta-footer__link">
+              {{ block.settings.text }}
+            </a>
+          {% endfor %}
+        </div>
+        
+        <p class="cta-footer__copyright">
+          © {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-footer {
+    background-color: var(--color-bg-1);
+    padding: 8rem 2rem;
+  }
+
+  .cta-footer__content {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-footer__text {
+    margin-bottom: 3rem;
+  }
+
+  .cta-footer__heading {
+    font-family: var(--font-body);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-footer__description {
+    font-size: 1.125rem;
+    font-weight: 300;
+    color: var(--color-accent);
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .cta-footer__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 640px) {
+    .cta-footer__buttons {
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
+
+  .cta-footer__note {
+    padding-top: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .cta-footer__note p {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(191, 187, 167, 0.8);
+  }
+
+  .cta-footer__legal {
+    padding-top: 4rem;
+    border-top: 1px solid rgba(101, 67, 49, 0.3);
+  }
+
+  .cta-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .cta-footer__link {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(191, 187, 167, 0.6);
+    transition: color 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .cta-footer__link:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  .cta-footer__copyright {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: rgba(191, 187, 167, 0.6);
+  }
+
+  @media (max-width: 767px) {
+    .cta-footer {
+      padding: 4rem 1rem;
+    }
+
+    .cta-footer__buttons {
+      gap: 1rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "CTA Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ready to be the face of your brand?"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover your beauty brand style. Get your palette, voice tone, and next steps delivered in 2 minutes."
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary Button Text",
+      "default": "Start Brand Quiz"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary Button Link",
+      "default": "/pages/quiz"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary Button Text",
+      "default": "View All Services"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary Button Link",
+      "default": "/pages/services"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_note",
+      "label": "Footer Note",
+      "default": "No more cheap templates. No more guessing. Just branded excellence, by design."
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "AVERRA AI Model Studio. All Rights Reserved."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Legal Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Link Text",
+          "default": "Terms of Service"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL",
+          "default": "/pages/terms-of-service"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA Footer",
+      "blocks": [
+        {
+          "type": "link",
+          "settings": {
+            "text": "Terms of Service",
+            "link": "/pages/terms-of-service"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

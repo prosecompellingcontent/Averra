@@ -1,0 +1,346 @@
+{% comment %}
+  AVERRA Cart Template with Stripe Integration
+{% endcomment %}
+
+<div class="cart-wrapper page-width">
+  {% if cart.item_count > 0 %}
+    <div class="cart-header">
+      <h1 class="cart-title">Your Cart</h1>
+      <p class="cart-count">{{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}</p>
+    </div>
+
+    <div class="cart-main">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+          {% for item in cart.items %}
+            <div class="cart-item" data-line-item="{{ forloop.index }}">
+              <div class="cart-item-media">
+                {% if item.image %}
+                  <img
+                    src="{{ item.image | image_url: width: 200 }}"
+                    alt="{{ item.image.alt | escape }}"
+                    loading="lazy"
+                  >
+                {% endif %}
+              </div>
+
+              <div class="cart-item-details">
+                <h3 class="cart-item-title">
+                  <a href="{{ item.url }}">{{ item.product.title }}</a>
+                </h3>
+
+                {% unless item.product.has_only_default_variant %}
+                  <div class="cart-item-options">
+                    {% for option in item.options_with_values %}
+                      <span class="cart-item-option">
+                        {{ option.name }}: {{ option.value }}
+                      </span>
+                    {% endfor %}
+                  </div>
+                {% endunless %}
+
+                {% if item.properties.size > 0 %}
+                  <div class="cart-item-properties">
+                    {% for property in item.properties %}
+                      {% unless property.first contains '_' %}
+                        <span class="cart-item-property">
+                          {{ property.first }}: {{ property.last }}
+                        </span>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                <div class="cart-item-price">
+                  <span class="price">{{ item.final_line_price | money }}</span>
+                  {% if item.original_line_price > item.final_line_price %}
+                    <span class="price-compare">{{ item.original_line_price | money }}</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="cart-item-quantity">
+                <label for="quantity-{{ forloop.index }}" class="visually-hidden">
+                  Quantity for {{ item.product.title }}
+                </label>
+                <div class="quantity-selector">
+                  <button
+                    type="button"
+                    class="quantity-button quantity-decrease"
+                    data-line="{{ forloop.index }}"
+                    aria-label="Decrease quantity"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                      <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  </button>
+                  <input
+                    type="number"
+                    id="quantity-{{ forloop.index }}"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    class="quantity-input"
+                    data-line="{{ forloop.index }}"
+                  >
+                  <button
+                    type="button"
+                    class="quantity-button quantity-increase"
+                    data-line="{{ forloop.index }}"
+                    aria-label="Increase quantity"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                      <line x1="8" y1="4" x2="8" y2="12" stroke="currentColor" stroke-width="2"/>
+                      <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="cart-item-remove">
+                <button
+                  type="button"
+                  class="remove-button"
+                  data-line="{{ forloop.index }}"
+                  aria-label="Remove {{ item.product.title }}"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="4" x2="16" y2="16"/>
+                    <line x1="16" y1="4" x2="4" y2="16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          {% endfor %}
+        </form>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <div class="cart-summary-content">
+          <h2 class="cart-summary-title">Order Summary</h2>
+
+          <div class="cart-summary-line">
+            <span>Subtotal</span>
+            <span class="cart-subtotal">{{ cart.total_price | money }}</span>
+          </div>
+
+          {% if cart.cart_level_discount_applications.size > 0 %}
+            {% for discount in cart.cart_level_discount_applications %}
+              <div class="cart-summary-line cart-discount">
+                <span>{{ discount.title }}</span>
+                <span>-{{ discount.total_allocated_amount | money }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <div class="cart-summary-note">
+            <p>Shipping and taxes calculated at checkout</p>
+          </div>
+
+          <!-- Discount Code -->
+          <div class="cart-discount-code">
+            <details>
+              <summary>Add discount code</summary>
+              <div class="discount-code-form">
+                <input
+                  type="text"
+                  id="discount-code"
+                  placeholder="Enter discount code"
+                  class="discount-input"
+                >
+                <button type="button" class="button button--secondary" id="apply-discount">
+                  Apply
+                </button>
+              </div>
+            </details>
+          </div>
+
+          <!-- Checkout Buttons -->
+          <div class="cart-checkout-buttons">
+            <!-- Stripe Checkout Button -->
+            <button
+              type="button"
+              id="stripe-checkout-button"
+              class="button button--primary button--full-width"
+            >
+              Checkout with Stripe
+            </button>
+
+            <!-- Shopify Checkout Button -->
+            <button
+              type="submit"
+              form="cart-form"
+              name="checkout"
+              class="button button--secondary button--full-width"
+            >
+              Shopify Checkout
+            </button>
+
+            <a href="{{ routes.all_products_collection_url }}" class="continue-shopping">
+              Continue Shopping
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="cart-trust-badges">
+            <div class="trust-badge">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 18s7-3.5 7-8.5V4l-7-2.5L3 4v5.5c0 5 7 8.5 7 8.5z"></path>
+              </svg>
+              <span>Secure Payment</span>
+            </div>
+            <div class="trust-badge">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="17 5 8 14 3 9"></polyline>
+              </svg>
+              <span>Money-Back Guarantee</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+    <!-- Empty Cart -->
+    <div class="cart-empty">
+      <h1 class="cart-empty-title">Your cart is empty</h1>
+      <p class="cart-empty-text">Start building your luxury brand today</p>
+      <a href="{{ routes.all_products_collection_url }}" class="button button--primary">
+        Explore Services
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  // Cart functionality
+  (function() {
+    const cartForm = document.getElementById('cart-form');
+    if (!cartForm) return;
+
+    // Quantity changes
+    const quantityButtons = document.querySelectorAll('.quantity-button');
+    quantityButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const line = this.dataset.line;
+        const input = document.querySelector(`input[data-line="${line}"]`);
+        const currentValue = parseInt(input.value);
+
+        if (this.classList.contains('quantity-increase')) {
+          input.value = currentValue + 1;
+        } else if (this.classList.contains('quantity-decrease') && currentValue > 1) {
+          input.value = currentValue - 1;
+        }
+
+        updateCart(line, input.value);
+      });
+    });
+
+    // Quantity input changes
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        const line = this.dataset.line;
+        updateCart(line, this.value);
+      });
+    });
+
+    // Remove item
+    const removeButtons = document.querySelectorAll('.remove-button');
+    removeButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const line = this.dataset.line;
+        updateCart(line, 0);
+      });
+    });
+
+    // Update cart via AJAX
+    async function updateCart(line, quantity) {
+      try {
+        const response = await fetch(window.routes.cart_change_url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            line: line,
+            quantity: parseInt(quantity)
+          })
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          throw new Error('Failed to update cart');
+        }
+      } catch (error) {
+        console.error('Cart update error:', error);
+        alert('Error updating cart. Please try again.');
+      }
+    }
+
+    // Stripe Checkout Integration
+    const stripeButton = document.getElementById('stripe-checkout-button');
+    if (stripeButton && window.AVERRA_CONFIG?.stripePublishableKey) {
+      const stripe = Stripe(window.AVERRA_CONFIG.stripePublishableKey);
+
+      stripeButton.addEventListener('click', async function() {
+        this.disabled = true;
+        this.textContent = 'Processing...';
+
+        try {
+          // Get cart data
+          const cartResponse = await fetch('{{ routes.cart_url }}.js');
+          const cartData = await cartResponse.json();
+
+          // Create Stripe checkout session
+          const response = await fetch('/apps/averra-stripe/create-checkout-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              cart: cartData,
+              success_url: window.location.origin + '/pages/checkout-success',
+              cancel_url: window.location.origin + '/cart'
+            })
+          });
+
+          const session = await response.json();
+
+          if (session.error) {
+            throw new Error(session.error);
+          }
+
+          // Redirect to Stripe Checkout
+          const result = await stripe.redirectToCheckout({
+            sessionId: session.id
+          });
+
+          if (result.error) {
+            throw new Error(result.error.message);
+          }
+
+        } catch (error) {
+          console.error('Stripe checkout error:', error);
+          alert('Error processing checkout: ' + error.message);
+          this.disabled = false;
+          this.textContent = 'Checkout with Stripe';
+        }
+      });
+    }
+
+    // Discount code
+    const applyDiscountBtn = document.getElementById('apply-discount');
+    if (applyDiscountBtn) {
+      applyDiscountBtn.addEventListener('click', function() {
+        const discountCode = document.getElementById('discount-code').value;
+        if (discountCode) {
+          window.location.href = `{{ routes.cart_url }}?discount=${encodeURIComponent(discountCode)}`;
+        }
+      });
+    }
+  })();
+</script>

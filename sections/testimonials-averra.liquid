@@ -1,0 +1,261 @@
+{% comment %}
+  Testimonials Section
+{% endcomment %}
+
+{%- style -%}
+  .testimonials-averra {
+    padding: 120px 40px;
+    background: linear-gradient(180deg, #F5F1ED 0%, #FDFCFB 100%);
+  }
+
+  .testimonials-averra__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .testimonials-averra__header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .testimonials-averra__eyebrow {
+    font-family: var(--font-heading-family);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8B7355;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .testimonials-averra__title {
+    font-family: var(--font-heading-family);
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.2;
+    color: #2C2420;
+    margin: 0;
+    font-weight: 400;
+  }
+
+  .testimonials-averra__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+  }
+
+  .testimonial-card {
+    background: white;
+    padding: 48px 36px;
+    border: 1px solid #E8E3DD;
+    position: relative;
+  }
+
+  .testimonial-card__quote-icon {
+    font-size: 48px;
+    color: #8B7355;
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  .testimonial-card__text {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #2C2420;
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .testimonial-card__author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .testimonial-card__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #E8E3DD;
+  }
+
+  .testimonial-card__author-info {
+    flex: 1;
+  }
+
+  .testimonial-card__name {
+    font-family: var(--font-heading-family);
+    font-size: 16px;
+    font-weight: 600;
+    color: #2C2420;
+    margin: 0 0 4px 0;
+  }
+
+  .testimonial-card__title {
+    font-size: 14px;
+    color: #8B7355;
+    margin: 0;
+  }
+
+  .testimonial-card__rating {
+    color: #8B7355;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .testimonials-averra {
+      padding: 80px 24px;
+    }
+
+    .testimonials-averra__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .testimonial-card {
+      padding: 36px 28px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="testimonials-averra">
+  <div class="testimonials-averra__container">
+    <div class="testimonials-averra__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="testimonials-averra__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.title != blank %}
+        <h2 class="testimonials-averra__title">{{ section.settings.title }}</h2>
+      {% endif %}
+    </div>
+
+    <div class="testimonials-averra__grid">
+      {% for block in section.blocks %}
+        <div class="testimonial-card">
+          <div class="testimonial-card__quote-icon">"</div>
+
+          {% if block.settings.show_rating %}
+            <div class="testimonial-card__rating">★★★★★</div>
+          {% endif %}
+
+          {% if block.settings.text != blank %}
+            <p class="testimonial-card__text">{{ block.settings.text }}</p>
+          {% endif %}
+
+          <div class="testimonial-card__author">
+            {% if block.settings.avatar != blank %}
+              <img 
+                src="{{ block.settings.avatar | image_url: width: 120 }}" 
+                alt="{{ block.settings.name }}"
+                class="testimonial-card__avatar"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="testimonial-card__avatar" style="background: linear-gradient(135deg, #8B7355 0%, #C9BFB5 100%);"></div>
+            {% endif %}
+
+            <div class="testimonial-card__author-info">
+              {% if block.settings.name != blank %}
+                <p class="testimonial-card__name">{{ block.settings.name }}</p>
+              {% endif %}
+              
+              {% if block.settings.title != blank %}
+                <p class="testimonial-card__title">{{ block.settings.title }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials AVERRA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "TESTIMONIALS"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "What Beauty Professionals Say"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Testimonial Text",
+          "default": "AVERRA transformed my entire business. Within 3 months, I doubled my rates and attracted my dream clientele. The investment paid for itself immediately."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Client Name",
+          "default": "Sarah Martinez"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Client Title",
+          "default": "Master Esthetician, Los Angeles"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Client Photo"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_rating",
+          "label": "Show 5-star rating",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials AVERRA",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "AVERRA transformed my entire business. Within 3 months, I doubled my rates and attracted my dream clientele. The investment paid for itself immediately.",
+            "name": "Sarah Martinez",
+            "title": "Master Esthetician, Los Angeles"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "The Signature package gave me everything I needed to position myself as a luxury provider. My booking rate increased by 200% and I'm now fully booked months in advance.",
+            "name": "Jasmine Chen",
+            "title": "Lash Artist & Educator, Miami"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "text": "Investing in the Muse package was the best business decision I've made. AVERRA helped me build a brand that truly reflects my artistry and attracts high-end clients effortlessly.",
+            "name": "Morgan Blake",
+            "title": "Celebrity Makeup Artist, NYC"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

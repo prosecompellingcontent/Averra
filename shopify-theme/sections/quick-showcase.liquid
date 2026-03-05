@@ -1,0 +1,371 @@
+{% comment %}
+  Quick Showcase - Image Carousel Section
+{% endcomment %}
+
+<section class="quick-showcase" id="showcase-{{ section.id }}">
+  <div class="showcase-carousel">
+    <!-- Carousel Images -->
+    <div class="carousel-track" id="carousel-track-{{ section.id }}">
+      {% for block in section.blocks %}
+        <div class="carousel-slide" data-index="{{ forloop.index0 }}">
+          {% if block.settings.image %}
+            <img
+              src="{{ block.settings.image | image_url: width: 1200 }}"
+              alt="{{ block.settings.image.alt | escape }}"
+              class="carousel-image"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            >
+          {% endif %}
+        </div>
+      {% endfor %}
+      <div class="carousel-overlay"></div>
+    </div>
+
+    <!-- Content Overlay -->
+    <div class="showcase-content">
+      <div class="showcase-text">
+        <p class="showcase-label">{{ section.settings.label }}</p>
+        <h2 class="showcase-title">{{ section.settings.title }}</h2>
+        <p class="showcase-description">{{ section.settings.description }}</p>
+
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators" id="indicators-{{ section.id }}">
+          {% for block in section.blocks %}
+            <button
+              class="indicator-dot {% if forloop.first %}active{% endif %}"
+              data-index="{{ forloop.index0 }}"
+              aria-label="Go to image {{ forloop.index }}"
+            ></button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <button class="carousel-nav carousel-prev" id="prev-{{ section.id }}" aria-label="Previous image">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <button class="carousel-nav carousel-next" id="next-{{ section.id }}" aria-label="Next image">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
+    <!-- Counter -->
+    <div class="carousel-counter" id="counter-{{ section.id }}">
+      <span class="current-slide">1</span> / <span class="total-slides">{{ section.blocks.size }}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quick-showcase {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: #000;
+  }
+
+  .showcase-carousel {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+
+  .carousel-track {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .carousel-slide.active {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .carousel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.4)
+    );
+    z-index: 10;
+  }
+
+  .showcase-content {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 8rem 2rem;
+  }
+
+  .showcase-text {
+    text-align: center;
+    max-width: 64rem;
+  }
+
+  .showcase-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: #BFBBA7;
+    font-weight: 300;
+    margin-bottom: 1rem;
+  }
+
+  .showcase-title {
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    color: #DCDACC;
+    margin-bottom: 2rem;
+    font-family: 'Cormorant', serif;
+    font-weight: 300;
+  }
+
+  .showcase-description {
+    font-size: 1.125rem;
+    color: #BFBBA7;
+    max-width: 32rem;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-family: 'Cormorant', serif;
+  }
+
+  .carousel-indicators {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  .indicator-dot {
+    height: 0.25rem;
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+    background-color: rgba(191, 187, 167, 0.4);
+    width: 2rem;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .indicator-dot.active {
+    background-color: #DCDACC;
+    width: 3rem;
+  }
+
+  .carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    border: none;
+    cursor: pointer;
+  }
+
+  .carousel-nav:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .carousel-prev {
+    left: 1rem;
+  }
+
+  .carousel-next {
+    right: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-prev {
+      left: 2rem;
+    }
+
+    .carousel-next {
+      right: 2rem;
+    }
+
+    .carousel-nav {
+      padding: 1rem;
+    }
+  }
+
+  .carousel-counter {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+</style>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const track = document.getElementById('carousel-track-' + sectionId);
+    const slides = track.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('#indicators-' + sectionId + ' .indicator-dot');
+    const prevBtn = document.getElementById('prev-' + sectionId);
+    const nextBtn = document.getElementById('next-' + sectionId);
+    const counter = document.getElementById('counter-' + sectionId);
+    const currentSlideEl = counter.querySelector('.current-slide');
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    // Set first slide as active
+    if (slides.length > 0) {
+      slides[0].classList.add('active');
+    }
+
+    function goToSlide(index) {
+      // Remove active class from all slides
+      slides.forEach(slide => slide.classList.remove('active'));
+      indicators.forEach(dot => dot.classList.remove('active'));
+
+      // Add active class to current slide
+      slides[index].classList.add('active');
+      indicators[index].classList.add('active');
+
+      // Update counter
+      currentSlideEl.textContent = index + 1;
+      currentIndex = index;
+    }
+
+    function nextSlide() {
+      const next = (currentIndex + 1) % totalSlides;
+      goToSlide(next);
+    }
+
+    function prevSlide() {
+      const prev = (currentIndex - 1 + totalSlides) % totalSlides;
+      goToSlide(prev);
+    }
+
+    // Event listeners
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    indicators.forEach((dot, index) => {
+      dot.addEventListener('click', () => goToSlide(index));
+    });
+
+    // Touch gestures
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    track.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    });
+
+    track.addEventListener('touchmove', (e) => {
+      touchEndX = e.touches[0].clientX;
+    });
+
+    track.addEventListener('touchend', () => {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'ArrowRight') nextSlide();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Quick Showcase",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "AI Model Gallery"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "See The Transformation"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "You deserve branding that matches your talent. AVERRA creates it."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Carousel Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Quick Showcase",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

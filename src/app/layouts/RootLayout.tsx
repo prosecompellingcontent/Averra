@@ -1,5 +1,4 @@
-// src/app/layouts/RootLayout.tsx
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import { CartPreviewWrapper } from "@/app/components/CartPreviewWrapper";
 import { CookieConsent } from "@/app/components/CookieConsent";
 

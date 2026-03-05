@@ -44,7 +44,7 @@ const tiers = [
     id: "muse",
     name: "AVERRA Muse",
     subtitle: "Luxury Brand Transformation",
-    description: "For The CEO Ready to\nOwn The Market",
+    description: "For The CEO Ready to Own The Market",
     price: "$500",
     salePrice: "$400",
     priceNum: 400,

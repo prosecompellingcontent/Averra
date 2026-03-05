@@ -38,34 +38,6 @@ const navigationItems = [
         <circle cx="90" cy="90" r="8" fill="#301710" opacity="0.9" />
       </svg>
     )
-  },
-  {
-    id: "full-production",
-    label: "Full Production",
-    path: "/full-production",
-    symbol: (
-      <svg width="180" height="180" viewBox="0 0 180 180" fill="none" className="w-full h-full">
-        {/* Abstract monogram - geometric form suggesting comprehensive structure */}
-        <path 
-          d="M90 35 L140 70 L140 110 L90 145 L40 110 L40 70 Z" 
-          stroke="#301710" 
-          strokeWidth="1.5" 
-          fill="none" 
-          opacity="0.85"
-        />
-        <path 
-          d="M90 55 L120 75 L120 105 L90 125 L60 105 L60 75 Z" 
-          fill="#654331" 
-          opacity="0.5"
-        />
-        <path 
-          d="M90 35 L90 145 M40 70 L140 110 M40 110 L140 70" 
-          stroke="#301710" 
-          strokeWidth="0.5" 
-          opacity="0.3"
-        />
-      </svg>
-    )
   }
 ];
 

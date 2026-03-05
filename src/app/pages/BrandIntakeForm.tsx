@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router';
-import { Navigation } from '@/app/components/Navigation';
-import { useCart } from '@/app/context/CartContext';
-import { Check } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router";
+import { Navigation } from "@/app/components/Navigation";
+import { useCart } from "@/app/context/CartContext";
+import { Check } from "lucide-react";
+import { projectId, publicAnonKey } from '/utils/supabase/info';
 
 export function BrandIntakeForm() {
   const navigate = useNavigate();
@@ -128,11 +129,47 @@ export function BrandIntakeForm() {
       return;
     }
 
-    // Store form data in sessionStorage to be sent with order
-    sessionStorage.setItem('brandIntakeData', JSON.stringify(formData));
-    
-    // Navigate to checkout
-    navigate('/checkout');
+    // Submit brand intake form to database
+    submitBrandIntake();
+  };
+
+  const submitBrandIntake = async () => {
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-61755bec/submit-brand-intake`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${publicAnonKey}`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            tier: tier.name, // Add tier name from selected service
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit form');
+      }
+
+      const { intakeId } = await response.json();
+      console.log('✅ Brand intake submitted with ID:', intakeId);
+
+      // Store intake ID for payment tracking
+      sessionStorage.setItem('brandIntakeId', intakeId);
+      
+      // Also store form data for backward compatibility
+      sessionStorage.setItem('brandIntakeData', JSON.stringify(formData));
+      
+      // Navigate to checkout
+      navigate('/checkout');
+    } catch (error) {
+      console.error('Error submitting brand intake:', error);
+      alert('Failed to submit form. Please try again.');
+    }
   };
 
   return (

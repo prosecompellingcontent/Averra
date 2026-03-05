@@ -1,0 +1,224 @@
+{% comment %}
+  AVERRA Product Template
+  For displaying individual service packages and digital products
+{% endcomment %}
+
+<div class="product-wrapper" data-product-id="{{ product.id }}">
+  {% section 'product-hero' %}
+  
+  <div class="product-main page-width">
+    <div class="product-grid">
+      <!-- Product Images -->
+      <div class="product-media-wrapper">
+        {% if product.featured_media %}
+          <div class="product-media">
+            <img
+              src="{{ product.featured_media | image_url: width: 1200 }}"
+              alt="{{ product.featured_media.alt | escape }}"
+              width="{{ product.featured_media.width }}"
+              height="{{ product.featured_media.height }}"
+              loading="eager"
+            >
+          </div>
+        {% endif %}
+
+        {% if product.media.size > 1 %}
+          <div class="product-media-gallery">
+            {% for media in product.media offset: 1 %}
+              <div class="product-media-thumbnail">
+                <img
+                  src="{{ media | image_url: width: 200 }}"
+                  alt="{{ media.alt | escape }}"
+                  loading="lazy"
+                >
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <h1 class="product-title">{{ product.title }}</h1>
+        
+        <div class="product-price">
+          <span class="price-item price-item--regular">
+            {{ product.selected_or_first_available_variant.price | money }}
+          </span>
+          {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+            <span class="price-item price-item--sale">
+              {{ product.selected_or_first_available_variant.compare_at_price | money }}
+            </span>
+            <span class="badge badge--sale">
+              Save {{ product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price | money }}
+            </span>
+          {% endif %}
+        </div>
+
+        <div class="product-description rte">
+          {{ product.description }}
+        </div>
+
+        <!-- Product Form -->
+        {% form 'product', product, id: 'product-form', class: 'product-form' %}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+          {% unless product.has_only_default_variant %}
+            <div class="product-options">
+              {% for option in product.options_with_values %}
+                <fieldset class="product-option">
+                  <legend class="product-option-name">{{ option.name }}</legend>
+                  <div class="product-option-values">
+                    {% for value in option.values %}
+                      <div class="product-option-value">
+                        <input
+                          type="radio"
+                          id="option-{{ option.name | handleize }}-{{ value | handleize }}"
+                          name="options[{{ option.name }}]"
+                          value="{{ value | escape }}"
+                          {% if option.selected_value == value %}checked{% endif %}
+                        >
+                        <label for="option-{{ option.name | handleize }}-{{ value | handleize }}">
+                          {{ value }}
+                        </label>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <div class="product-submit">
+            <button
+              type="submit"
+              name="add"
+              class="button button--primary button--full-width"
+              {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+            >
+              {% if product.selected_or_first_available_variant.available %}
+                Add to Cart
+              {% else %}
+                Sold Out
+              {% endif %}
+            </button>
+          </div>
+
+          <div class="product-meta">
+            {% if product.metafields.custom.delivery_time %}
+              <div class="product-meta-item">
+                <strong>Delivery Time:</strong> {{ product.metafields.custom.delivery_time }}
+              </div>
+            {% endif %}
+            
+            {% if product.metafields.custom.included_items %}
+              <div class="product-meta-item">
+                <strong>What's Included:</strong>
+                <div class="rte">{{ product.metafields.custom.included_items }}</div>
+              </div>
+            {% endif %}
+          </div>
+        {% endform %}
+
+        <!-- Trust Badges -->
+        <div class="product-trust-badges">
+          <div class="trust-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Secure Checkout</span>
+          </div>
+          <div class="trust-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Satisfaction Guaranteed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  {% if recommendations.products.size > 0 %}
+    <div class="product-recommendations page-width">
+      <h2 class="section-heading">You May Also Like</h2>
+      <div class="product-grid">
+        {% for product in recommendations.products limit: 4 %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  // Product form handling
+  (function() {
+    const form = document.getElementById('product-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const submitButton = form.querySelector('[type="submit"]');
+      const originalText = submitButton.textContent;
+
+      submitButton.disabled = true;
+      submitButton.textContent = 'Adding...';
+
+      try {
+        const response = await fetch(window.routes.cart_add_url, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Update cart count
+          const cartCount = document.querySelector('.cart-count');
+          if (cartCount) {
+            const currentCount = parseInt(cartCount.textContent) || 0;
+            cartCount.textContent = currentCount + 1;
+          }
+
+          // Show success message
+          submitButton.textContent = 'Added!';
+          setTimeout(() => {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+          }, 2000);
+
+          // Trigger cart drawer if exists
+          if (window.cartDrawer) {
+            window.cartDrawer.open();
+          }
+        } else {
+          throw new Error(data.description || 'Error adding to cart');
+        }
+      } catch (error) {
+        console.error('Cart error:', error);
+        alert(error.message);
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+      }
+    });
+
+    // Variant selection handling
+    const optionInputs = form.querySelectorAll('input[name^="options"]');
+    optionInputs.forEach(input => {
+      input.addEventListener('change', updateVariant);
+    });
+
+    function updateVariant() {
+      const selectedOptions = Array.from(optionInputs)
+        .filter(input => input.checked)
+        .map(input => input.value);
+
+      // Find matching variant (simplified)
+      console.log('Selected options:', selectedOptions);
+    }
+  })();
+</script>

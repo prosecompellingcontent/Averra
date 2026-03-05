@@ -1,0 +1,394 @@
+{% comment %}
+  AVERRA Featured Services - Three Tier System
+  Essentials, Signature, Muse
+{% endcomment %}
+
+{%- style -%}
+  .featured-services {
+    padding: 120px 40px;
+    background-color: #FDFCFB;
+  }
+
+  .featured-services__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .featured-services__header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .featured-services__eyebrow {
+    font-family: var(--font-heading-family);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8B7355;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .featured-services__title {
+    font-family: var(--font-heading-family);
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.2;
+    color: #2C2420;
+    margin: 0 0 24px 0;
+    font-weight: 400;
+  }
+
+  .featured-services__description {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #5C5855;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .featured-services__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  .service-card {
+    background: white;
+    border: 1px solid #E8E3DD;
+    padding: 48px 36px;
+    transition: all 0.4s ease;
+    position: relative;
+  }
+
+  .service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(44, 36, 32, 0.12);
+    border-color: #8B7355;
+  }
+
+  .service-card__badge {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: #8B7355;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .service-card__icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F1ED;
+    border-radius: 50%;
+    font-size: 28px;
+  }
+
+  .service-card__title {
+    font-family: var(--font-heading-family);
+    font-size: 28px;
+    color: #2C2420;
+    margin: 0 0 16px 0;
+    font-weight: 500;
+  }
+
+  .service-card__price {
+    font-size: 36px;
+    color: #8B7355;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .service-card__price-note {
+    font-size: 14px;
+    color: #8B7355;
+    margin-bottom: 24px;
+  }
+
+  .service-card__description {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #5C5855;
+    margin-bottom: 32px;
+  }
+
+  .service-card__features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+  }
+
+  .service-card__feature {
+    font-size: 15px;
+    color: #2C2420;
+    padding: 12px 0;
+    border-bottom: 1px solid #F5F1ED;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .service-card__feature::before {
+    content: "✓";
+    color: #8B7355;
+    font-weight: bold;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  .service-card__button {
+    display: block;
+    width: 100%;
+    padding: 16px 32px;
+    background-color: #2C2420;
+    color: #F5F1ED;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-heading-family);
+    font-weight: 500;
+  }
+
+  .service-card__button:hover {
+    background-color: #8B7355;
+  }
+
+  .service-card--featured {
+    border: 2px solid #8B7355;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    .featured-services {
+      padding: 80px 24px;
+    }
+
+    .featured-services__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .service-card--featured {
+      transform: scale(1);
+    }
+
+    .service-card {
+      padding: 36px 24px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="featured-services">
+  <div class="featured-services__container">
+    <div class="featured-services__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="featured-services__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.title != blank %}
+        <h2 class="featured-services__title">{{ section.settings.title }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <p class="featured-services__description">{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="featured-services__grid">
+      {% for block in section.blocks %}
+        <div class="service-card {% if block.settings.featured %}service-card--featured{% endif %}">
+          {% if block.settings.badge != blank %}
+            <span class="service-card__badge">{{ block.settings.badge }}</span>
+          {% endif %}
+
+          {% if block.settings.icon != blank %}
+            <div class="service-card__icon">{{ block.settings.icon }}</div>
+          {% endif %}
+
+          <h3 class="service-card__title">{{ block.settings.title }}</h3>
+
+          {% if block.settings.price != blank %}
+            <div class="service-card__price">{{ block.settings.price }}</div>
+          {% endif %}
+
+          {% if block.settings.price_note != blank %}
+            <div class="service-card__price-note">{{ block.settings.price_note }}</div>
+          {% endif %}
+
+          {% if block.settings.description != blank %}
+            <p class="service-card__description">{{ block.settings.description }}</p>
+          {% endif %}
+
+          {% if block.settings.features != blank %}
+            <ul class="service-card__features">
+              {% assign features = block.settings.features | split: '|' %}
+              {% for feature in features %}
+                <li class="service-card__feature">{{ feature }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if block.settings.button_text != blank %}
+            <a href="{{ block.settings.button_link }}" class="service-card__button">
+              {{ block.settings.button_text }}
+            </a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Services",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "BRANDING SERVICES"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Comprehensive Branding Solutions"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Section Description",
+      "default": "Three expertly curated tiers to elevate your beauty business from startup to studio empire."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service Tier",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon (emoji or text)",
+          "default": "✨"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Service Name",
+          "default": "AVERRA Essentials"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge Text",
+          "info": "Leave blank to hide"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "$997"
+        },
+        {
+          "type": "text",
+          "id": "price_note",
+          "label": "Price Note",
+          "default": "Founding Member Price"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Perfect for beauty professionals launching their brand."
+        },
+        {
+          "type": "textarea",
+          "id": "features",
+          "label": "Features (separate with |)",
+          "default": "Custom Logo Design|Brand Color Palette|Typography System|Basic Brand Guidelines",
+          "info": "Use | to separate each feature"
+        },
+        {
+          "type": "checkbox",
+          "id": "featured",
+          "label": "Featured Service",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Get Started"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Services",
+      "blocks": [
+        {
+          "type": "service",
+          "settings": {
+            "icon": "✨",
+            "title": "AVERRA Essentials",
+            "price": "$997",
+            "price_note": "Founding Member Price (Reg. $1,497)",
+            "description": "Perfect for beauty professionals launching their brand with essential branding foundations.",
+            "features": "Custom Logo Design|Brand Color Palette (5 colors)|Typography System|Social Media Templates (10)|Brand Guidelines PDF|2 Rounds of Revisions",
+            "button_text": "Choose Essentials",
+            "button_link": "/cart/add?id=essentials"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "💎",
+            "title": "AVERRA Signature",
+            "badge": "Most Popular",
+            "price": "$2,497",
+            "price_note": "Founding Member Price (Reg. $3,997)",
+            "description": "Comprehensive branding for established professionals ready to elevate their presence.",
+            "features": "Everything in Essentials|Website Design (5 pages)|Content Strategy Session|Email Signature Design|Business Card Design|Instagram Highlight Covers (15)|4 Rounds of Revisions",
+            "featured": true,
+            "button_text": "Choose Signature",
+            "button_link": "/cart/add?id=signature"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "👑",
+            "title": "AVERRA Muse",
+            "price": "$4,997",
+            "price_note": "Founding Member Price (Reg. $7,997)",
+            "description": "Ultra-luxury complete brand transformation for industry leaders building their legacy.",
+            "features": "Everything in Signature|Website Design (10 pages)|Personal Brand Photoshoot Direction|Custom Video Intro Animation|Packaging Design Concepts|Advanced Analytics Setup|Unlimited Revisions (30 days)|Priority Support",
+            "button_text": "Choose Muse",
+            "button_link": "/cart/add?id=muse"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
