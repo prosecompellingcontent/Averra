@@ -1,5 +1,5 @@
 ═══════════════════════════════════════════════════════════
-    UPLOAD YOUR IMAGES TO THIS /public/ FOLDER
+    UPLOAD YOUR IMAGES TO THIS /public FOLDER
 ═══════════════════════════════════════════════════════════
 
 Required images:
