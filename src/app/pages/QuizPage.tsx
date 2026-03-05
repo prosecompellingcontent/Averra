@@ -243,11 +243,7 @@ export function QuizPage() {
       <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
         <div 
           className="fixed inset-0 z-0"
-          style={{
-            ...getBackgroundImageStyle('/quiz-hero.png'),
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
+          style={getBackgroundImageStyle('/quiz-hero.png')}
         >
           <div className="absolute inset-0 bg-[#DCDACC]/30" />
         </div>

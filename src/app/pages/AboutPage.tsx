@@ -12,11 +12,7 @@ export function AboutPage() {
       {/* Background Image with Overlay - Fit to screen */}
       <div 
         className="fixed inset-0 z-0"
-        style={{
-          ...getBackgroundImageStyle('/about-ABOUT.png'),
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
+        style={getBackgroundImageStyle('/about-ABOUT.png')}
       >
         <div className="absolute inset-0 bg-[#DCDACC]/40" />
       </div>
