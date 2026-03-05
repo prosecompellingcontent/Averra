@@ -118,10 +118,6 @@ export function QuickShowcase() {
             return null;
           }
           
-          // Second to last image (index 7 = unsplashImage2) and last image (index 8 = duoShot)
-          const isSecondToLast = index === allImages.length - 2;
-          const isLast = index === allImages.length - 1;
-          
           return (
             <div
               key={index}
@@ -135,7 +131,7 @@ export function QuickShowcase() {
                 src={image}
                 alt={`AI Model ${index + 1}`}
                 className="w-full h-full object-cover"
-                style={(isSecondToLast || isLast) ? { objectPosition: 'center 35%' } : undefined}
+                style={{ objectPosition: 'center center', objectFit: 'cover' }}
                 loading="eager"
                 onLoad={handleImageLoad}
                 onError={handleImageError}

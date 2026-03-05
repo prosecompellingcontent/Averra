@@ -15,8 +15,8 @@ export function getImageUrl(localPath: string): string {
 export function getBackgroundImageStyle(localPath: string) {
   return {
     backgroundImage: `url(${getImageUrl(localPath)})`,
-    backgroundSize: '100% auto' as const,
-    backgroundPosition: 'center top' as const,
+    backgroundSize: 'cover' as const,
+    backgroundPosition: 'center' as const,
     backgroundRepeat: 'no-repeat' as const,
   };
 }

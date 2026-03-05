@@ -223,15 +223,11 @@ export function ServicesPage() {
                 <span>•</span>
                 <span>FOUNDING MEMBERS ONLY</span>
                 <span>•</span>
-                <span>FIRST 50 CLIENTS</span>
-                <span>•</span>
                 <span>UP TO 50% OFF</span>
                 <span>•</span>
                 <span>LAUNCH PRICING · March 3rd–May 31st</span>
                 <span>•</span>
                 <span>FOUNDING MEMBERS ONLY</span>
-                <span>•</span>
-                <span>FIRST 50 CLIENTS</span>
                 <span>•</span>
                 <span>UP TO 50% OFF</span>
                 <span>•</span>
@@ -259,7 +255,7 @@ export function ServicesPage() {
             </h3>
             
             <div className="inline-block px-8 py-2 bg-[#DCDACC] mb-6">
-              <span className="text-sm md:text-base text-[#301710] font-medium uppercase tracking-[0.2em]">First 50 Only</span>
+              <span className="text-sm md:text-base text-[#301710] font-medium uppercase tracking-[0.2em]">Limited Time Only</span>
             </div>
             
             <p className="text-base md:text-lg text-[#DCDACC] font-light leading-relaxed max-w-2xl mx-auto">

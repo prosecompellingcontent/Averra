@@ -19,7 +19,7 @@ export function HomePage() {
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   
   // Using actual image from /public folder
-  const heroImage = "/about-hero.webp";
+  const heroImage = "/about-hero.png";
 
   const handleImageLoad = useCallback(() => {
     setHeroImageLoaded(true);

@@ -5,8 +5,8 @@ This folder contains all public image assets for the AVERRA website.
 ## Required Image Files (12 total):
 
 ### Homepage & Component Images (9 files):
-1. `about-hero.png` - Homepage hero section background
-2. `about-ABOUT.png` - About AVERRA component background
+1. `home-hero.png` - Homepage hero section background
+2. `about-averra.png` - About AVERRA component background
 3. `how-it-works.png` - How It Works component background
 4. `qs-1.png` - QuickShowcase carousel image 1
 5. `qs-2.png` - QuickShowcase carousel image 2
@@ -14,8 +14,6 @@ This folder contains all public image assets for the AVERRA website.
 7. `qs-4.png` - QuickShowcase carousel image 4
 8. `qs-5.png` - QuickShowcase carousel image 5
 9. `qs-6.png` - QuickShowcase carousel image 6
-10. `qs-7.png` - QuickShowcase carousel image 7
-11. `qs-8.png` - QuickShowcase carousel image 8
 
 ### Page Hero Images (3 files):
 10. `about-hero.png` - About page hero background
@@ -24,13 +22,13 @@ This folder contains all public image assets for the AVERRA website.
 
 ## Image Usage in Code:
 
-- **HomePage.tsx**: `/about-hero.png`
+- **HomePage.tsx**: `/home-hero.png`
 - **AboutAVERRA.tsx**: `/about-averra.png`
 - **HowItWorks.tsx**: `/how-it-works.png`
-- **AboutPage.tsx**: `/about-ABOUT.png`
+- **AboutPage.tsx**: `/about-hero.png`
 - **QuizPage.tsx**: `/quiz-hero.png`
 - **ServicesPage.tsx**: `/services-hero.png`
-- **QuickShowcase.tsx**: `/qs-1.png` through `/qs-8.png`
+- **QuickShowcase.tsx**: `/qs-1.png` through `/qs-6.png`
 
 ## Notes:
 - All paths use the Vite convention where files in `/public` are served from the root `/`
