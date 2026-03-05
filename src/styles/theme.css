@@ -1,6 +1,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  color-scheme: light only;
   --font-size: 16px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
@@ -136,6 +137,7 @@
   html {
     font-size: var(--font-size);
     overflow-x: hidden;
+    color-scheme: light only;
     /* Mobile: Faster scrolling performance */
     -webkit-overflow-scrolling: touch;
     /* Prevent font size adjustments on orientation change */
@@ -148,6 +150,7 @@
   body {
     /* Prevent layout shifts during load */
     min-height: 100vh;
+    color-scheme: light only;
     /* Note: transform removed to allow position: fixed to work correctly */
   }
   

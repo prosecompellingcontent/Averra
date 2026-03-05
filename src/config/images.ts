@@ -22,7 +22,7 @@ export const carouselImages = [
 
 // Hero images
 export const heroImages = {
-  about: '/about-hero.webp',
+  about: '/about-hero.png',
   aboutPng: '/about-ABOUT.png',
   aboutAverra: '/about-averra.png',
   services: '/services-hero.png',
@@ -33,7 +33,7 @@ export const heroImages = {
 // GitHub fallback URLs (for development)
 export const githubImageUrls = {
   carouselImages: carouselImages.map(img => `${GITHUB_RAW_BASE}${img}`),
-  aboutHero: `${GITHUB_RAW_BASE}/about-hero.webp`,
+  aboutHero: `${GITHUB_RAW_BASE}/about-hero.png`,
   aboutPng: `${GITHUB_RAW_BASE}/about-ABOUT.png`,
   aboutAverra: `${GITHUB_RAW_BASE}/about-averra.png`,
   servicesHero: `${GITHUB_RAW_BASE}/services-hero.png`,

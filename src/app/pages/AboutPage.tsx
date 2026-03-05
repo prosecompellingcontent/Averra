@@ -1,6 +1,6 @@
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { getBackgroundImageStyle } from "@/utils/imageHelpers";
+import { getImageUrl } from "@/utils/imageHelpers";
 
 export function AboutPage() {
   const isMobile = useIsMobile();
@@ -10,10 +10,20 @@ export function AboutPage() {
   return (
     <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
       {/* Background Image with Overlay - Fit to screen */}
-      <div 
-        className="fixed inset-0 z-0"
-        style={getBackgroundImageStyle('/about-ABOUT.png')}
-      >
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        <img 
+          src={getImageUrl('/about-ABOUT.png')}
+          alt="About background"
+          className={`w-full h-full ${isMobile ? 'object-cover object-center scale-100' : 'object-cover object-center'}`}
+          style={{ 
+            minWidth: '100%', 
+            minHeight: '100%',
+            maxWidth: '100%',
+            maxHeight: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center'
+          }}
+        />
         <div className="absolute inset-0 bg-[#DCDACC]/40" />
       </div>
 

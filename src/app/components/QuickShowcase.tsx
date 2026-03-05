@@ -45,14 +45,12 @@ export function QuickShowcase() {
         // Swiped left - next image
         setCurrentIndex((prev) => {
           const next = (prev + 1) % allImages.length;
-          console.log('Swiped to next:', next);
           return next;
         });
       } else {
         // Swiped right - previous image
         setCurrentIndex((prev) => {
           const next = (prev - 1 + allImages.length) % allImages.length;
-          console.log('Swiped to previous:', next);
           return next;
         });
       }
@@ -69,7 +67,6 @@ export function QuickShowcase() {
         setLoadedImages(prev => new Set([...prev, index]));
       };
       img.onerror = () => {
-        console.error(`Failed to load image ${index}`);
         setImageErrors(prev => new Set([...prev, index]));
       };
       // Use GitHub URL for preloading
@@ -89,8 +86,6 @@ export function QuickShowcase() {
 
   // Handle image error
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const imgSrc = e.currentTarget.src;
-    console.error(`Image ${currentIndex} failed to load from: ${imgSrc}`);
     setImageErrors(prev => new Set([...prev, currentIndex]));
     setIsImageLoading(false);
   };
@@ -175,7 +170,6 @@ export function QuickShowcase() {
         onClick={() => {
           setCurrentIndex((prev) => {
             const next = (prev - 1 + allImages.length) % allImages.length;
-            console.log(`Previous clicked: ${prev} -> ${next} (total: ${allImages.length})`);
             return next;
           });
         }}
@@ -189,7 +183,6 @@ export function QuickShowcase() {
         onClick={() => {
           setCurrentIndex((prev) => {
             const next = (prev + 1) % allImages.length;
-            console.log(`Next clicked: ${prev} -> ${next} (total: ${allImages.length})`);
             return next;
           });
         }}

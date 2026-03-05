@@ -19,10 +19,10 @@ const tiers = [
     originalPriceNum: 200,
     description: "For The Entrepreneur That Deserves Elevated Branding.",
     features: [
-      { name: "10 Custom AI Brand Models", detail: "High-quality, custom-built AI visuals that give the brand a face and elevated presence. Each model is created to align with industry niche and strategy." },
-      { name: "AVERRA Strategy Session", detail: "A focused session that defines visual positioning, target audience alignment, and brand tone before production begins. No random aesthetics. No scattered direction. Clarity then creation." },
-      { name: "Brand Presence Guide", detail: "Every visual communicates something. This guide breaks down the type of client the imagery attracts, the pricing it supports, and the shift it creates. When perception changes, opportunity changes." },
-      { name: "AVERRA Visual System Guide", detail: "A defined visual framework delivered in a clear, easy-to-follow PDF outlining custom color palettes, tone direction, and styling standards to keep the brand consistent across platforms. Consistency builds recognition. Recognition builds credibility." },
+      { name: "10 Custom AI Brand Models", detail: "High-quality, custom-built AI visuals that give your brand a face and elevated presence. Each model is created to align with your industry niche and strategy." },
+      { name: "AVERRA Strategy Session", detail: "A focused session that defines your visual positioning, target audience alignment, and brand tone before production begins." },
+      { name: "Brand Presence Guide", detail: "Every image sends a message. This guide breaks down who it attracts, what pricing it supports, and how it changes the way people see your brand. When you look the part, the right clients follow." },
+      { name: "AVERRA Visual System Guide", detail: "A clear, easy-to-follow PDF that covers your color palette, overall tone, and styling standards so your brand is consistent." },
       { name: "Commercial License Use", detail: "Rights to use all visuals across social media, websites, booking platforms, and marketing materials." }
     ]
   },
@@ -37,11 +37,11 @@ const tiers = [
     description: "For Brands Ready to Raise Pricing & Presence.",
     featured: true,
     features: [
-      { name: "20 Custom AI Brand Models", detail: "Twenty custom-built AI brand models styled with intention giving the brand range, consistency, and control across every touchpoint. An expanded visual presence designed for depth." },
-      { name: "Advanced AVERRA Strategy Session", detail: "A personalized strategy session focused on expectation, pricing elevation, and market perception. Ensuring the visuals support pricing goals, stronger social presence, and clearer authority." },
-      { name: "Client Loyalty & Expectation Session", detail: "A strategic breakdown of how visuals bring value, attract aligned clientele, and support loyalty. When content reflects a higher level, expectations shift and when expectations shift, loyalty strengthens. This collaborative framework ensures every visual communicates intention and supports sustainable growth." },
-      { name: "Expanded AVERRA Visual System Guide", detail: "A complete visual brand framework outlining refined color palettes, brand tone, and styling standards to maintain a strong, recognizable presence. This guide serves as the blueprint for every brand decision moving forward to the future." },
-      { name: "Client Messaging Alignment Guide", detail: "A structured guide to strategize messaging standards, tone alignment, and professional presentation across platforms. How a brand communicates with clients shapes the clientele it attracts and the standards it maintains. This guide ensures messaging reflects the level the brand is stepping into so presence, professionalism, and expectation stay aligned." },
+      { name: "20 Custom AI Brand Models", detail: "Twenty custom-built AI brand models styled with intention giving your brand range, consistency, and control across every touchpoint." },
+      { name: "Advanced AVERRA Strategy Session", detail: "A one-on-one session focused on your pricing, your goals, and how your visuals support them. We'll make sure your content is working toward a stronger social presence and a clearer sense of authority." },
+      { name: "Client Loyalty & Expectation Session", detail: "A simple breakdown of how the right visuals attract the right clients and keep them loyal. This session makes sure every visual is intentional and supports your steady growth." },
+      { name: "Expanded AVERRA Visual System Guide", detail: "A complete brand guide covering your color palette, tone, and styling standards so your brand stays strong and recognizable." },
+      { name: "Client Messaging Alignment Guide", detail: "A straightforward guide to help you communicate consistently across all platforms. The way you communicate to clients shapes who you attract and the standard you're known for. This guide makes sure your communication matches the level you're building toward so your presence and professionalism stay on track." },
       { name: "Commercial License", detail: "Rights to use all visuals across digital platforms, booking systems, websites, print, and promotional materials." }
     ]
   },
@@ -55,11 +55,11 @@ const tiers = [
     originalPriceNum: 500,
     description: "For The CEO Ready to Own The Market.",
     features: [
-      { name: "30 Custom AI Company Models", detail: "Thirty high-level, custom-built AI company models designed to support the full scope of a growing business. These visuals are created to carry service marketing, retail promotions, seasonal campaigns, team features, and expansion moments without feeling repetitive or improvised. This becomes a complete visual library not just content for the month, but assets that support the business as it grows." },
-      { name: "AVERRA Executive Strategy", detail: "This is a deeper, more comprehensive strategy session focused on aligning the company with its current level and the level it is stepping into next. It centers on pricing confidence, business maturity, market perception, and sustainable growth. As revenue increases and responsibility expands, the company must reflect that evolution. This intensive ensures the visual presence keeps pace with leadership." },
-      { name: "Advanced Brand Authority Session", detail: "This session focuses on how the company communicates professionalism, value, and leadership at scale. It addresses the subtle signals that influence how clients perceive pricing, expertise, and standards. This ensures consistency in how the company is seen online, in-person, and across every interaction." },
-      { name: "Complete AVERRA Company System (Executive Edition)", detail: "A comprehensive internal company system outlining refined color architecture, company tone, visual hierarchy, and consistency standards. This document becomes the reference point for future hires, marketing decisions, retail growth, and operational scaling. Growth feels smoother when structure is already in place." },
-      { name: "Team Alignment Strategy Guide", detail: "For founders managing assistants, stylists, or full teams, this guide ensures alignment across the entire business. It outlines visual standards, communication expectations, and presentation consistency so that everyone reflects the same level of professionalism. As a business grows beyond one person, unity becomes critical. This guide protects integrity while supporting expansion." },
+      { name: "30 Custom AI Company Models", detail: "Thirty custom AI visuals built to cover everything your business needs, from service marketing and retail promos to seasonal campaigns and team features. A full visual library that grows with your business." },
+      { name: "AVERRA Executive Strategy", detail: "A strategy session focused on where your business stands today and where it's going next. We'll get clear on your pricing, your direction, and the steps it takes to get there." },
+      { name: "Advanced Brand Authority Session", detail: "This session is about how your business communicates professionalism and value at a bigger scale. We'll look at the small details that shape how clients see your pricing, your expertise, and your standards so that your business looks and feels consistent online, in person, and everywhere in between." },
+      { name: "Complete AVERRA Company System (Executive Edition)", detail: "A full internal brand system covering your color palette, tone, visual structure, and consistency standards. This becomes the go-to reference for your hiring, marketing, retail growth, and scaling decisions." },
+      { name: "Team Alignment Strategy Guide", detail: "For founders managing assistants, stylists, or full teams, this guide keeps everyone on the same page. It covers your visual standards, communication expectations, and presentation so that your whole team reflects the same level of professionalism. As your business grows, unity protects everything you've built." },
       { name: "Commercial License", detail: "Rights to use all visuals across digital platforms, booking systems, retail packaging, print materials, and marketing campaigns." }
     ]
   }
@@ -266,7 +266,7 @@ export function ServicesPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-8">
-        <div className="space-y-16 mb-32">
+        <div className="space-y-12 mb-32">
           {tiers.map((tier, tierIndex) => (
             <div
               key={tier.name}
@@ -329,18 +329,18 @@ export function ServicesPage() {
                   <p className="text-xs uppercase tracking-[0.3em] text-[#654331] mb-8">
                     What's Included
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                  <div className="grid grid-cols-1 gap-y-1">
                     {tier.features.map((feature, index) => (
                       <div 
                         key={index} 
-                        className="flex gap-4"
+                        className="flex gap-4 mb-3"
                       >
-                        <Check className="w-5 h-5 text-[#301710] flex-shrink-0 mt-1" strokeWidth={1.5} />
+                        <Check className="w-5 h-5 text-[#301710] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                         <div>
-                          <p className="text-base text-[#301710] mb-1">
+                          <p className="text-base text-[#301710] mb-0.5">
                             {feature.name}
                           </p>
-                          <p className="text-sm text-[#654331] font-light">
+                          <p className="text-sm text-[#654331] font-light leading-tight">
                             {feature.detail}
                           </p>
                         </div>

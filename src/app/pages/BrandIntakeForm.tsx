@@ -156,7 +156,6 @@ export function BrandIntakeForm() {
       }
 
       const { intakeId } = await response.json();
-      console.log('✅ Brand intake submitted with ID:', intakeId);
 
       // Store intake ID for payment tracking
       sessionStorage.setItem('brandIntakeId', intakeId);
