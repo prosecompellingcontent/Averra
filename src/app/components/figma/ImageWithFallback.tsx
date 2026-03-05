@@ -10,7 +10,9 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
   const [currentSrc, setCurrentSrc] = useState(() => {
     // In Figma Make environment, use GitHub directly for local paths
     if (props.src?.startsWith('/')) {
-      return `${GITHUB_RAW_BASE}${props.src}`
+      const githubUrl = `${GITHUB_RAW_BASE}${props.src}`;
+      console.log(`ImageWithFallback: Loading ${props.src} from ${githubUrl}`);
+      return githubUrl;
     }
     return props.src
   })
@@ -26,7 +28,8 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
   }, [props.src])
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error(`Image failed to load: ${props.src}`)
+    console.error(`❌ Image failed to load: ${props.src}`)
+    console.error(`❌ Attempted URL: ${currentSrc}`)
     setDidError(true)
     // Call the user's onError if provided
     if (props.onError) {

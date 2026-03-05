@@ -5,7 +5,9 @@ export function getImageUrl(localPath: string): string {
   // For now, since we're in Figma Make environment, use GitHub directly
   // When deployed to Vercel, this will work with local paths
   if (localPath.startsWith('/')) {
-    return `${GITHUB_RAW_BASE}${localPath}`;
+    const fullUrl = `${GITHUB_RAW_BASE}${localPath}`;
+    console.log(`Loading image from: ${fullUrl}`);
+    return fullUrl;
   }
   return localPath;
 }
