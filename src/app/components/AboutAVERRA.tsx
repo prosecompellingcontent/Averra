@@ -1,6 +1,6 @@
-import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ArrowRight } from "lucide-react";
+import { getImageUrl } from "@/utils/imageHelpers";
 
 export function AboutAVERRA() {
   const isMobile = useIsMobile();
@@ -9,12 +9,11 @@ export function AboutAVERRA() {
     <section className="relative bg-[#654331] py-16 md:py-32 overflow-hidden">
       {/* Full background image - NOW ON MOBILE TOO */}
       <div className="absolute inset-0">
-        <ImageWithFallback
-          src="/about-averra.png"
+        <img
+          src={getImageUrl('/about-averra.png')}
           alt="AVERRA background"
           className="w-full h-full object-cover"
           loading="eager"
-          decoding="async"
         />
         {/* Brown tint overlay for readability */}
         <div className="absolute inset-0 bg-[#654331]/85"></div>

@@ -2,6 +2,7 @@ import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getImageUrl } from "@/utils/imageHelpers";
 
 // Using actual images from /public folder
 const allImages = [
@@ -71,7 +72,8 @@ export function QuickShowcase() {
         console.error(`Failed to load image ${index}`);
         setImageErrors(prev => new Set([...prev, index]));
       };
-      img.src = allImages[index];
+      // Use GitHub URL for preloading
+      img.src = getImageUrl(allImages[index]);
     };
 
     // Preload current, next, and previous images
@@ -86,8 +88,9 @@ export function QuickShowcase() {
   };
 
   // Handle image error
-  const handleImageError = () => {
-    console.error(`Image ${currentIndex} failed to load`);
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const imgSrc = e.currentTarget.src;
+    console.error(`Image ${currentIndex} failed to load from: ${imgSrc}`);
     setImageErrors(prev => new Set([...prev, currentIndex]));
     setIsImageLoading(false);
   };

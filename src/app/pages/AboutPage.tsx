@@ -1,5 +1,6 @@
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { getBackgroundImageStyle } from "@/utils/imageHelpers";
 
 export function AboutPage() {
   const isMobile = useIsMobile();
@@ -8,20 +9,17 @@ export function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
-      {/* Background Image with Overlay - DESKTOP ONLY */}
-      {!isMobile && (
-        <div 
-          className="fixed inset-0 z-0"
-          style={{
-            backgroundImage: "url(/about-hero.webp)",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        >
-          <div className="absolute inset-0 bg-[#DCDACC]/40" />
-        </div>
-      )}
+      {/* Background Image with Overlay - Fit to screen */}
+      <div 
+        className="fixed inset-0 z-0"
+        style={{
+          ...getBackgroundImageStyle('/about-ABOUT.png'),
+          backgroundSize: 'contain',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-[#DCDACC]/40" />
+      </div>
 
       {/* Content */}
       <div className="relative z-10">

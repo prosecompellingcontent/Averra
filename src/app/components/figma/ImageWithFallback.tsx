@@ -7,27 +7,26 @@ const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/prosecompellingconten
 
 export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElement>) {
   const [didError, setDidError] = useState(false)
-  const [currentSrc, setCurrentSrc] = useState(props.src)
-  const [triedGithub, setTriedGithub] = useState(false)
+  const [currentSrc, setCurrentSrc] = useState(() => {
+    // In Figma Make environment, use GitHub directly for local paths
+    if (props.src?.startsWith('/')) {
+      return `${GITHUB_RAW_BASE}${props.src}`
+    }
+    return props.src
+  })
 
   // Update currentSrc when props.src changes
   useEffect(() => {
-    setCurrentSrc(props.src)
+    if (props.src?.startsWith('/')) {
+      setCurrentSrc(`${GITHUB_RAW_BASE}${props.src}`)
+    } else {
+      setCurrentSrc(props.src)
+    }
     setDidError(false)
-    setTriedGithub(false)
   }, [props.src])
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    // If we haven't tried GitHub yet and the original src was a local path
-    if (!triedGithub && props.src?.startsWith('/')) {
-      console.log(`Local image failed, trying GitHub: ${props.src}`)
-      setTriedGithub(true)
-      setCurrentSrc(`${GITHUB_RAW_BASE}${props.src}`)
-      // Don't set didError yet, we'll try GitHub
-      return
-    }
-    
-    console.error(`Image failed to load completely: ${props.src}`)
+    console.error(`Image failed to load: ${props.src}`)
     setDidError(true)
     // Call the user's onError if provided
     if (props.onError) {

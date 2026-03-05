@@ -6,6 +6,7 @@ import { useCart } from "@/app/context/CartContext";
 import { CTAFooter } from '@/app/components/CTAFooter';
 import { MarqueeScroll } from '@/app/components/MarqueeScroll';
 import { trackAction } from '@/utils/analytics';
+import { getBackgroundImageStyle } from '@/utils/imageHelpers';
 
 const tiers = [
   {
@@ -187,12 +188,7 @@ export function ServicesPage() {
       <div className="relative -mx-8 mb-0">
         <div 
           className="absolute inset-0 bg-center"
-          style={{ 
-            backgroundImage: "url(/services-hero.png)",
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center 30%'
-          }}
+          style={getBackgroundImageStyle('/services-hero.png')}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#DCDACC]/60 via-[#DCDACC]/70 to-[#DCDACC]" />
         
@@ -218,6 +214,30 @@ export function ServicesPage() {
           <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#BFBBA7]/30"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#BFBBA7]/20"></div>
           <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#BFBBA7]/20"></div>
+          
+          {/* Moving Marquee Banner */}
+          <div className="mb-8 border-y border-[#C9A961]/30 py-4">
+            <MarqueeScroll disableOnMobile={false} duration={30}>
+              <div className="flex items-center gap-8 text-[#C9A961] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
+                <span>LAUNCH PRICING · MARCH 3–31, 2026</span>
+                <span>•</span>
+                <span>FOUNDING MEMBERS ONLY</span>
+                <span>•</span>
+                <span>FIRST 50 CLIENTS</span>
+                <span>•</span>
+                <span>UP TO 50% OFF</span>
+                <span>•</span>
+                <span>LAUNCH PRICING · MARCH 3–31, 2026</span>
+                <span>•</span>
+                <span>FOUNDING MEMBERS ONLY</span>
+                <span>•</span>
+                <span>FIRST 50 CLIENTS</span>
+                <span>•</span>
+                <span>UP TO 50% OFF</span>
+                <span>•</span>
+              </div>
+            </MarqueeScroll>
+          </div>
           
           <div className="relative z-10 max-w-4xl mx-auto px-8">
             <div className="inline-block px-28 py-3 border-2 mb-6 relative overflow-hidden animate-pulse-subtle"

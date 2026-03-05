@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { trackQuizCompletion, trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useMemo } from "react";
+import { getBackgroundImageStyle } from "@/utils/imageHelpers";
 
 const questions = [
   {
@@ -243,12 +244,7 @@ export function QuizPage() {
         {!isMobile && (
           <div 
             className="fixed inset-0 z-0"
-            style={{
-              backgroundImage: "url(/quiz-hero.png)",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center center',
-              backgroundRepeat: 'no-repeat'
-            }}
+            style={getBackgroundImageStyle('/quiz-hero.png')}
           >
             <div className="absolute inset-0 bg-[#DCDACC]/30" />
           </div>
