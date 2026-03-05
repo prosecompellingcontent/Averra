@@ -241,14 +241,16 @@ export function QuizPage() {
 
     return (
       <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
-        {!isMobile && (
-          <div 
-            className="fixed inset-0 z-0"
-            style={getBackgroundImageStyle('/quiz-hero.png')}
-          >
-            <div className="absolute inset-0 bg-[#DCDACC]/30" />
-          </div>
-        )}
+        <div 
+          className="fixed inset-0 z-0"
+          style={{
+            ...getBackgroundImageStyle('/quiz-hero.png'),
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-[#DCDACC]/30" />
+        </div>
 
         <div className="relative z-10">
           <Navigation />
