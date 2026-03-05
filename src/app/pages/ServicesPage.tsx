@@ -218,7 +218,7 @@ export function ServicesPage() {
           {/* Moving Marquee Banner */}
           <div className="mb-8 border-y border-[#C9A961]/30 py-4">
             <MarqueeScroll disableOnMobile={false} duration={30}>
-              <div className="flex items-center gap-8 text-[#C9A961] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
+              <div className="flex items-center gap-8 text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
                 <span>LAUNCH PRICING · March 3rd–May 31st</span>
                 <span>•</span>
                 <span>FOUNDING MEMBERS ONLY</span>
