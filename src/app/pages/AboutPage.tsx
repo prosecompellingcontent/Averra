@@ -14,7 +14,7 @@ export function AboutPage() {
         className="fixed inset-0 z-0"
         style={{
           ...getBackgroundImageStyle('/about-ABOUT.png'),
-          backgroundSize: 'contain',
+          backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
