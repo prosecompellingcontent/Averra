@@ -6,7 +6,6 @@ import { trackQuizCompletion, trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useMemo } from "react";
 import { getImageUrl } from "@/utils/imageHelpers";
-import quizIntroImage from "figma:asset/d4efda984c6dfad6114ef6098e5b6b2c3fb062d2.png";
 
 const questions = [
   {
@@ -415,7 +414,7 @@ export function QuizPage() {
           <div className="sticky top-0 h-screen">
             <div className="absolute inset-0">
               <img 
-                src={quizIntroImage}
+                src={getImageUrl("/quizIntroImage.png")}
                 alt="AVERRA Brand Visual"
                 className="w-full h-full object-cover"
                 style={{ objectPosition: '40% 30%' }}

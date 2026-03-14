@@ -3,10 +3,6 @@ import React, { useEffect, useRef } from "react";
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { getImageUrl } from "@/utils/imageHelpers";
-import beautyImage1 from "figma:asset/b153344a5bbea8053ad323df1a9df52c77bc3aaa.png";
-import beautyImage3 from "figma:asset/12105cbf4e65987360556ded3bc119e040e587fd.png";
-import beautyImage4 from "figma:asset/188ac9b62dd7455ade608a647298a57b2d00cf3c.png";
-import beautyImage5 from "figma:asset/c7bbc9cdbfc889d36e0f15185f5fa4161f8d4c80.png";
 
 // All gallery images from /public folder - hero is first
 const galleryImages = [
@@ -16,10 +12,10 @@ const galleryImages = [
   '/carousel-4.webp',
   '/carousel-5.webp',
   '/carousel-6.webp',
-  beautyImage1,
-  beautyImage3,
-  beautyImage4,
-  beautyImage5,
+  '/carousel-7.webp',
+  '/carousel-8.webp',
+  '/carousel-9.webp',
+  '/carousel-10.webp',
 ];
 
 // Editorial content overlays for select slides
@@ -79,6 +75,10 @@ const editorialContent = [
       { text: "View All Services", href: "/services" }
     ]
   },
+  null,
+  null,
+  null,
+  null,
 ];
 
 export function HomePage() {
