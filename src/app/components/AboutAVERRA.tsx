@@ -1,23 +1,12 @@
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ArrowRight } from "lucide-react";
-import { getImageUrl } from "@/utils/imageHelpers";
 
 export function AboutAVERRA() {
   const isMobile = useIsMobile();
 
   return (
     <section className="relative bg-[#654331] py-16 md:py-32 overflow-hidden">
-      {/* Full background image - NOW ON MOBILE TOO */}
-      <div className="absolute inset-0">
-        <img
-          src={getImageUrl('/about-averra.png')}
-          alt="AVERRA background"
-          className="w-full h-full object-cover"
-          loading="eager"
-        />
-        {/* Brown tint overlay for readability */}
-        <div className="absolute inset-0 bg-[#654331]/85"></div>
-      </div>
+      {/* Removed background image - now solid color */}
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8">
         <div className="max-w-3xl mx-auto text-center space-y-6 md:space-y-8">

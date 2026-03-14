@@ -6,6 +6,7 @@ import { trackQuizCompletion, trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useMemo } from "react";
 import { getImageUrl } from "@/utils/imageHelpers";
+import quizIntroImage from "figma:asset/d4efda984c6dfad6114ef6098e5b6b2c3fb062d2.png";
 
 const questions = [
   {
@@ -114,6 +115,7 @@ export function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const isMobile = useIsMobile();
 
   const handleAnswer = (optionIndex: number) => {
@@ -237,104 +239,120 @@ export function QuizPage() {
     const colorScheme = getColorScheme();
     const tierContent = getTierContent(tier);
 
-    const cardClass = "glass-effect border border-white/30 p-8 md:p-12";
-
     return (
-      <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
-        <div className="fixed inset-0 z-0 overflow-hidden">
-          <img 
-            src={getImageUrl('/quiz-hero.png')}
-            alt="Quiz background"
-            className={`w-full h-full ${isMobile ? 'object-cover object-center scale-100' : 'object-cover object-center'}`}
-            style={{ 
-              minWidth: '100%', 
-              minHeight: '100%',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center'
-            }}
-          />
-          <div className="absolute inset-0 bg-[#DCDACC]/30" />
-        </div>
+      <div className="min-h-screen bg-[#f4e4e6] text-[#301710] relative overflow-hidden pb-32 md:pb-0">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#b76e79]/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#301710]/5 rounded-full blur-3xl"></div>
 
         <div className="relative z-10">
           <Navigation />
-          <div className="max-w-4xl mx-auto px-8 py-32">
-            <div className="text-center mb-20">
-              <h1 className="text-[clamp(3rem,8vw,5rem)] text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
-                Your Brand Blueprint
-              </h1>
-            </div>
-
-            <div className="space-y-16">
-              <div className={cardClass}>
-                <p className="text-xs uppercase tracking-[0.3em] text-[#301710] mb-6 font-semibold">
-                  Your Recommended Level
-                </p>
-                <h2 className="text-5xl text-[#301710] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
-                  {tier}
-                </h2>
-                <p className="text-lg text-[#301710] mb-8 font-medium italic" style={{ fontFamily: 'Lora, serif' }}>
-                  {tierContent.subtitle}
+          <div className={`max-w-5xl mx-auto px-8 ${isMobile ? "py-16" : "py-24"}`}>
+            
+            {/* Hero Results Section */}
+            <div className="text-center mb-16">
+              <div className="inline-block mb-8 px-8 py-3 bg-white/60 border border-[#b76e79]/30 rounded-full">
+                <p className="text-xs uppercase tracking-[0.4em] text-[#b76e79] font-semibold">
+                  Your Results Are In
                 </p>
               </div>
+              
+              <h1 className="text-[clamp(2.5rem,8vw,4rem)] text-[#301710] mb-8 leading-tight" style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
+                You're Ready For
+              </h1>
+              
+              <div className="relative inline-block mb-8">
+                <div className="absolute inset-0 bg-[#b76e79]/20 blur-xl"></div>
+                <h2 className="relative text-[clamp(3.5rem,10vw,6rem)] text-[#301710] leading-none px-8 py-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
+                  {tier}
+                </h2>
+              </div>
+              
+              <p className="text-2xl text-[#b76e79] max-w-3xl mx-auto font-medium italic leading-relaxed" style={{ fontFamily: 'Cormorant, serif' }}>
+                {tierContent.subtitle}
+              </p>
+            </div>
 
+            {/* Content Sections in Alternating Layout */}
+            <div className="space-y-12 mb-20">
               {tierContent.sections.map((section, index) => (
-                <div key={index} className={cardClass}>
-                  <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                    {section.title}
-                  </p>
-                  {section.subtitle && (
-                    <p className="text-lg text-[#654331] mb-4 font-semibold italic" style={{ fontFamily: 'Cormorant, serif' }}>
-                      {section.subtitle}
-                    </p>
-                  )}
-                  <div className="text-base text-[#301710] font-normal leading-relaxed whitespace-pre-line" style={{ fontFamily: 'Lora, serif' }}>
+                <div 
+                  key={index} 
+                  className={`glass-effect border border-white/40 p-8 md:p-12 ${
+                    index % 2 === 0 
+                      ? 'md:ml-0 md:mr-12' 
+                      : 'md:ml-12 md:mr-0'
+                  } transform ${!isMobile ? 'hover:scale-[1.02] hover:shadow-2xl' : ''} transition-all duration-500`}
+                >
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#b76e79]/20 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-[#b76e79]" style={{ fontFamily: 'Cormorant, serif' }}>
+                        {index + 1}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-3xl text-[#301710] mb-2 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
+                        {section.title}
+                      </h3>
+                      {section.subtitle && (
+                        <p className="text-xl text-[#b76e79] font-semibold italic" style={{ fontFamily: 'Cormorant, serif' }}>
+                          {section.subtitle}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-base text-[#301710] font-normal leading-relaxed whitespace-pre-line pl-16" style={{ fontFamily: 'Lora, serif' }}>
                     {section.content}
                   </div>
                 </div>
               ))}
+            </div>
 
-              <div className="text-center pt-12 space-y-8">
-                <div>
-                  <h3 className="text-4xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                    Next Steps
-                  </h3>
-                  <p className="text-2xl text-[#654331] mb-8 font-semibold">
-                    Ready to build your brand?
-                  </p>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link
-                    to="/services"
-                    onClick={() => trackAction('quiz_cta_click', { button: 'get_started', tier })}
-                    className={`inline-block px-12 py-4 bg-[#301710] text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light ${!isMobile ? 'hover:bg-[#654331]' : ''} transition-all`}
-                  >
-                    Get Started with {tier}
-                  </Link>
-                  <Link
-                    to="/services"
-                    onClick={() => trackAction('quiz_cta_click', { button: 'explore_tiers', tier })}
-                    className={`inline-block px-12 py-4 glass-effect-light border border-white/40 text-[#301710] text-sm uppercase tracking-[0.3em] font-semibold ${!isMobile ? 'hover:bg-white/30' : ''} transition-all`}
-                  >
-                    Explore All Tiers
-                  </Link>
-                </div>
-                
-                <div className="pt-8">
-                  <p className="text-base text-[#654331] mb-4 font-light">
-                    Want individual assets for your service?
-                  </p>
-                  <Link
-                    to="/services"
-                    onClick={() => trackAction('quiz_cta_click', { button: 'browse_products', tier })}
-                    className={`inline-block px-8 py-3 glass-effect-light border border-white/40 text-[#301710] text-sm uppercase tracking-[0.3em] font-semibold ${!isMobile ? 'hover:bg-white/30' : ''} transition-all`}
-                  >
-                    Browse Digital Products
-                  </Link>
-                </div>
+            {/* CTA Section with Visual Flair */}
+            <div className="text-center pt-12 pb-20">
+              <div className="mb-12">
+                <h3 className="text-5xl text-[#301710] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
+                  Ready to Transform?
+                </h3>
+                <p className="text-2xl text-[#b76e79] font-semibold" style={{ fontFamily: 'Cormorant, serif' }}>
+                  Let's build your brand the right way
+                </p>
+              </div>
+              
+              {/* Primary CTA - Extra Prominent */}
+              <div className="mb-8">
+                <Link
+                  to="/services"
+                  onClick={() => trackAction('quiz_cta_click', { button: 'get_started', tier })}
+                  className={`inline-block px-16 py-6 bg-[#301710] text-[#f4e4e6] text-sm uppercase tracking-[0.4em] font-semibold ${!isMobile ? 'hover:bg-[#b76e79] hover:scale-105 hover:shadow-2xl' : ''} transition-all duration-500 shadow-xl`}
+                >
+                  Get Started with {tier}
+                </Link>
+              </div>
+
+              {/* Secondary Options in Grid */}
+              <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto mb-12">
+                <Link
+                  to="/services"
+                  onClick={() => trackAction('quiz_cta_click', { button: 'explore_tiers', tier })}
+                  className={`px-8 py-5 glass-effect border border-[#b76e79]/50 text-[#301710] text-sm uppercase tracking-[0.3em] font-semibold ${!isMobile ? 'hover:bg-white/50 hover:border-[#b76e79] hover:scale-105' : ''} transition-all duration-500`}
+                >
+                  Explore All Tiers
+                </Link>
+                <Link
+                  to="/services"
+                  onClick={() => trackAction('quiz_cta_click', { button: 'browse_products', tier })}
+                  className={`px-8 py-5 glass-effect border border-[#b76e79]/50 text-[#301710] text-sm uppercase tracking-[0.3em] font-semibold ${!isMobile ? 'hover:bg-white/50 hover:border-[#b76e79] hover:scale-105' : ''} transition-all duration-500`}
+                >
+                  Browse Digital Products
+                </Link>
+              </div>
+
+              {/* Final encouragement */}
+              <div className="pt-8 border-t border-[#b76e79]/20 max-w-2xl mx-auto">
+                <p className="text-lg text-[#301710]/80 italic" style={{ fontFamily: 'Cormorant, serif' }}>
+                  Your brand deserves to match the beauty you create every day.
+                </p>
               </div>
             </div>
           </div>
@@ -343,37 +361,121 @@ export function QuizPage() {
     );
   }
 
+  // Intro screen before quiz questions
+  if (showIntro) {
+    return (
+      <div className="min-h-svh flex flex-row">
+        {/* Left Side - Quiz Intro */}
+        <div className="w-1/2 bg-[#12080A] text-[#F1E9E9] relative z-10">
+          <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#12080A]/95">
+            <Navigation />
+          </div>
+          <div className={`mx-auto ${isMobile ? 'px-4 py-16' : 'px-8 py-32'} max-w-2xl min-h-svh flex flex-col justify-center items-center`}>
+            <div className="text-center w-full">
+              <p className={`uppercase tracking-[0.4em] text-[#F1E9E9]/60 mb-4 ${isMobile ? 'text-[8px]' : 'text-[10px]'}`}>
+                Brand Assessment
+              </p>
+              <p className={`text-[#F1E9E9]/80 mb-6 font-light ${isMobile ? 'text-xl' : 'text-3xl'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                Be Honest.
+              </p>
+              <h1 className={`text-[#F1E9E9] mb-12 leading-[0.95] ${isMobile ? 'text-[clamp(1.5rem,6vw,3rem)]' : 'text-[clamp(3rem,8vw,5.5rem)]'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
+                Does Your Brand<br />Match Your Work?
+              </h1>
+              <div className={`text-[#F1E9E9]/90 font-light mx-auto leading-relaxed mb-16 ${isMobile ? 'text-sm max-w-xs' : 'text-xl max-w-xl'}`} style={{ fontFamily: 'Lora, serif' }}>
+                <p className="mb-6">You've grown a lot since you first started.</p>
+                <div className="space-y-2 mb-6">
+                  <p>Your work is better.</p>
+                  <p>Your clientele is better.</p>
+                  <p>Your standards are higher.</p>
+                </div>
+                <p className="mb-8">But sometimes the brand doesn't evolve at the same pace.</p>
+                <p className={`text-[#F1E9E9] font-bold ${isMobile ? 'text-lg' : 'text-2xl'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                  See where yours stands.
+                </p>
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setShowIntro(false)}
+                  className={`inline-block bg-[#F1E9E9] text-[#12080A] uppercase tracking-[0.4em] font-semibold transition-all duration-500 shadow-2xl ${
+                    isMobile 
+                      ? 'px-8 py-3 text-[0.65rem]' 
+                      : 'px-16 py-5 text-sm hover:bg-[#F1E9E9]/90 hover:scale-105'
+                  }`}
+                >
+                  Start Your Brand Quiz
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side - Visual Panel */}
+        <div className="w-1/2 relative bg-[#12080A]">
+          <div className="sticky top-0 h-screen">
+            <div className="absolute inset-0">
+              <img 
+                src={quizIntroImage}
+                alt="AVERRA Brand Visual"
+                className="w-full h-full object-cover"
+                style={{ objectPosition: '40% 30%' }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#12080A]/10 to-[#12080A]/30"></div>
+            </div>
+            
+            {!isMobile && (
+              <div className="absolute bottom-12 left-12 z-10">
+                <p className="text-white/40 text-sm uppercase tracking-[0.4em] font-light">
+                  AVERRA AI Model Studio
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Navigation overlay for desktop split-screen */}
+        <div className="hidden lg:block fixed top-0 left-0 right-0 z-50">
+          <Navigation />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#DCDACC] text-[#301710]">
+    <div className="min-h-screen bg-[#f4e4e6] text-[#301710]">
       <Navigation />
-      <div className="max-w-3xl mx-auto px-8 py-32">
+      <div className="max-w-2xl mx-auto px-8 py-16 lg:py-32 min-h-screen flex flex-col justify-center">
         <div className="mb-16">
           <div className="flex justify-between items-center mb-8">
-            <p className="text-xs uppercase tracking-[0.3em] text-[#654331]">
+            <p className="text-xs uppercase tracking-[0.3em] text-[#301710]/60">
               Question {currentQuestion + 1} of {questions.length}
             </p>
             <div className="flex gap-2">
               {questions.map((_, index) => (
                 <div
                   key={index}
-                  className={`w-12 h-1 ${
-                    index <= currentQuestion ? 'bg-[#301710]' : 'bg-[#BFBBA7]'
+                  className={`w-8 h-1 ${
+                    index <= currentQuestion ? 'bg-[#b76e79]' : 'bg-[#b76e79]/30'
                   }`}
                 />
               ))}
             </div>
           </div>
 
-          <h1 className="text-[clamp(2rem,6vw,3.5rem)] text-[#301710] mb-12" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+          <h1 className="text-[clamp(1.75rem,5vw,2.5rem)] text-[#301710] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
             {questions[currentQuestion].question}
           </h1>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {questions[currentQuestion].options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleAnswer(index)}
-                className="w-full p-6 bg-[#BFBBA7] text-[#301710] text-left text-lg font-light hover:bg-[#301710] hover:text-[#DCDACC] transition-all duration-300"
+                className={`w-full text-[#301710] text-left font-light transition-all duration-500 ${
+                  isMobile 
+                    ? 'px-6 py-5 bg-white/70 border border-[#b76e79]/30 text-base rounded-sm active:border-[#b76e79] active:bg-[#b76e79]/10 active:shadow-lg active:scale-[1.01]'
+                    : 'px-6 py-5 bg-white/70 border border-[#b76e79]/30 text-lg rounded-sm hover:border-[#b76e79] hover:bg-[#b76e79]/10 hover:pl-8 hover:shadow-lg hover:scale-[1.01]'
+                }`}
               >
                 {option}
               </button>
@@ -384,7 +486,7 @@ export function QuizPage() {
             <div className="mt-8">
               <button
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-[#654331] text-[#654331] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#654331] hover:text-[#DCDACC] transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-[#b76e79]/50 text-[#301710] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#b76e79]/10 hover:border-[#b76e79] transition-all duration-500"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back

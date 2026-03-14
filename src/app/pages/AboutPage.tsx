@@ -1,192 +1,273 @@
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { getImageUrl } from "@/utils/imageHelpers";
 
 export function AboutPage() {
   const isMobile = useIsMobile();
-  // Luxury editorial fake blur
-  const cardClass = "glass-effect border border-white/30 p-8 md:p-12";
 
   return (
-    <div className="min-h-screen bg-[#DCDACC] text-[#301710] relative">
-      {/* Background Image with Overlay - Fit to screen */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <img 
-          src={getImageUrl('/about-ABOUT.png')}
-          alt="About background"
-          className={`w-full h-full ${isMobile ? 'object-cover object-center scale-100' : 'object-cover object-center'}`}
-          style={{ 
-            minWidth: '100%', 
-            minHeight: '100%',
-            maxWidth: '100%',
-            maxHeight: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center'
-          }}
-        />
-        <div className="absolute inset-0 bg-[#DCDACC]/40" />
+    <div className="min-h-screen bg-[#D4CFC1] pb-32 md:pb-0">
+      <Navigation />
+      
+      {/* Section 1 - About AVERRA */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#D4CFC1] overflow-hidden">
+        <div className="absolute top-20 right-20 w-64 h-64 bg-[#A88F6B]/10 rounded-full blur-3xl hidden lg:block"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative">
+                <div className="absolute -left-2 lg:-left-4 top-0 text-[4rem] lg:text-[8rem] text-[#A88F6B]/20 leading-none" style={{ fontFamily: 'Cormorant, serif' }}>01</div>
+                <h2 
+                  className="text-[2.5rem] lg:text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-[#1E2823] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  About<br/><span className="text-[#425145] italic">AVERRA</span>
+                </h2>
+              </div>
+            </div>
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="bg-[#1E2823] p-6 lg:p-10 relative group lg:hover:translate-x-2 transition-transform duration-300">
+                <div className="absolute top-0 left-0 w-2 h-full bg-[#A88F6B]"></div>
+                <p 
+                  className="text-[1.5rem] lg:text-[clamp(2rem,3.5vw,3rem)] leading-[1.15] text-[#D4CFC1] mb-4 lg:mb-6"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}
+                >
+                  Talent fills the chair.<br/>
+                  <span className="text-[#A88F6B] italic">Brand fills the calendar.</span>
+                </p>
+                <p 
+                  className="text-base lg:text-xl leading-relaxed text-[#D4CFC1]/80"
+                  style={{ fontFamily: 'Lora, serif' }}
+                >
+                  Most beauty professionals do not struggle because they lack skill. They struggle because their brand does not reflect how good they <span className="text-[#A88F6B]">actually are</span>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10">
-        <Navigation />
-        
-        <div className="max-w-4xl mx-auto px-8 py-24 md:py-32">
-          {/* Header Section */}
-          <div className="text-center mb-20">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#654331] font-light mb-4">
-              About AVERRA
-            </p>
-            <h1 
-              className="text-[clamp(2.5rem,8vw,4.5rem)] text-[#301710] leading-tight mb-8" 
-              style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
-            >
-              Talent fills the chair.<br />
-              A brand fills the calendar.
-            </h1>
+      {/* Section 2 - The Gap */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#C9C4B6]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative">
+                <div className="absolute -left-2 lg:-left-4 top-0 text-[4rem] lg:text-[8rem] text-[#1E2823]/10 leading-none" style={{ fontFamily: 'Cormorant, serif' }}>02</div>
+                <h2 
+                  className="text-[2.5rem] lg:text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-[#1E2823] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  The<br/><span className="text-[#A88F6B] italic">Gap</span>
+                </h2>
+                <div className="w-16 lg:w-20 h-1 bg-[#A88F6B] mt-4 lg:mt-6"></div>
+              </div>
+            </div>
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="space-y-4 lg:space-y-6 text-lg lg:text-xl leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
+                <p className="text-[#1E2823]/90">
+                  The work evolves. The pricing inches up. The clientele improves. But the visuals stay stuck.
+                </p>
+                <div className="pl-4 lg:pl-6 space-y-2 lg:space-y-3 text-base lg:text-lg text-[#425145]">
+                  <p>A feed that feels scattered.</p>
+                  <p>Content that looks inconsistent.</p>
+                  <p>A brand that doesn't fully support the level they are operating at.</p>
+                </div>
+                <p className="text-[#1E2823]/80 pt-4 border-l-4 border-[#A88F6B] pl-4 lg:pl-6 lg:hover:pl-8 transition-all duration-300">
+                  That gap is subtle. But it shows up everywhere. In hesitation when raising prices. In comparison shopping. In being seen as <span className="text-[#A88F6B] font-medium">"good"</span> instead of <span className="text-[#A88F6B] font-medium">established</span>.
+                </p>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div className="space-y-16">
-            {/* Opening Section */}
-            <div className={cardClass}>
-              <p className="text-base text-[#301710] font-normal leading-relaxed mb-4" style={{ fontFamily: 'Lora, serif' }}>
-                In the beauty industry, skill is rarely the issue. It's visibility.
-              </p>
-              <p className="text-base text-[#301710] font-normal leading-relaxed mb-4" style={{ fontFamily: 'Lora, serif' }}>
-                There are stylists creating flawless color but posting inconsistently. Lash artists posting perfect sets but blending into similar feeds. Estheticians produce glowing results without content that reflect their level.
-              </p>
-              <p className="text-base text-[#301710] font-normal leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
-                The work is strong. The presentation isn't.
-              </p>
-            </div>
-
-            {/* The Perception Gap */}
-            <div className={cardClass}>
-              <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                The Perception Gap
-              </p>
-              <div className="text-base text-[#301710] font-normal leading-relaxed space-y-4" style={{ fontFamily: 'Lora, serif' }}>
-                <p>
-                  Clients book what they can see. Perception forms before an appointment is ever scheduled. If the content looks unorganized, your pricing may feel like it's negotiable. When the brand looks elevated, expectations shift. When expectations shift, the entire client experience changes.
-                </p>
-                <p>
-                  <strong className="text-[#301710] font-semibold">AVERRA was built to close that gap.</strong>
-                </p>
-                <p>
-                  We use strategy to create AI-powered brand imagery structured with intention and built specifically for beauty professionals who are growing and raising their standards.
-                </p>
+      {/* Section 3 - What We Do */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#D4CFC1] overflow-hidden">
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#425145]/5 rounded-full blur-3xl hidden lg:block"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative">
+                <div className="absolute -left-2 lg:-left-4 top-0 text-[4rem] lg:text-[8rem] text-[#A88F6B]/20 leading-none" style={{ fontFamily: 'Cormorant, serif' }}>03</div>
+                <h2 
+                  className="text-[2.5rem] lg:text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-[#1E2823] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  What We<br/><span className="text-[#425145] italic">Do</span>
+                </h2>
               </div>
             </div>
-
-            {/* AI Is Simply a Tool */}
-            <div className={cardClass}>
-              <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                AI Is Simply a Tool
-              </p>
-              <div className="text-base text-[#301710] font-normal leading-relaxed space-y-4" style={{ fontFamily: 'Lora, serif' }}>
-                <p>
-                  AI in beauty can feel unfamiliar. It can raise some questions.
-                </p>
-                <p>
-                  However, AI is simply a tool.
-                </p>
-                <p>
-                  A camera is a tool. Lighting is a tool. Social media is a tool.
-                </p>
-                <p>
-                  AVERRA does not replace real work, real results, or real clients. It supports how that work is presented. Every visual is created for marketing and brand-building purposes to strengthen consistency, elevate perception, and maintain visibility even when content slows.
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="space-y-6 lg:space-y-8">
+                <div className="bg-[#A88F6B] p-6 lg:p-8 relative group lg:hover:scale-[1.02] transition-transform duration-300">
+                  <div className="absolute -top-2 -right-2 w-full h-full border-2 border-[#1E2823] -z-10 lg:group-hover:translate-x-1 lg:group-hover:translate-y-1 transition-transform duration-300"></div>
+                  <p className="text-xl lg:text-2xl text-[#1E2823] font-medium" style={{ fontFamily: 'Cormorant, serif' }}>
+                    AVERRA was built to close that gap.
+                  </p>
+                </div>
+                <p className="text-base lg:text-lg leading-relaxed text-[#1E2823]/80" style={{ fontFamily: 'Lora, serif' }}>
+                  AVERRA is a strategic AI model studio created specifically for beauty founders, salon owners, and service-based professionals who have outgrown DIY branding but are not interested in looking corporate or generic.
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Four Value Propositions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className={cardClass}>
-                <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                  Strategy First
-                </p>
-                <p className="text-base text-[#301710] font-normal leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
-                  We start with you: your goals, your ideal clientele, your goals & aspirations. Every design decision is intentional.
-                </p>
+      {/* Section 4 - Strategy First */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#1E2823]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative">
+                <div className="absolute -left-2 lg:-left-4 top-0 text-[4rem] lg:text-[8rem] text-[#A88F6B]/20 leading-none" style={{ fontFamily: 'Cormorant, serif' }}>04</div>
+                <h2 
+                  className="text-[2.5rem] lg:text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-[#D4CFC1] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  Strategy<br/><span className="text-[#A88F6B] italic">First</span>
+                </h2>
+                <div className="flex gap-2 mt-4 lg:mt-8">
+                  <div className="w-8 lg:w-12 h-1 bg-[#A88F6B]"></div>
+                  <div className="w-6 lg:w-8 h-1 bg-[#A88F6B]/50"></div>
+                  <div className="w-3 lg:w-4 h-1 bg-[#A88F6B]/30"></div>
+                </div>
               </div>
-
-              <div className={cardClass}>
-                <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                  AI-Powered Precision
+            </div>
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="space-y-6 lg:space-y-8">
+                <div className="relative">
+                  <div className="text-[6rem] lg:text-[12rem] text-[#A88F6B]/10 absolute -top-10 lg:-top-20 -left-6 lg:-left-10 leading-none select-none" style={{ fontFamily: 'Cormorant, serif' }}>"</div>
+                  <p 
+                    className="text-xl lg:text-2xl leading-relaxed text-[#A88F6B] italic relative z-10 mb-4 lg:mb-6"
+                    style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}
+                  >
+                    The AI is not the product. Strategy is.
+                  </p>
+                </div>
+                <p 
+                  className="text-base lg:text-lg leading-relaxed text-[#D4CFC1]/80"
+                  style={{ fontFamily: 'Lora, serif' }}
+                >
+                  Every tier begins with positioning. Who you are now. Where you are stepping next. How you want to be perceived before someone books. The visuals are built after that clarity is locked.
                 </p>
-                <p className="text-base text-[#301710] font-normal leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
-                  Our custom AI models create visuals that feel uniquely yours. No stock photos. No generic templates. Just your brand, custom made to be elevated.
-                </p>
-              </div>
-
-              <div className={cardClass}>
-                <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                  Luxury Accessibility
-                </p>
-                <p className="text-base text-[#301710] font-normal leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
-                  High-end branding shouldn't require a five-figure budget. We've made premium design accessible through a seamless process and smart technology.
-                </p>
-              </div>
-
-              <div className={cardClass}>
-                <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                  Results-Driven Design
-                </p>
-                <p className="text-base text-[#301710] font-normal leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
-                  Beautiful isn't enough. Your brand needs to convert. We design with booking rates, perceived value, and premium positioning in mind.
+                <p 
+                  className="text-lg lg:text-xl leading-relaxed text-[#D4CFC1] pt-2 lg:pt-4"
+                  style={{ fontFamily: 'Lora, serif' }}
+                >
+                  Because clients do not book what they cannot see. They book what they can <span className="text-[#A88F6B] font-medium">visualize</span>.
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* When Presentation Matches Talent */}
-            <div className={cardClass}>
-              <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                When Presentation Matches Talent
-              </p>
-              <div className="text-base text-[#301710] font-normal leading-relaxed space-y-4" style={{ fontFamily: 'Lora, serif' }}>
-                <p>
-                  When beauty professionals finally see their work reflected at the level it deserves, the right clients feel easier to attract.
+      {/* Section 5 - The Shift */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#C9C4B6]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-start">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative lg:sticky lg:top-32">
+                <div className="absolute -left-2 lg:-left-4 top-0 text-[4rem] lg:text-[8rem] text-[#1E2823]/10 leading-none" style={{ fontFamily: 'Cormorant, serif' }}>05</div>
+                <h2 
+                  className="text-[2.5rem] lg:text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-[#1E2823] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  The<br/><span className="text-[#425145] italic">Shift</span>
+                </h2>
+              </div>
+            </div>
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="space-y-5 lg:space-y-6">
+                <p className="text-base lg:text-lg leading-relaxed text-[#1E2823]/80" style={{ fontFamily: 'Lora, serif' }}>
+                  When content is inconsistent, visibility drops. When visibility drops, perception softens. And when perception softens, pricing power weakens.
                 </p>
-                <p>
-                  AVERRA exists to ensure talent and presentation match so visibility never depends on chances.
+                <p className="text-base lg:text-lg leading-relaxed text-[#1E2823]/80" style={{ fontFamily: 'Lora, serif' }}>
+                  AVERRA creates structured, cohesive brand visuals that reinforce the level you operate at. Whether you are refining your presence, raising your standards, or building something that extends beyond appointments, your brand should support that evolution — not lag behind it.
+                </p>
+                <div className="bg-[#1E2823] p-6 lg:p-8 mt-6 lg:mt-8">
+                  <div className="space-y-3 lg:space-y-4 text-base lg:text-lg text-[#D4CFC1]" style={{ fontFamily: 'Lora, serif' }}>
+                    <p className="text-[#A88F6B] italic text-lg lg:text-xl" style={{ fontFamily: 'Cormorant, serif' }}>This is not about trends. It is not about viral posts. It is not about looking flashy.</p>
+                    <p className="text-xl lg:text-2xl text-[#D4CFC1] font-medium" style={{ fontFamily: 'Cormorant, serif' }}>It is about alignment.</p>
+                  </div>
+                </div>
+                <div className="space-y-2 lg:space-y-3 pt-4 lg:pt-6 text-base lg:text-lg text-[#425145]" style={{ fontFamily: 'Lora, serif' }}>
+                  <p>When presentation matches skill, confidence changes.</p>
+                  <p>When confidence changes, pricing shifts.</p>
+                  <p>When perception shifts, the type of clients you attract shifts with it.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 6 - Who It's For */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#425145] overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] bg-[#A88F6B]/5 rounded-full blur-3xl"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative">
+                <div className="absolute -left-2 lg:-left-4 top-0 text-[4rem] lg:text-[8rem] text-[#A88F6B]/30 leading-none" style={{ fontFamily: 'Cormorant, serif' }}>06</div>
+                <h2 
+                  className="text-[2.5rem] lg:text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] text-[#D4CFC1] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  Who It's<br/><span className="text-[#A88F6B] italic">For</span>
+                </h2>
+              </div>
+            </div>
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="space-y-6 lg:space-y-8">
+                <p className="text-lg lg:text-xl leading-relaxed text-[#D4CFC1]/90" style={{ fontFamily: 'Lora, serif' }}>
+                  AVERRA exists for the beauty professional who is done looking smaller than she is. For the founder building something structured. For the business that is growing and needs its brand to grow with it.
+                </p>
+                <div className="border-l-4 border-[#A88F6B] pl-6 lg:pl-8 py-3 lg:py-4">
+                  <div className="space-y-2 text-xl lg:text-2xl text-[#D4CFC1]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                    <p>Visibility should not pause.</p>
+                    <p className="text-[#A88F6B] italic">Neither should the brand.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="relative py-20 lg:py-40 px-6 lg:px-8 bg-[#D4CFC1]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="col-span-12 lg:col-span-4">
+              <div className="relative">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-[#A88F6B] rounded-full absolute -top-6 -left-6 lg:-top-8 lg:-left-8 opacity-30"></div>
+                <p 
+                  className="text-[2.5rem] lg:text-[clamp(2.5rem,5vw,4rem)] leading-[1] text-[#1E2823] relative z-10"
+                  style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}
+                >
+                  Ready to<br/><span className="text-[#425145] italic">begin?</span>
                 </p>
               </div>
             </div>
-
-            {/* The Standard */}
-            <div className={cardClass}>
-              <p className="text-2xl text-[#301710] mb-4 font-semibold" style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
-                The Standard
-              </p>
-              <div className="text-base text-[#301710] font-normal leading-relaxed space-y-4" style={{ fontFamily: 'Lora, serif' }}>
-                <p>
-                  AVERRA exists to create alignment between the level of the work and the way that work is presented to the world. Alignment is always the standard.
-                </p>
-                <p>
-                  Perfection has never been a requirement. However, we help brands communicate themselves at the right level, to the right audience, with consistency. Beauty professionals should not have to choose between looking established and remaining financially practical, nor should elevated branding be limited to five-figure agencies disconnected from the ideal client.
-                </p>
-                <p>
-                  Technology makes leveling up more accessible than ever before, but this accessibility without direction creates noise. AI is simply a tool and custom brand strategy is what gives it purpose. When that structure is in place, everything else moves effortlessly.
-                </p>
-              </div>
-            </div>
-
-            {/* CTA */}
-            <div className="text-center pt-12">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="col-span-12 lg:col-span-6 lg:col-start-6">
+              <div className="flex flex-col gap-4">
                 <a
                   href="/services"
-                  className="inline-block px-10 py-4 bg-[#301710] text-[#DCDACC] uppercase tracking-[0.3em] hover:bg-[#654331] transition-all duration-300 shadow-lg"
-                  style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.75rem', fontWeight: 700 }}
+                  className="group relative inline-block px-10 lg:px-12 py-5 lg:py-6 bg-[#1E2823] text-[#D4CFC1] uppercase tracking-[0.3em] text-xs lg:text-sm overflow-hidden transition-all duration-300 text-center"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                 >
-                  Explore All Tiers
+                  <span className="relative z-10">View Services</span>
+                  <div className="absolute inset-0 bg-[#A88F6B] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
                 </a>
                 <a
-                  href="/services"
-                  className="inline-block px-10 py-4 glass-effect-light border border-white/40 text-[#301710] uppercase tracking-[0.3em] hover:bg-white/30 transition-all"
-                  style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.75rem', fontWeight: 700 }}
+                  href="/quiz"
+                  className="group relative inline-block px-10 lg:px-12 py-5 lg:py-6 bg-transparent border-2 border-[#1E2823] text-[#1E2823] uppercase tracking-[0.3em] text-xs lg:text-sm overflow-hidden transition-all duration-300 text-center"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                 >
-                  Browse Digital Products
+                  <span className="relative z-10 group-hover:text-[#D4CFC1] transition-colors duration-300">Take The Quiz</span>
+                  <div className="absolute inset-0 bg-[#1E2823] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                 </a>
               </div>
             </div>

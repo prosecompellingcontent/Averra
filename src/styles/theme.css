@@ -138,6 +138,8 @@
     font-size: var(--font-size);
     overflow-x: hidden;
     color-scheme: light only;
+    /* Smooth scroll behavior for gallery navigation */
+    scroll-behavior: smooth;
     /* Mobile: Faster scrolling performance */
     -webkit-overflow-scrolling: touch;
     /* Prevent font size adjustments on orientation change */
@@ -427,5 +429,15 @@
     font-size: 32px;
     color: rgba(220, 218, 204, 0.9);
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Horizontal Gallery - Hide scrollbar */
+  .horizontal-scroll-container {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .horizontal-scroll-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
 }

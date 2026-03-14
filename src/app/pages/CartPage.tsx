@@ -7,7 +7,7 @@ export function CartPage() {
   const { items, removeItem, clearCart, totalPrice } = useCart();
 
   return (
-    <div className="min-h-screen bg-[#DCDACC]">
+    <div className="min-h-screen bg-[#DCDACC] pb-32 md:pb-0">
       <Navigation />
       
       <div className="max-w-4xl mx-auto px-6 pt-32 pb-20">

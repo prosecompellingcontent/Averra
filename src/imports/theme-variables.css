@@ -1,0 +1,131 @@
+
+element.style {
+    overflow-y: hidden;
+}
+:root {
+    --center-size: 100px;
+    --star-size: 23px;
+}
+@supports (color:lab(0% 0 0)) {
+    :root {
+        --shop-bg-white-accent: lab(96.1596% -.0823438 -1.13575);
+    }
+}
+:root {
+    --shop-bg-white-accent: #f3f4f6;
+}
+@media (max-aspect-ratio: 16 / 9) {
+    :root {
+        --video-width: 177.78vh;
+    }
+}
+:root {
+    --background: #000;
+    --text: #fff;
+    --foreground: #171717;
+    --video-width: 100vw;
+    --video-height: 100vh;
+    --safe-bottom: env(safe-area-inset-bottom);
+}
+.bbmanualmonopro_93976702-module__hiw7Cq__variable {
+    --font-my-local: "bbManualMonoPro", "bbManualMonoPro Fallback";
+}
+html {
+    font-size: 12px;
+}
+html, :host {
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    line-height: 1.5;
+    font-family: var(--default-font-family);
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+}
+*, :after, :before, ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+}
+@supports (color:lab(0% 0 0)) {
+    :root, :host {
+        --color-red-500: lab(55.4814% 75.0732 48.8528);
+        --color-blue-700: lab(36.9089% 35.0961 -85.6872);
+        --color-gray-50: lab(98.2596% -.247031 -.706708);
+        --color-gray-100: lab(96.1596% -.0823438 -1.13575);
+        --color-gray-200: lab(91.6229% -.159115 -2.26791);
+        --color-gray-300: lab(85.1236% -.612259 -3.7138);
+        --color-gray-500: lab(47.7841% -.393182 -10.0268);
+    }
+}
+:root, :host {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --color-red-500: #fb2c36;
+    --color-blue-700: #1447e6;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5dc;
+    --color-gray-500: #6a7282;
+    --color-black: #000;
+    --color-white: #fff;
+    --spacing: .25rem;
+    --container-2xl: 42rem;
+    --container-3xl: 48rem;
+    --text-xs: .75rem;
+    --text-xs--line-height: calc(1 / .75);
+    --text-sm: .875rem;
+    --text-sm--line-height: calc(1.25 / .875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-5xl: 3rem;
+    --text-5xl--line-height: 1;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --tracking-wide: .025em;
+    --leading-snug: 1.375;
+    --ease-in: cubic-bezier(.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, .2, 1);
+    --ease-in-out: cubic-bezier(.4, 0, .2, 1);
+    --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
+    --default-transition-duration: .15s;
+    --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+}
+html[Attributes Style] {
+    -webkit-locale: "en";
+}
+user agent stylesheet
+:root {
+    view-transition-name: root;
+}
+user agent stylesheet
+html {
+    display: block;
+}
+*, :after, :before, ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+}
+*, :after, :before, ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+}
+*, :after, :before, ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+}

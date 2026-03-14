@@ -473,6 +473,84 @@ app.get("/make-server-61755bec/sales-data", async (c) => {
   }
 });
 
+// Get pending client onboarding tasks (for Calendly automation)
+app.get("/make-server-61755bec/pending-onboarding", async (c) => {
+  try {
+    // Get all sales from Supabase KV
+    const sales = await kv.getByPrefix("sale_");
+    
+    // Filter to sales that haven't booked strategy session yet
+    const pendingOnboarding = sales
+      .filter((item: any) => 
+        item.type === "sale" && 
+        item.onboardingStatus === "payment_complete" &&
+        !item.strategySessionBooked
+      )
+      .sort((a: any, b: any) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA; // Newest first
+      });
+
+    console.log("Pending onboarding tasks:", pendingOnboarding.length);
+
+    return c.json({
+      pendingClients: pendingOnboarding,
+      totalPending: pendingOnboarding.length,
+      lastUpdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error retrieving pending onboarding:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Failed to retrieve pending onboarding" },
+      500
+    );
+  }
+});
+
+// Update client onboarding status (called when Calendly booking is confirmed)
+app.post("/make-server-61755bec/update-onboarding-status", async (c) => {
+  try {
+    const { saleId, strategySessionBooked, calendlyEventId, onboardingStatus } = await c.req.json();
+
+    if (!saleId) {
+      return c.json({ error: "Missing saleId" }, 400);
+    }
+
+    // Get existing sale record
+    const existingSale = await kv.get(saleId);
+    
+    if (!existingSale) {
+      return c.json({ error: "Sale not found" }, 404);
+    }
+
+    // Update the sale record
+    const updatedSale = {
+      ...existingSale,
+      strategySessionBooked: strategySessionBooked ?? existingSale.strategySessionBooked,
+      calendlyEventId: calendlyEventId ?? existingSale.calendlyEventId,
+      onboardingStatus: onboardingStatus ?? existingSale.onboardingStatus,
+      updatedAt: new Date().toISOString()
+    };
+
+    await kv.set(saleId, updatedSale);
+
+    console.log("✅ Onboarding status updated:", saleId);
+
+    return c.json({ 
+      success: true, 
+      saleId,
+      updatedSale 
+    });
+  } catch (error) {
+    console.error("Error updating onboarding status:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Failed to update onboarding status" },
+      500
+    );
+  }
+});
+
 // Contact form submission
 app.post("/make-server-61755bec/contact-submission", async (c) => {
   try {
@@ -845,11 +923,16 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         console.log("🛒 Checkout completed:", session.id);
         
         // Extract metadata
-        const customerName = session.metadata?.customerName || "N/A";
-        const customerEmail = session.metadata?.customerEmail || "N/A";
-        const customerPhone = session.metadata?.customerPhone || "N/A";
+        const customerName = session.customer_details?.name || session.metadata?.customerName || "N/A";
+        const customerEmail = session.customer_details?.email || session.metadata?.customerEmail || "N/A";
+        const customerPhone = session.customer_details?.phone || session.metadata?.customerPhone || "N/A";
         const items = session.metadata?.items ? JSON.parse(session.metadata.items) : [];
         const brandIntakeData = session.metadata?.brandIntakeData ? JSON.parse(session.metadata.brandIntakeData) : null;
+        
+        // Determine service tier from items
+        const serviceTier = items.find((item: any) => 
+          item.name.includes('Essentials') || item.name.includes('Signature') || item.name.includes('Muse')
+        )?.name || "N/A";
         
         // Update brand intake status in database if intake ID exists
         if (brandIntakeData && brandIntakeData.intakeId) {
@@ -882,32 +965,62 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         // Create sale record ID
         const saleId = `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
-        // Store complete sale data in Supabase KV
-        await kv.set(saleId, {
+        // Store complete sale data in Supabase KV for analytics and client onboarding
+        const saleRecord = {
           saleId,
           orderId: session.id,
           customerName,
           customerEmail,
           customerPhone,
           items: items.map((item: any) => item.name).join(", "),
+          itemsArray: items, // Store full items array for automation
           totalPrice: (session.amount_total / 100).toFixed(2),
           paymentId: session.payment_intent || session.id,
+          serviceTier, // For routing to correct Calendly link
           // Brand intake form data
           brandName: brandIntakeData?.businessName || "N/A",
           industry: brandIntakeData?.servicesOffering || "N/A",
           targetAudience: brandIntakeData?.idealClient || "N/A",
-          goals: brandIntakeData?.futureGoals?.join(", ") || "N/A",
+          goals: Array.isArray(brandIntakeData?.futureGoals) 
+            ? brandIntakeData.futureGoals.join(", ") 
+            : brandIntakeData?.futureGoals || "N/A",
           instagramHandle: brandIntakeData?.instagramHandle || "N/A",
           website: brandIntakeData?.website || "N/A",
-          businessStage: brandIntakeData?.businessStage?.join(", ") || "N/A",
+          businessStage: Array.isArray(brandIntakeData?.businessStage)
+            ? brandIntakeData.businessStage.join(", ")
+            : brandIntakeData?.businessStage || "N/A",
           brandPerception: brandIntakeData?.brandPerception || "N/A",
+          misalignedAspects: Array.isArray(brandIntakeData?.misalignedAspects)
+            ? brandIntakeData.misalignedAspects.join(", ")
+            : brandIntakeData?.misalignedAspects || "N/A",
+          aiStance: brandIntakeData?.aiStance || "N/A",
+          urgentNotes: brandIntakeData?.urgentNotes || "N/A",
           // Full brand intake data for reference
           fullBrandIntakeData: brandIntakeData,
+          // Client onboarding status
+          onboardingStatus: "payment_complete",
+          strategySessionBooked: false,
+          calendlyEventId: null,
+          // Timestamps
           createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
           type: "sale"
-        });
+        };
+        
+        await kv.set(saleId, saleRecord);
         
         console.log("✅ Sale record stored in Supabase:", saleId);
+        console.log("📊 Customer:", customerName, "|", customerEmail);
+        console.log("💰 Amount:", (session.amount_total / 100).toFixed(2));
+        console.log("🎨 Service Tier:", serviceTier);
+        
+        // ** THIS IS WHERE YOU'LL HOOK UP YOUR CALENDLY AUTOMATION **
+        // The saleRecord object contains everything you need:
+        // - customerEmail, customerName, customerPhone
+        // - serviceTier (to route to correct Calendly link)
+        // - All brand intake data
+        // You can trigger your Calendly email automation here or via a separate cron job
+        // that checks for sales with strategySessionBooked === false
         
         break;
       }

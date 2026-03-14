@@ -9,23 +9,15 @@ export function Navigation() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-6">
-      <div className="flex justify-between items-center">
-        {/* AVERRA Brand Name - Left Side */}
-        <Link 
-          to="/" 
-          className={`text-xs uppercase tracking-widest text-neutral-400 ${!isMobile ? 'hover:text-neutral-200 transition-colors' : ''} font-semibold`}
-        >
-          AVERRA
-        </Link>
-
-        {/* Navigation Links - Right Side */}
-        <div className={`flex items-center ${isMobile ? 'gap-4' : 'gap-12'}`}>
+      <div className="flex justify-center items-center relative gap-32">
+        {/* Navigation Links - Left Side */}
+        <div className={`flex items-center ${isMobile ? 'gap-4' : 'gap-16'}`}>
           {!isMobile && (
             <Link 
-              to="/" 
+              to="/quiz" 
               className="text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors"
             >
-              Home
+              Quiz
             </Link>
           )}
           <Link 
@@ -34,13 +26,24 @@ export function Navigation() {
           >
             Services
           </Link>
+        </div>
+
+        {/* AVERRA Brand Name - Center */}
+        <Link 
+          to="/" 
+          className={`text-xs uppercase tracking-widest text-neutral-400 ${!isMobile ? 'hover:text-neutral-200 transition-colors' : ''} font-semibold`}
+        >
+          AVERRA
+        </Link>
+
+        {/* Navigation Links - Right Side */}
+        <div className={`flex items-center ${isMobile ? 'gap-4' : 'gap-16'}`}>
           <Link 
             to="/about" 
             className={`text-xs uppercase tracking-widest text-neutral-400 ${!isMobile ? 'hover:text-neutral-200 transition-colors' : ''}`}
           >
             About
           </Link>
-          
           <Link 
             to="/contact" 
             className={`text-xs uppercase tracking-widest text-neutral-400 ${!isMobile ? 'hover:text-neutral-200 transition-colors' : ''}`}

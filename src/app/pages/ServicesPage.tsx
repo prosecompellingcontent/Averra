@@ -6,7 +6,7 @@ import { useCart } from "@/app/context/CartContext";
 import { CTAFooter } from '@/app/components/CTAFooter';
 import { MarqueeScroll } from '@/app/components/MarqueeScroll';
 import { trackAction } from '@/utils/analytics';
-import { getBackgroundImageStyle } from '@/utils/imageHelpers';
+import { getImageUrl } from '@/utils/imageHelpers';
 
 const tiers = [
   {
@@ -182,319 +182,327 @@ export function ServicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#DCDACC] text-[#301710]">
-      <Navigation />
-      
-      <div className="relative -mx-8 mb-0">
-        <div 
-          className="absolute inset-0 bg-center"
-          style={getBackgroundImageStyle('/services-hero.png')}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#DCDACC]/60 via-[#DCDACC]/70 to-[#DCDACC]" />
+    <>
+      <div className="min-h-screen bg-[#DCDACC] text-[#221412] pb-32 md:pb-0">
+        <Navigation />
         
-        <div className="relative max-w-7xl mx-auto px-8 py-32 text-center">
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#654331] font-light mb-6">
-            Branding Packages
-          </p>
-          <h1 className="text-[clamp(3rem,10vw,6rem)] text-[#301710] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-            Compare & Choose
-          </h1>
-          <p className="text-lg text-[#654331] font-light max-w-2xl mx-auto">
-            Three Tiers. All Custom. Find Yours.
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#301710]"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#301710]/50 via-85% to-[#DCDACC] to-100%"></div>
-        
-        <div className="relative py-16 text-center">
-          <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#BFBBA7]/30"></div>
-          <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#BFBBA7]/30"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#BFBBA7]/20"></div>
-          <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#BFBBA7]/20"></div>
+        {/* Hero Section - Using proper pattern */}
+        <section className="relative w-full overflow-hidden min-h-svh">
+          {/* Background image as a pinned rectangle */}
+          <div 
+            className="absolute inset-0 w-full h-full"
+            style={{
+              backgroundImage: `url(${getImageUrl('/services-hero.png')})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          />
+          <div className="absolute inset-0 bg-[#DCDACC]/40" />
           
-          {/* Moving Marquee Banner */}
-          <div className="mb-8 border-y border-[#C9A961]/30 py-4">
-            <MarqueeScroll disableOnMobile={false} duration={30}>
-              <div className="flex items-center gap-8 text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
-                <span>LAUNCH PRICING · March 3rd–May 31st</span>
-                <span>•</span>
-                <span>FOUNDING MEMBERS ONLY</span>
-                <span>•</span>
-                <span>UP TO 50% OFF</span>
-                <span>•</span>
-                <span>LAUNCH PRICING · March 3rd–May 31st</span>
-                <span>•</span>
-                <span>FOUNDING MEMBERS ONLY</span>
-                <span>•</span>
-                <span>UP TO 50% OFF</span>
-                <span>•</span>
-              </div>
-            </MarqueeScroll>
-          </div>
-          
-          <div className="relative z-10 max-w-4xl mx-auto px-8">
-            <div className="inline-block px-28 py-3 border-2 mb-6 relative overflow-hidden animate-pulse-subtle"
-              style={{
-                borderImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1',
-                background: 'transparent'
-              }}>
-              <span className="text-sm md:text-base uppercase tracking-[0.4em] font-light"
-                style={{
-                  background: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}>Exclusive Offer</span>
-            </div>
-            
-            <h3 className="text-4xl md:text-5xl text-[#DCDACC] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, letterSpacing: '0.02em' }}>
-              Founding Members
-            </h3>
-            
-            <div className="inline-block px-8 py-2 bg-[#DCDACC] mb-6">
-              <span className="text-sm md:text-base text-[#301710] font-medium uppercase tracking-[0.2em]">Limited Time Only</span>
-            </div>
-            
-            <p className="text-base md:text-lg text-[#DCDACC] font-light leading-relaxed max-w-2xl mx-auto">
-              Early access never looked this good.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-8">
-        <div className="space-y-12 mb-32">
-          {tiers.map((tier, tierIndex) => (
-            <div
-              key={tier.name}
-              className={`${
-                tier.featured ? 'bg-white border-2 border-[#654331]' : 'bg-white/60'
-              } p-12`}
-              style={{
-                boxShadow: tier.featured 
-                  ? '12px 12px 0px 0px rgba(34, 20, 18, 0.85), 24px 24px 0px 0px rgba(34, 20, 18, 0.5)' 
-                  : '-2px -2px 0px 0px rgba(34, 20, 18, 0.4), 8px 8px 0px 0px rgba(34, 20, 18, 0.8), 16px 16px 0px 0px rgba(34, 20, 18, 0.4)',
-                position: 'relative'
-              }}
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <div className="lg:col-span-1 space-y-8">
-                  {tier.featured && (
-                    <div className="inline-block px-4 py-1 bg-[#301710] text-[#DCDACC] text-[9px] uppercase tracking-[0.3em] font-light mb-4">
-                      Most Popular
-                    </div>
-                  )}
-                  <div>
-                    <h2 className="text-3xl text-[#301710] mb-2" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                      {tier.name}
-                    </h2>
-                    <p className="text-xs uppercase tracking-[0.2em] text-[#654331] mb-4">
-                      {tier.subtitle}
-                    </p>
-                    <p className="text-base text-[#654331] font-light italic mb-6 whitespace-pre-line" style={{ fontFamily: 'Cormorant, serif' }}>
-                      {tier.description}
-                    </p>
-                    <div className="mb-3">
-                      <span className="text-2xl text-[#654331]/40 line-through mr-3" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                        {tier.price}
-                      </span>
-                      <span className="text-4xl text-[#301710]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                        {tier.salePrice}
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      sessionStorage.setItem('selectedServiceTier', JSON.stringify({
-                        id: tier.id,
-                        name: tier.name,
-                        priceNum: tier.priceNum,
-                        originalPriceNum: tier.originalPriceNum,
-                        subtitle: tier.subtitle,
-                        type: 'service',
-                        description: tier.description
-                      }));
-                      navigate('/brand-intake');
-                    }}
-                    className={`inline-block w-full py-4 bg-[#301710] text-[#DCDACC] text-center text-sm uppercase tracking-[0.3em] font-light ${!isMobile ? 'hover:bg-[#2d1810]' : ''} transition-all cursor-pointer`}
-                  >
-                    Get Started
-                  </button>
-                </div>
-
-                <div className="lg:col-span-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#654331] mb-8">
-                    What's Included
-                  </p>
-                  <div className="grid grid-cols-1 gap-y-1">
-                    {tier.features.map((feature, index) => (
-                      <div 
-                        key={index} 
-                        className="flex gap-4 mb-3"
-                      >
-                        <Check className="w-5 h-5 text-[#301710] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
-                        <div>
-                          <p className="text-base text-[#301710] mb-0.5">
-                            {feature.name}
-                          </p>
-                          <p className="text-sm text-[#654331] font-light leading-tight">
-                            {feature.detail}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mb-32">
-          <div className="text-center mb-16">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#654331] font-light mb-6">
-              AVERRA Digital Products
-            </p>
-            <h2 className="text-[clamp(2.5rem,8vw,4rem)] text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-              Brand-Ready Visuals
-            </h2>
-            <p className="text-base text-[#654331] font-light max-w-2xl mx-auto mb-2">
-              Instant access. No revisions. Ready to use.
-            </p>
-            
-            <div className={`mt-8 mb-8 max-w-3xl mx-auto px-8 py-5 relative ${isMobile ? 'bg-[#DCDACC]/60' : 'glass-effect-light'}`}>
-              <div className="absolute left-0 top-0 bottom-0 w-px bg-[#654331]/30"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-px bg-[#654331]/30"></div>
-              <p className="text-xs text-[#654331] font-light leading-relaxed italic" style={{ fontFamily: 'Cormorant, serif' }}>
-                All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.
+          <div className="relative z-10 min-h-svh flex items-center justify-center px-8 py-16">
+            <div className="max-w-7xl mx-auto text-center">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-[#221412]/60 font-light mb-6">
+                Branding Packages
+              </p>
+              <h1 className="text-[clamp(2.5rem,8vw,6rem)] text-[#221412] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                Compare & Choose
+              </h1>
+              <p className="text-lg text-[#221412]/70 font-light max-w-2xl mx-auto">
+                Three Tiers. All Custom. Find Yours.
               </p>
             </div>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {digitalProducts.map((product) => (
-              <div key={product.name} className="bg-white/60 p-8 hover:bg-white transition-all">
-                <h3 className="text-xl text-[#301710] mb-3" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                  {product.name}
-                </h3>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-lg text-[#654331]/40 line-through" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                    {product.originalPrice}
-                  </span>
-                  <span className="text-3xl text-[#301710]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                    {product.price}
-                  </span>
+        <div className="mb-32 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[#221412]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#221412]/50 via-85% to-[#DCDACC] to-100%"></div>
+          
+          <div className="relative py-16 text-center">
+            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#BFBBA7]/30"></div>
+            <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#BFBBA7]/30"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#BFBBA7]/20"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#BFBBA7]/20"></div>
+            
+            {/* Moving Marquee Banner */}
+            <div className="mb-8 border-y border-[#C9A961]/30 py-4">
+              <MarqueeScroll disableOnMobile={false} duration={30}>
+                <div className="flex items-center gap-8 text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
+                  <span>LAUNCH PRICING · March 3rd–May 31st</span>
+                  <span>•</span>
+                  <span>FOUNDING MEMBERS ONLY</span>
+                  <span>•</span>
+                  <span>UP TO 50% OFF</span>
+                  <span>•</span>
+                  <span>LAUNCH PRICING · March 3rd–May 31st</span>
+                  <span>•</span>
+                  <span>FOUNDING MEMBERS ONLY</span>
+                  <span>•</span>
+                  <span>UP TO 50% OFF</span>
+                  <span>•</span>
                 </div>
-                
-                {product.description && (
-                  <p className="text-sm text-[#654331] font-light mb-4 leading-relaxed">
-                    {product.description}
-                  </p>
-                )}
-                
-                <div className="mb-4 space-y-2">
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#654331] mb-3">Inside This Pack:</p>
-                  {product.scenes?.map((scene, idx) => (
-                    <div key={idx} className="mb-3">
-                      <p className="text-xs text-[#301710] font-medium mb-1">{scene.title}</p>
-                      <p className="text-xs text-[#654331] font-light leading-relaxed">{scene.detail}</p>
+              </MarqueeScroll>
+            </div>
+            
+            <div className="relative z-10 max-w-4xl mx-auto px-8">
+              <div className="inline-block px-28 py-3 border-2 mb-6 relative overflow-hidden animate-pulse-subtle"
+                style={{
+                  borderImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1',
+                  background: 'transparent'
+                }}>
+                <span className="text-sm md:text-base uppercase tracking-[0.4em] font-light"
+                  style={{
+                    backgroundImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}>Exclusive Offer</span>
+              </div>
+              
+              <h3 className="text-4xl md:text-5xl text-[#DCDACC] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, letterSpacing: '0.02em' }}>
+                Founding Members
+              </h3>
+              
+              <div className="inline-block px-8 py-2 bg-[#DCDACC] mb-6">
+                <span className="text-sm md:text-base text-[#221412] font-medium uppercase tracking-[0.2em]">Limited Time Only</span>
+              </div>
+              
+              <p className="text-base md:text-lg text-[#DCDACC] font-light leading-relaxed max-w-2xl mx-auto">
+                Early access never looked this good.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="space-y-12 mb-32">
+            {tiers.map((tier, tierIndex) => (
+              <div
+                key={tier.name}
+                className={`${
+                  tier.featured ? 'bg-white border-2 border-[#221412]' : 'bg-white/60'
+                } p-12`}
+                style={{
+                  boxShadow: tier.featured 
+                    ? '12px 12px 0px 0px rgba(34, 20, 18, 0.85), 24px 24px 0px 0px rgba(34, 20, 18, 0.5)' 
+                    : '-2px -2px 0px 0px rgba(34, 20, 18, 0.4), 8px 8px 0px 0px rgba(34, 20, 18, 0.8), 16px 16px 0px 0px rgba(34, 20, 18, 0.4)',
+                  position: 'relative'
+                }}
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                  <div className="lg:col-span-1 space-y-8">
+                    {tier.featured && (
+                      <div className="inline-block px-4 py-1 bg-[#221412] text-[#DCDACC] text-[9px] uppercase tracking-[0.3em] font-light mb-4">
+                        Most Popular
+                      </div>
+                    )}
+                    <div>
+                      <h2 className="text-3xl text-[#221412] mb-2" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                        {tier.name}
+                      </h2>
+                      <p className="text-xs uppercase tracking-[0.2em] text-[#221412]/60 mb-4">
+                        {tier.subtitle}
+                      </p>
+                      <p className="text-base text-[#221412]/70 font-light italic mb-6 whitespace-pre-line" style={{ fontFamily: 'Cormorant, serif' }}>
+                        {tier.description}
+                      </p>
+                      <div className="mb-3">
+                        <span className="text-2xl text-[#221412]/40 line-through mr-3" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                          {tier.price}
+                        </span>
+                        <span className="text-4xl text-[#221412]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                          {tier.salePrice}
+                        </span>
+                      </div>
                     </div>
-                  ))}
+                    <button
+                      onClick={() => {
+                        sessionStorage.setItem('selectedServiceTier', JSON.stringify({
+                          id: tier.id,
+                          name: tier.name,
+                          priceNum: tier.priceNum,
+                          originalPriceNum: tier.originalPriceNum,
+                          subtitle: tier.subtitle,
+                          type: 'service',
+                          description: tier.description
+                        }));
+                        navigate('/brand-intake');
+                      }}
+                      className={`inline-block w-full py-4 bg-[#221412] text-white text-center text-sm uppercase tracking-[0.3em] font-light ${!isMobile ? 'hover:bg-[#3d2b26]' : ''} transition-all cursor-pointer`}
+                    >
+                      Get Started
+                    </button>
+                  </div>
+
+                  <div className="lg:col-span-2">
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#221412]/60 mb-8">
+                      What's Included
+                    </p>
+                    <div className="grid grid-cols-1 gap-y-1">
+                      {tier.features.map((feature, index) => (
+                        <div 
+                          key={index} 
+                          className="flex gap-4 mb-3"
+                        >
+                          <Check className="w-5 h-5 text-[#221412] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                          <div>
+                            <p className="text-base text-[#221412] mb-0.5">
+                              {feature.name}
+                            </p>
+                            <p className="text-sm text-[#221412]/70 font-light leading-tight">
+                              {feature.detail}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="mb-4 space-y-1">
-                  {product.includes?.map((item, idx) => (
-                    <p key={idx} className="text-xs text-[#654331] font-light">• {item}</p>
-                  ))}
-                </div>
-                
-                <p className="text-xs text-[#654331] italic mb-6 leading-relaxed" style={{ fontFamily: 'Cormorant, serif' }}>
-                  {product.positioning}
-                </p>
-                
-                <button
-                  onClick={() => handleAddToCart({ id: product.id, name: product.name, priceNum: product.priceNum, originalPriceNum: product.originalPriceNum, type: 'digital' })}
-                  className="inline-block w-full py-3 bg-[#301710] text-[#DCDACC] text-center text-sm uppercase tracking-[0.3em] font-light hover:bg-[#654331] transition-all"
-                >
-                  Add to Cart
-                </button>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 relative overflow-hidden -mx-8">
-            <div className="absolute inset-0 bg-[#301710]"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#DCDACC]/60 from-0% via-[#301710]/70 via-10% to-transparent to-30%"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent from-70% via-[#301710]/70 via-90% to-[#DCDACC]/60 to-100%"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#DCDACC]/20 from-0% via-transparent via-50% to-transparent to-100%"></div>
-            <div className="absolute inset-0 bg-gradient-to-l from-[#DCDACC]/20 from-0% via-transparent via-50% to-transparent to-100%"></div>
-            
-            <div className="relative py-16 text-center">
-              <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#BFBBA7]/30"></div>
-              <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#BFBBA7]/30"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#BFBBA7]/20"></div>
-              <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#BFBBA7]/20"></div>
+          <div className="mb-32">
+            <div className="text-center mb-16">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-[#221412]/60 font-light mb-6">
+                AVERRA Digital Products
+              </p>
+              <h2 className="text-[clamp(2.5rem,8vw,4rem)] text-[#221412] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                Brand-Ready Visuals
+              </h2>
+              <p className="text-base text-[#221412]/70 font-light max-w-2xl mx-auto mb-2">
+                Instant access. No revisions. Ready to use.
+              </p>
               
-              <div className="relative z-10 max-w-4xl mx-auto px-8">
-                <div className="inline-block px-12 py-4 border-4 mb-6 relative overflow-hidden"
-                  style={{
-                    borderImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1',
-                    background: 'transparent'
-                  }}>
-                  <span className="text-sm md:text-base uppercase tracking-[0.4em] font-medium"
+              <div className={`mt-8 mb-8 max-w-3xl mx-auto px-8 py-5 relative ${isMobile ? 'bg-[#DCDACC]/60' : 'glass-effect-light'}`}>
+                <div className="absolute left-0 top-0 bottom-0 w-px bg-[#221412]/30"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-px bg-[#221412]/30"></div>
+                <p className="text-xs text-[#221412]/70 font-light leading-relaxed italic" style={{ fontFamily: 'Cormorant, serif' }}>
+                  All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {digitalProducts.map((product) => (
+                <div key={product.name} className="bg-white/60 p-8 hover:bg-white transition-all">
+                  <h3 className="text-xl text-[#221412] mb-3" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-lg text-[#221412]/40 line-through" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                      {product.originalPrice}
+                    </span>
+                    <span className="text-3xl text-[#221412]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                      {product.price}
+                    </span>
+                  </div>
+                  
+                  {product.description && (
+                    <p className="text-sm text-[#221412]/70 font-light mb-4 leading-relaxed">
+                      {product.description}
+                    </p>
+                  )}
+                  
+                  <div className="mb-4 space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#221412]/60 mb-3">Inside This Pack:</p>
+                    {product.scenes?.map((scene, idx) => (
+                      <div key={idx} className="mb-3">
+                        <p className="text-xs text-[#221412] font-medium mb-1">{scene.title}</p>
+                        <p className="text-xs text-[#221412]/70 font-light leading-relaxed">{scene.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mb-4 space-y-1">
+                    {product.includes?.map((item, idx) => (
+                      <p key={idx} className="text-xs text-[#221412]/70 font-light">• {item}</p>
+                    ))}
+                  </div>
+                  
+                  <p className="text-xs text-[#221412]/70 italic mb-6 leading-relaxed" style={{ fontFamily: 'Cormorant, serif' }}>
+                    {product.positioning}
+                  </p>
+                  
+                  <button
+                    onClick={() => handleAddToCart({ id: product.id, name: product.name, priceNum: product.priceNum, originalPriceNum: product.originalPriceNum, type: 'digital' })}
+                    className="inline-block w-full py-3 bg-[#221412] text-[#DCDACC] text-center text-sm uppercase tracking-[0.3em] font-light hover:bg-[#3d2b26] transition-all"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-12 relative overflow-hidden -mx-8">
+              <div className="absolute inset-0 bg-[#221412]"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#DCDACC] from-0% via-[#221412]/30 via-10% to-transparent to-25%"></div>
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#221412]/50 via-85% to-[#DCDACC] to-100%"></div>
+              
+              <div className="relative py-16 text-center">
+                <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#DCDACC]/30"></div>
+                <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#DCDACC]/30"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#DCDACC]/20"></div>
+                <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#DCDACC]/20"></div>
+                
+                <div className="relative z-10 max-w-4xl mx-auto px-8">
+                  <div className="inline-block px-28 py-3 border-2 mb-6 relative overflow-hidden animate-pulse-subtle"
                     style={{
-                      background: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text'
-                    }}>Limited Time Bundle</span>
+                      borderImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1',
+                      background: 'transparent'
+                    }}>
+                    <span className="text-sm md:text-base uppercase tracking-[0.4em] font-light"
+                      style={{
+                        backgroundImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text'
+                      }}>Limited Time Bundle</span>
+                  </div>
+                  
+                  <h3 className="text-3xl md:text-5xl text-[#DCDACC] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, letterSpacing: '0.02em' }}>
+                    Launch Bundle: All 6 Beauty Service Packs
+                  </h3>
+                  
+                  <div className="flex items-center justify-center gap-6 mb-8">
+                    <span className="text-2xl md:text-4xl text-[#DCDACC]/40 line-through" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>$300</span>
+                    <span className="text-4xl md:text-6xl text-[#DCDACC]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>$180</span>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleAddToCart({ id: 'bundle-all-digital', name: 'Launch Bundle: All 6 Beauty Service Packs', priceNum: 180, originalPriceNum: 300, type: 'digital' })}
+                    className="inline-block px-12 py-4 bg-[#DCDACC] text-[#221412] text-sm uppercase tracking-[0.3em] font-medium hover:bg-white transition-all"
+                  >
+                    Add Bundle to Cart
+                  </button>
                 </div>
-                
-                <h3 className="text-3xl md:text-5xl text-[#DCDACC] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, letterSpacing: '0.02em' }}>
-                  Launch Bundle: All 6 Beauty Service Packs
+              </div>
+            </div>
+            
+            <div className="mt-12 text-center max-w-2xl mx-auto">
+              <p className="text-xs text-[#221412]/70 font-light">
+                All digital products include commercial use rights • Files delivered instantly after purchase • No edits, swaps, or personalization included
+              </p>
+              
+              <div className="mt-8 mb-32">
+                <h3 className="text-3xl text-[#221412]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                  Not sure which tier?
                 </h3>
-                
-                <div className="flex items-center justify-center gap-6 mb-8">
-                  <span className="text-2xl md:text-4xl text-[#DCDACC]/40 line-through" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>$300</span>
-                  <span className="text-4xl md:text-6xl text-[#DCDACC]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>$180</span>
-                </div>
-                
-                <button
-                  onClick={() => handleAddToCart({ id: 'bundle-all-digital', name: 'Launch Bundle: All 6 Beauty Service Packs', priceNum: 180, originalPriceNum: 300, type: 'digital' })}
-                  className="inline-block px-12 py-4 bg-[#DCDACC] text-[#301710] text-sm uppercase tracking-[0.3em] font-medium hover:bg-white transition-all"
+                <p className="text-base text-[#221412]/70 font-light mt-4">
+                  Take our 2-minute Brand Quiz to get a personalized recommendation.
+                </p>
+                <Link
+                  to="/quiz"
+                  className="inline-block px-12 py-4 bg-[#221412] text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#3d2b26] transition-all mt-6"
                 >
-                  Add Bundle to Cart
-                </button>
+                  Start Brand Quiz
+                </Link>
               </div>
             </div>
           </div>
-          
-          <div className="mt-12 text-center max-w-2xl mx-auto">
-            <p className="text-xs text-[#654331] font-light">
-              All digital products include commercial use rights • Files delivered instantly after purchase • No edits, swaps, or personalization included
-            </p>
-            
-            <div className="mt-8 mb-32">
-              <h3 className="text-3xl text-[#301710]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                Not sure which tier?
-              </h3>
-              <p className="text-base text-[#654331] font-light mt-4">
-                Take our 2-minute Brand Quiz to get a personalized recommendation.
-              </p>
-              <Link
-                to="/quiz"
-                className="inline-block px-12 py-4 bg-[#301710] text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#2d1810] transition-all mt-6"
-              >
-                Start Brand Quiz
-              </Link>
-            </div>
-          </div>
         </div>
+        <CTAFooter />
       </div>
-      <CTAFooter />
-    </div>
+    </>
   );
 }

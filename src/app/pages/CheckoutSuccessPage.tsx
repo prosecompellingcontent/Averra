@@ -18,7 +18,7 @@ export function CheckoutSuccessPage() {
   }, [clearCart]);
 
   return (
-    <div className="min-h-screen bg-[#301710]">
+    <div className="min-h-screen bg-[#301710] pb-32 md:pb-0">
       <Navigation />
       
       <div className="max-w-3xl mx-auto px-6 pt-32 pb-20 text-center">

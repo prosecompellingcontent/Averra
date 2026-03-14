@@ -493,7 +493,7 @@ export function BrandIntakeForm() {
               </h3>
               
               <div className="space-y-2 text-[#301710]/70 text-sm">
-                <p><span className="font-semibold text-[#301710]">1. Complete Form</span><br />Secure checkout via Stripe or PayPal.</p>
+                <p><span className="font-semibold text-[#301710]">1. Complete Form</span><br />Secure checkout via Stripe.</p>
                 <p><span className="font-semibold text-[#301710]">2. Schedule Your Strategy Session</span><br />You'll receive an email to book your session.</p>
                 <p><span className="font-semibold text-[#301710]">3. Define Your Direction</span><br />Your strategy session ensures visuals are built with intention before production starts.</p>
                 <p><span className="font-semibold text-[#301710]">4. Receive Your Brand System</span><br />Custom visuals delivered!</p>

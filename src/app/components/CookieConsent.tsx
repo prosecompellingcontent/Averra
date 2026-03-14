@@ -84,11 +84,8 @@ export function CookieConsent() {
 
   return (
     <div 
-      className={`${
-        isMobile ? 'relative' : 'fixed bottom-0 left-0 right-0'
-      } z-[9999] border-t border-[#654331]/40 shadow-2xl backdrop-blur-md ${ 
-        isMobile ? 'bg-[#301710]' : 'glass-effect-dark'
-      }`}
+      className="fixed inset-x-0 bottom-0 z-[9999] border-t border-[#654331]/40 shadow-2xl backdrop-blur-md glass-effect-dark"
+      style={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {!showMoreInfo ? (
