@@ -37,9 +37,8 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
   if (isMobile) {
     return (
       <div 
-        className="fixed top-20 right-4 left-4 z-50 border-2 border-[#301710] shadow-2xl p-4"
+        className="fixed top-20 right-4 left-4 z-50 border-2 border-[#301710] shadow-2xl p-4 bg-white"
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.95)', // Solid background instead of backdrop-blur
           contain: 'layout style paint', // CSS containment for performance
         }}
       >
@@ -93,7 +92,7 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="fixed top-24 right-8 z-50 w-96 glass-effect border-2 border-[#301710] shadow-2xl"
+          className="fixed top-24 right-8 z-50 w-96 bg-white border-2 border-[#301710] shadow-2xl"
           style={{
             boxShadow: '8px 8px 0px 0px rgba(48, 23, 16, 0.8)'
           }}

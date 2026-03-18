@@ -31,7 +31,7 @@ const tiers = [
     priceNum: 250,
     originalPriceNum: 350,
     features: [
-      "20 Custom AI Brand Models",
+      "15 Custom AI Brand Models",
       "Advanced AVERRA Strategy Session",
       "Expanded AVERRA Visual System Guide",
       "Client Loyalty & Expectation Session",
@@ -50,7 +50,7 @@ const tiers = [
     priceNum: 400,
     originalPriceNum: 500,
     features: [
-      "30 Custom AI Brand Models",
+      "20 Custom AI Company Models",
       "AVERRA Executive Strategy Intensive",
       "Complete AVERRA Brand System (Executive Edition)",
       "Advanced Brand Authority Session",

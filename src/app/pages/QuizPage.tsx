@@ -182,7 +182,7 @@ export function QuizPage() {
             {
               title: "What You Need Right Now",
               subtitle: "You Need Systems That Scale",
-              content: "You need a tactical strategy that scales with you. Something that positions you a Founder or CEO, not just another option in the market.\n\nAVERRA Muse gives you that structure:\n\nWith 30 custom AI company models built to support the full scope of a growing business including services, retail, launches, team features, and expansion moments. This gives you a full visual library designed to carry the company's content as it grows.\n\nYou'll receive a dedicated Executive Strategy Session centered on pricing confidence, market positioning, and business evolution. As revenue grows and responsibility expands, the company's brand must reflect that maturity.\n\nMuse also includes a complete Company System outlining tone, content presentation, industry standards, along with a Team Alignment Strategy Guide to ensure consistency across assistants, stylists, or multi-chair operations.\n\nThis will set the foundation for long-term growth."
+              content: "You need a tactical strategy that scales with you. Something that positions you a Founder or CEO, not just another option in the market.\n\nAVERRA Muse gives you that structure:\n\nWith 20 custom AI company models built to support the full scope of a growing business including services, retail, launches, team features, and expansion moments. This gives you a full visual library designed to carry the company's content as it grows.\n\nYou'll receive a dedicated Executive Strategy Session centered on pricing confidence, market positioning, and business evolution. As revenue grows and responsibility expands, the company's brand must reflect that maturity.\n\nMuse also includes a complete Company System outlining tone, content presentation, industry standards, along with a Team Alignment Strategy Guide to ensure consistency across assistants, stylists, or multi-chair operations.\n\nThis will set the foundation for long-term growth."
             },
             {
               title: "What Happens If You Don't Fix This",
@@ -205,7 +205,7 @@ export function QuizPage() {
             {
               title: "What You Need Right Now",
               subtitle: "Elevated Presence",
-              content: "You don't need basic templates or a full luxury rebrand. You need a strategy for elevation.\n\nAVERRA Signature gives you that:\n\n20 custom AI brand models designed for premium positioning. A comprehensive strategy session focused on audience refinement and market differentiation. Complete visual guidelines that maintain consistency across all platforms.\n\nThis is the bridge between where you are and where you're going. The brand system that finally matches your ambition."
+              content: "You don't need basic templates or a full luxury rebrand. You need a strategy for elevation.\n\nAVERRA Signature gives you that:\n\n15 custom AI brand models designed for premium positioning. A comprehensive strategy session focused on audience refinement and market differentiation. Complete visual guidelines that maintain consistency across all platforms.\n\nThis is the bridge between where you are and where you're going. The brand system that finally matches your ambition."
             },
             {
               title: "What Happens If You Don't Fix This",

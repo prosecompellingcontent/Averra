@@ -5,8 +5,8 @@ export function CTAFooter() {
   const isMobile = useIsMobile();
   
   return (
-    <section className="bg-[#221412] py-32 px-8">
-      <div className="max-w-4xl mx-auto text-center space-y-12">
+    <section className="bg-[#221412] py-32 px-8 pb-0">
+      <div className="max-w-4xl mx-auto text-center space-y-12 pb-0">
         <div className="space-y-6">
           <h2 className="text-[clamp(2.5rem,8vw,5rem)] text-[#DCDACC] leading-tight" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
             Ready to be the face of your brand?
@@ -38,7 +38,7 @@ export function CTAFooter() {
           </p>
         </div>
 
-        <div className="pt-16 border-t border-[#654331]/30">
+        <div className="pt-16 pb-8 border-t border-[#654331]/30">
           <div className="flex flex-col gap-4">
             <Link 
               to="/terms-of-service"

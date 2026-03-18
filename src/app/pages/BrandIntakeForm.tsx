@@ -2,13 +2,22 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { Navigation } from "@/app/components/Navigation";
 import { useCart } from "@/app/context/CartContext";
-import { Check } from "lucide-react";
+import { Check, ArrowLeft } from "lucide-react";
 import { projectId, publicAnonKey } from '/utils/supabase/info';
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+
+// Service tier descriptions
+const tierDescriptions: Record<string, string> = {
+  "AVERRA Essentials": "The foundation package for entrepreneurs who deserve elevated branding with 10 custom AI brand models and strategic guidance.",
+  "AVERRA Signature": "For brands ready to raise pricing and presence with 15 custom AI brand models and advanced strategy.",
+  "AVERRA Muse": "The executive transformation package with 20 custom AI company models and comprehensive brand strategy.",
+};
 
 export function BrandIntakeForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { items } = useCart();
+  const isMobile = useIsMobile();
   
   // ALL useState hooks must be declared FIRST, before any conditional returns
   const [tier, setTier] = useState<any>(null);
@@ -172,32 +181,53 @@ export function BrandIntakeForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#DCDACC]">
+    <div className="min-h-screen bg-[#F7F3EF]">
       <Navigation />
       
       <div className="max-w-4xl mx-auto px-6 pt-32 pb-20">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/services')}
+          className={`flex items-center gap-2 text-[#654331] mb-8 group ${!isMobile ? 'hover:text-[#301710]' : ''} transition-colors`}
+        >
+          <ArrowLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} ${!isMobile ? 'group-hover:-translate-x-1' : ''} transition-transform`} />
+          <span className={`uppercase tracking-wider ${isMobile ? 'text-xs' : 'text-sm'}`}>Back to Services</span>
+        </button>
+
         {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl text-[#301710] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-            AVERRA'S<br />Brand Alignment Form
+        <div className="mb-16 text-center">
+          <p className={`uppercase tracking-[0.4em] text-[#b76e79] mb-4 ${isMobile ? 'text-[8px]' : 'text-[10px]'}`}>
+            Brand Alignment
+          </p>
+          <h1 className={`text-[#301710] mb-6 leading-tight ${isMobile ? 'text-4xl' : 'text-6xl'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+            Tell Us About<br />Your Vision
           </h1>
-          
-          <p className="text-[#301710]/80 text-base font-light mb-2">
-            This takes 3–5 minutes.
+          <p className={`text-[#654331] max-w-2xl mx-auto mb-8 ${isMobile ? 'text-sm' : 'text-lg'}`} style={{ fontFamily: 'Lora, serif' }}>
+            This alignment form ensures your brand system is built with intention
           </p>
           
           {/* Selected Package Display */}
-          <div className="mt-8 inline-flex items-center gap-3 px-6 py-3 glass-effect border border-white/30 shadow-lg">
-            <Check className="w-4 h-4 text-[#301710]" />
-            <span className="text-[#301710] text-sm">
-              Selected: <span className="font-medium">{tier.name}</span>
-            </span>
+          <div className="mt-8 inline-block">
+            <div className="px-8 py-4 bg-white/40 backdrop-blur-sm border border-[#b76e79]/20 shadow-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <Check className="w-4 h-4 text-[#b76e79]" />
+                <span className={`text-[#301710] uppercase tracking-wider ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                  Selected Package
+                </span>
+              </div>
+              <p className={`text-[#301710] font-medium mb-2 ${isMobile ? 'text-lg' : 'text-xl'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                {tier.name}
+              </p>
+              <p className={`text-[#654331]/70 leading-relaxed italic ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                {tierDescriptions[tier.name] || "Strategic brand visuals designed for beauty professionals ready to elevate their presence."}
+              </p>
+            </div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-12">
           {/* Section 1: Business Information */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               1. Business Information
             </h2>
@@ -212,7 +242,7 @@ export function BrandIntakeForm() {
                   required
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className={`w-full px-4 py-3 glass-effect-input border ${errors.fullName ? 'border-red-500' : 'border-white/40'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all`}
+                  className={`w-full px-4 py-3 bg-white border-2 ${errors.fullName ? 'border-red-500' : 'border-[#b76e79]/30'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm`}
                 />
                 {errors.fullName && <p className="text-red-600 text-xs mt-1">{errors.fullName}</p>}
               </div>
@@ -226,7 +256,7 @@ export function BrandIntakeForm() {
                   required
                   value={formData.businessName}
                   onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                  className={`w-full px-4 py-3 glass-effect-input border ${errors.businessName ? 'border-red-500' : 'border-white/40'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all`}
+                  className={`w-full px-4 py-3 bg-white border-2 ${errors.businessName ? 'border-red-500' : 'border-[#b76e79]/30'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm`}
                 />
                 {errors.businessName && <p className="text-red-600 text-xs mt-1">{errors.businessName}</p>}
               </div>
@@ -240,7 +270,7 @@ export function BrandIntakeForm() {
                   placeholder="@yourhandle"
                   value={formData.instagramHandle}
                   onChange={(e) => setFormData({ ...formData, instagramHandle: e.target.value })}
-                  className="w-full px-4 py-3 glass-effect-input border border-white/40 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border-2 border-[#b76e79]/30 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm"
                 />
               </div>
 
@@ -253,14 +283,14 @@ export function BrandIntakeForm() {
                   placeholder="https://"
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full px-4 py-3 glass-effect-input border border-white/40 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 bg-white border-2 border-[#b76e79]/30 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 2: Services Offering */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               2. What services are you currently offering? *
             </h2>
@@ -271,13 +301,13 @@ export function BrandIntakeForm() {
               onChange={(e) => setFormData({ ...formData, servicesOffering: e.target.value })}
               rows={3}
               placeholder="Describe your services..."
-              className={`w-full px-4 py-3 glass-effect-input border ${errors.servicesOffering ? 'border-red-500' : 'border-white/40'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none resize-none transition-all`}
+              className={`w-full px-4 py-3 bg-white border-2 ${errors.servicesOffering ? 'border-red-500' : 'border-[#b76e79]/30'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none resize-none transition-all shadow-sm`}
             />
             {errors.servicesOffering && <p className="text-red-600 text-xs mt-1">{errors.servicesOffering}</p>}
           </div>
 
           {/* Section 3: Business Stage */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               3. Where's your business at right now? *
             </h2>
@@ -305,7 +335,7 @@ export function BrandIntakeForm() {
                         value={formData.businessStageOther}
                         onChange={(e) => setFormData({ ...formData, businessStageOther: e.target.value })}
                         placeholder="Please specify..."
-                        className="w-full px-4 py-3 glass-effect-input border border-white/40 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border-2 border-[#b76e79]/30 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm"
                       />
                     </div>
                   )}
@@ -316,7 +346,7 @@ export function BrandIntakeForm() {
           </div>
 
           {/* Section 4: Misaligned Aspects */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               4. What's throwing off your brand right now? *
             </h2>
@@ -344,7 +374,7 @@ export function BrandIntakeForm() {
                         value={formData.misalignedAspectsOther}
                         onChange={(e) => setFormData({ ...formData, misalignedAspectsOther: e.target.value })}
                         placeholder="Please specify..."
-                        className="w-full px-4 py-3 glass-effect-input border border-white/40 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border-2 border-[#b76e79]/30 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm"
                       />
                     </div>
                   )}
@@ -355,7 +385,7 @@ export function BrandIntakeForm() {
           </div>
 
           {/* Section 5: Brand Perception */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               5. How should your brand feel? *
             </h2>
@@ -369,13 +399,13 @@ export function BrandIntakeForm() {
               onChange={(e) => setFormData({ ...formData, brandPerception: e.target.value })}
               rows={3}
               placeholder="Describe how your brand should feel..."
-              className={`w-full px-4 py-3 glass-effect-input border ${errors.brandPerception ? 'border-red-500' : 'border-white/40'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none resize-none transition-all`}
+              className={`w-full px-4 py-3 bg-white border-2 ${errors.brandPerception ? 'border-red-500' : 'border-[#b76e79]/30'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none resize-none transition-all shadow-sm`}
             />
             {errors.brandPerception && <p className="text-red-600 text-xs mt-1">{errors.brandPerception}</p>}
           </div>
 
           {/* Section 6: Ideal Client */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               6. Who is your ideal client right now? *
             </h2>
@@ -389,13 +419,13 @@ export function BrandIntakeForm() {
               onChange={(e) => setFormData({ ...formData, idealClient: e.target.value })}
               rows={3}
               placeholder="Describe your ideal client..."
-              className={`w-full px-4 py-3 glass-effect-input border ${errors.idealClient ? 'border-red-500' : 'border-white/40'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none resize-none transition-all`}
+              className={`w-full px-4 py-3 bg-white border-2 ${errors.idealClient ? 'border-red-500' : 'border-[#b76e79]/30'} text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none resize-none transition-all shadow-sm`}
             />
             {errors.idealClient && <p className="text-red-600 text-xs mt-1">{errors.idealClient}</p>}
           </div>
 
           {/* Section 7: Future Goals */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               7. Are you planning any of the following in the next 6–12 months? *
             </h2>
@@ -423,7 +453,7 @@ export function BrandIntakeForm() {
                         value={formData.futureGoalsOther}
                         onChange={(e) => setFormData({ ...formData, futureGoalsOther: e.target.value })}
                         placeholder="Please specify..."
-                        className="w-full px-4 py-3 glass-effect-input border border-white/40 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white border-2 border-[#b76e79]/30 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none transition-all shadow-sm"
                       />
                     </div>
                   )}
@@ -434,7 +464,7 @@ export function BrandIntakeForm() {
           </div>
 
           {/* Section 8: AI Stance */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               8. When it comes to AI-generated brand visuals, where do you stand? *
             </h2>
@@ -460,7 +490,7 @@ export function BrandIntakeForm() {
           </div>
 
           {/* Section 9: Urgent Notes */}
-          <div className="glass-effect border border-white/30 shadow-xl p-8 md:p-10">
+          <div className="glass-effect border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8 md:p-10">
             <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
               9. Is there anything urgent we should know?
             </h2>
@@ -473,30 +503,73 @@ export function BrandIntakeForm() {
               onChange={(e) => setFormData({ ...formData, urgentNotes: e.target.value })}
               rows={3}
               placeholder="Any urgent information we should know..."
-              className="w-full px-4 py-3 glass-effect-input border border-white/40 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#301710]/60 focus:bg-white/60 focus:outline-none resize-none transition-all"
+              className="w-full px-4 py-3 bg-white border-2 border-[#b76e79]/30 text-[#301710] placeholder:text-[#301710]/40 focus:border-[#b76e79] focus:outline-none resize-none transition-all shadow-sm"
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="flex flex-col items-center gap-6">
+          {/* Submit Button and Info Sections */}
+          <div className="flex flex-col items-center gap-8">
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full md:w-auto px-12 py-4 glass-effect border border-white/40 text-[#301710] text-sm uppercase tracking-[0.3em] font-semibold hover:bg-white/30 hover:border-white/50 transition-all shadow-lg"
+              className={`w-full px-12 py-4 bg-[#301710] text-white uppercase tracking-[0.3em] hover:bg-[#301710]/90 transition-all shadow-lg ${isMobile ? 'text-xs' : 'text-sm'}`}
+              style={{ fontFamily: 'Lora, serif', fontWeight: 600 }}
             >
               Continue to Checkout →
             </button>
             
-            {/* What Happens Next Section */}
-            <div className="w-full max-w-2xl text-center mt-6">
-              <h3 className="text-lg text-[#301710] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
-                What Happens Next
-              </h3>
-              
-              <div className="space-y-2 text-[#301710]/70 text-sm">
-                <p><span className="font-semibold text-[#301710]">1. Complete Form</span><br />Secure checkout via Stripe.</p>
-                <p><span className="font-semibold text-[#301710]">2. Schedule Your Strategy Session</span><br />You'll receive an email to book your session.</p>
-                <p><span className="font-semibold text-[#301710]">3. Define Your Direction</span><br />Your strategy session ensures visuals are built with intention before production starts.</p>
-                <p><span className="font-semibold text-[#301710]">4. Receive Your Brand System</span><br />Custom visuals delivered!</p>
+            {/* Information Sections - Luxury Editorial Card */}
+            <div className="w-full bg-white/40 backdrop-blur-sm border border-[#b76e79]/20 shadow-lg p-8">
+              {/* What Happens Next */}
+              <div className="mb-8 pb-8 border-b border-[#b76e79]/20 text-center">
+                <h3 className={`text-[#301710] mb-4 ${isMobile ? 'text-lg' : 'text-xl'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
+                  What Happens Next
+                </h3>
+                <div className={`space-y-3 text-[#654331]/80 ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                  <p>
+                    <span className="font-semibold text-[#301710]">1. Secure Checkout</span><br />
+                    Complete payment through our encrypted Stripe integration.
+                  </p>
+                  <p>
+                    <span className="font-semibold text-[#301710]">2. Schedule Your Strategy Session</span><br />
+                    You'll receive an email to book your personalized brand strategy call.
+                  </p>
+                  <p>
+                    <span className="font-semibold text-[#301710]">3. Define Your Direction</span><br />
+                    Your strategy session ensures visuals are built with intention before production starts.
+                  </p>
+                  <p>
+                    <span className="font-semibold text-[#301710]">4. Receive Your Brand System</span><br />
+                    Custom AI brand models delivered for immediate use in your marketing.
+                  </p>
+                </div>
+              </div>
+
+              {/* Privacy & Security */}
+              <div className="mb-8 pb-8 border-b border-[#b76e79]/20 text-center">
+                <h3 className={`text-[#301710] mb-3 ${isMobile ? 'text-lg' : 'text-xl'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
+                  Your Information is Protected
+                </h3>
+                <p className={`text-[#654331]/80 leading-relaxed mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                  All form responses are encrypted and stored securely.
+                </p>
+                <p className={`text-[#654331]/70 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                  Your business details are used exclusively to create your custom brand system and will never be shared with third parties.
+                </p>
+              </div>
+
+              {/* Support Line */}
+              <div className="text-center">
+                <p className={`text-[#654331]/70 mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                  Need help?
+                </p>
+                <a 
+                  href="mailto:info@averraaistudio.com" 
+                  className={`text-[#b76e79] hover:text-[#301710] transition-colors ${isMobile ? 'text-sm' : 'text-base'}`}
+                  style={{ fontFamily: 'Lora, serif' }}
+                >
+                  info@averraaistudio.com
+                </a>
               </div>
             </div>
           </div>

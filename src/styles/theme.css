@@ -379,6 +379,13 @@
     animation: marquee 30s linear infinite;
   }
 
+  /* Hide marquee completely on mobile */
+  @media (max-width: 768px) {
+    .animate-marquee {
+      display: none;
+    }
+  }
+
   @keyframes marquee-infinite {
     0% {
       transform: translateX(0%);

@@ -37,7 +37,7 @@ const tiers = [
     description: "For Brands Ready to Raise Pricing & Presence.",
     featured: true,
     features: [
-      { name: "20 Custom AI Brand Models", detail: "Twenty custom-built AI brand models styled with intention giving your brand range, consistency, and control across every touchpoint." },
+      { name: "15 Custom AI Brand Models", detail: "Fifteen custom-built AI brand models styled with intention giving your brand range, consistency, and control across every touchpoint." },
       { name: "Advanced AVERRA Strategy Session", detail: "A one-on-one session focused on your pricing, your goals, and how your visuals support them. We'll make sure your content is working toward a stronger social presence and a clearer sense of authority." },
       { name: "Client Loyalty & Expectation Session", detail: "A simple breakdown of how the right visuals attract the right clients and keep them loyal. This session makes sure every visual is intentional and supports your steady growth." },
       { name: "Expanded AVERRA Visual System Guide", detail: "A complete brand guide covering your color palette, tone, and styling standards so your brand stays strong and recognizable." },
@@ -55,7 +55,7 @@ const tiers = [
     originalPriceNum: 500,
     description: "For The CEO Ready to Own The Market.",
     features: [
-      { name: "30 Custom AI Company Models", detail: "Thirty custom AI visuals built to cover everything your business needs, from service marketing and retail promos to seasonal campaigns and team features. A full visual library that grows with your business." },
+      { name: "20 Custom AI Company Models", detail: "Twenty custom AI visuals built to cover everything your business needs, from service marketing and retail promos to seasonal campaigns and team features. A full visual library that grows with your business." },
       { name: "AVERRA Executive Strategy", detail: "A strategy session focused on where your business stands today and where it's going next. We'll get clear on your pricing, your direction, and the steps it takes to get there." },
       { name: "Advanced Brand Authority Session", detail: "This session is about how your business communicates professionalism and value at a bigger scale. We'll look at the small details that shape how clients see your pricing, your expertise, and your standards so that your business looks and feels consistent online, in person, and everywhere in between." },
       { name: "Complete AVERRA Company System (Executive Edition)", detail: "A full internal brand system covering your color palette, tone, visual structure, and consistency standards. This becomes the go-to reference for your hiring, marketing, retail growth, and scaling decisions." },
@@ -183,38 +183,41 @@ export function ServicesPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#DCDACC] text-[#221412] pb-32 md:pb-0">
+      <div className="min-h-screen bg-[#DCDACC] text-[#221412]">
         <Navigation />
         
         {/* Hero Section - Using proper pattern */}
-        <section className="relative w-full overflow-hidden min-h-svh">
+        <section className={`relative w-full overflow-hidden ${isMobile ? 'min-h-[600px] mb-0' : 'min-h-svh'}`}>
           {/* Background image as a pinned rectangle */}
           <div 
-            className="absolute inset-0 w-full h-full"
+            className={`${isMobile ? 'relative w-full min-h-[600px]' : 'absolute inset-0 w-full h-full'}`}
             style={{
               backgroundImage: `url(${getImageUrl('/services-hero.png')})`,
               backgroundSize: 'cover',
-              backgroundPosition: 'center'
+              backgroundPosition: isMobile ? 'center' : 'center',
+              backgroundRepeat: 'no-repeat'
             }}
-          />
-          <div className="absolute inset-0 bg-[#DCDACC]/40" />
-          
-          <div className="relative z-10 min-h-svh flex items-center justify-center px-8 py-16">
-            <div className="max-w-7xl mx-auto text-center">
-              <p className="text-[10px] uppercase tracking-[0.4em] text-[#221412]/60 font-light mb-6">
-                Branding Packages
-              </p>
-              <h1 className="text-[clamp(2.5rem,8vw,6rem)] text-[#221412] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                Compare & Choose
-              </h1>
-              <p className="text-lg text-[#221412]/70 font-light max-w-2xl mx-auto">
-                Three Tiers. All Custom. Find Yours.
-              </p>
+          >
+            <div className="absolute inset-0 bg-[#DCDACC]/40" />
+            
+            {/* Text Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center px-8">
+              <div className="max-w-7xl mx-auto text-center">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#221412]/60 font-light mb-6">
+                  Branding Packages
+                </p>
+                <h1 className="text-[clamp(2.5rem,8vw,6rem)] text-[#221412] mb-8" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                  Compare & Choose
+                </h1>
+                <p className="text-lg text-[#221412]/70 font-light max-w-2xl mx-auto">
+                  Three Tiers. All Custom. Find Yours.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        <div className="mb-32 relative overflow-hidden">
+        <div className="relative overflow-hidden -mt-35">
           <div className="absolute inset-0 bg-[#221412]"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#221412]/50 via-85% to-[#DCDACC] to-100%"></div>
           
@@ -224,8 +227,8 @@ export function ServicesPage() {
             <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#BFBBA7]/20"></div>
             <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#BFBBA7]/20"></div>
             
-            {/* Moving Marquee Banner */}
-            <div className="mb-8 border-y border-[#C9A961]/30 py-4">
+            {/* Moving Marquee Banner - Desktop Only */}
+            <div className="mb-8 border-y border-[#C9A961]/30 py-4 hidden md:block">
               <MarqueeScroll disableOnMobile={false} duration={30}>
                 <div className="flex items-center gap-8 text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
                   <span>LAUNCH PRICING · March 3rd–May 31st</span>
@@ -434,70 +437,25 @@ export function ServicesPage() {
               ))}
             </div>
             
-            <div className="mt-12 relative overflow-hidden -mx-8">
-              <div className="absolute inset-0 bg-[#221412]"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-[#DCDACC] from-0% via-[#221412]/30 via-10% to-transparent to-25%"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#221412]/50 via-85% to-[#DCDACC] to-100%"></div>
-              
-              <div className="relative py-16 text-center">
-                <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#DCDACC]/30"></div>
-                <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#DCDACC]/30"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#DCDACC]/20"></div>
-                <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#DCDACC]/20"></div>
-                
-                <div className="relative z-10 max-w-4xl mx-auto px-8">
-                  <div className="inline-block px-28 py-3 border-2 mb-6 relative overflow-hidden animate-pulse-subtle"
-                    style={{
-                      borderImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1',
-                      background: 'transparent'
-                    }}>
-                    <span className="text-sm md:text-base uppercase tracking-[0.4em] font-light"
-                      style={{
-                        backgroundImage: 'linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
-                      }}>Limited Time Bundle</span>
-                  </div>
-                  
-                  <h3 className="text-3xl md:text-5xl text-[#DCDACC] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, letterSpacing: '0.02em' }}>
-                    Launch Bundle: All 6 Beauty Service Packs
-                  </h3>
-                  
-                  <div className="flex items-center justify-center gap-6 mb-8">
-                    <span className="text-2xl md:text-4xl text-[#DCDACC]/40 line-through" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>$300</span>
-                    <span className="text-4xl md:text-6xl text-[#DCDACC]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>$180</span>
-                  </div>
-                  
-                  <button
-                    onClick={() => handleAddToCart({ id: 'bundle-all-digital', name: 'Launch Bundle: All 6 Beauty Service Packs', priceNum: 180, originalPriceNum: 300, type: 'digital' })}
-                    className="inline-block px-12 py-4 bg-[#DCDACC] text-[#221412] text-sm uppercase tracking-[0.3em] font-medium hover:bg-white transition-all"
-                  >
-                    Add Bundle to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-12 text-center max-w-2xl mx-auto">
-              <p className="text-xs text-[#221412]/70 font-light">
+            <div className="mt-12 text-center mx-auto max-w-4xl px-8 hidden md:block">
+              <p className="text-base text-[#221412]/70 font-light leading-relaxed">
                 All digital products include commercial use rights • Files delivered instantly after purchase • No edits, swaps, or personalization included
               </p>
+            </div>
               
-              <div className="mt-8 mb-32">
-                <h3 className="text-3xl text-[#221412]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                  Not sure which tier?
-                </h3>
-                <p className="text-base text-[#221412]/70 font-light mt-4">
-                  Take our 2-minute Brand Quiz to get a personalized recommendation.
-                </p>
-                <Link
-                  to="/quiz"
-                  className="inline-block px-12 py-4 bg-[#221412] text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#3d2b26] transition-all mt-6"
-                >
-                  Start Brand Quiz
-                </Link>
-              </div>
+            <div className="mt-8 mb-32 hidden md:block text-center">
+              <h3 className="text-3xl text-[#221412]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
+                Not sure which tier?
+              </h3>
+              <p className="text-base text-[#221412]/70 font-light mt-4">
+                Take our 2-minute Brand Quiz to get a personalized recommendation.
+              </p>
+              <Link
+                to="/quiz"
+                className="inline-block px-12 py-4 bg-[#221412] text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#3d2b26] transition-all mt-6"
+              >
+                Start Brand Quiz
+              </Link>
             </div>
           </div>
         </div>
