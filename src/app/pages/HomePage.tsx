@@ -7,30 +7,15 @@ import { getImageUrl } from "@/utils/imageHelpers";
 import { FadeInUp, FloatingBox, StaggeredText } from "@/app/components/AnimatedText";
 import { MagneticButton } from "@/app/components/MagneticButton";
 
-// Import the new archive portrait - stunning orange eyeshadow beauty closeup
-import archivePortrait from "figma:asset/eb89e4c0bab9ae21d1fbee5b8ff964dd44e371b5.png";
-
-// Import the stunning duo portrait - two women with bronze/warm makeup
-import duoPortrait from "figma:asset/494325940b5bcdee258f5f3155a34c5070a548b1.png";
-
-// Import the hair braiding image - gorgeous red braids
-import hairBraiding from "figma:asset/2854af0960be339b5b4839c79e7ba026e0d19fe0.png";
-
-// Import the facial treatment image - luxurious mask application
-import facialTreatment from "figma:asset/c9375e3717fc01f58e1b53b6b5ee66527d01aa91.png";
-
 // All gallery images from /public folder - hero is first
 const galleryImages = [
   '/about-hero.png',
-  archivePortrait, // The Archive - stunning orange eyeshadow beauty closeup (SLIDE 2)
-  hairBraiding, // Beautiful red hair braiding moment (SLIDE 3)
+  '/archive-portrait.png', // The Archive - stunning orange eyeshadow beauty closeup (SLIDE 2)
+  '/hair-braiding.png', // Beautiful red hair braiding moment (SLIDE 3)
   '/carousel-6.webp', // THE AVERRA METHOD image (SLIDE 4)
   '/carousel-5.webp', // Nail photo (SLIDE 5)
   '/carousel-7.webp', // Lash photo (SLIDE 6)
-  facialTreatment, // Luxurious facial treatment with mask application (SLIDE 7)
-  '/carousel-8.webp',
-  '/carousel-9.webp',
-  '/carousel-10.webp',
+  '/facial-treatment.png', // Luxurious facial treatment with mask application (SLIDE 7)
 ];
 
 // Editorial content overlays for select slides
