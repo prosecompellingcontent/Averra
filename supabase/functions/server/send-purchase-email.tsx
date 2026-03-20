@@ -150,40 +150,43 @@ export async function handleSendPurchaseEmail(c: any) {
       
       for (const item of items) {
         if (item.type === 'digital') {
-          // Use the exact product name as the folder name (e.g., "Fresh Out The Chair")
-          const folderName = item.name;
+          const productName = item.name;
           
-          console.log(`📁 Looking for files in folder: ${folderName}`);
+          console.log(`📁 Looking for files starting with: ${productName}`);
           
-          // List files in the product folder
-          const { data: files, error: listError } = await supabase
+          // List ALL files in the root of digital-products bucket
+          const { data: allFiles, error: listError } = await supabase
             .storage
             .from('digital-products')
-            .list(folderName, {
-              limit: 10,
+            .list('', {
+              limit: 100,
               offset: 0,
             });
           
           if (listError) {
-            console.error(`❌ Error listing files for ${item.name}:`, listError);
+            console.error(`❌ Error listing files:`, listError);
             continue;
           }
           
-          console.log(`✅ Found ${files?.length || 0} files for ${item.name}`);
+          // Filter files that start with this product's name
+          const productFiles = allFiles?.filter(file => 
+            file.name.startsWith(productName)
+          ) || [];
           
-          if (files && files.length > 0) {
+          console.log(`✅ Found ${productFiles.length} files for ${productName}`);
+          
+          if (productFiles && productFiles.length > 0) {
             downloadLinksHtml += `
               <div style="margin-bottom: 25px;">
                 <h3 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${item.name}</h3>
             `;
             
             // Generate signed URLs for each file (valid for 7 days)
-            for (const file of files) {
-              const filePath = `${folderName}/${file.name}`;
+            for (const file of productFiles) {
               const { data: signedUrlData, error: urlError } = await supabase
                 .storage
                 .from('digital-products')
-                .createSignedUrl(filePath, 604800); // 7 days in seconds
+                .createSignedUrl(file.name, 604800); // 7 days in seconds
               
               if (urlError) {
                 console.error(`❌ Error creating signed URL for ${file.name}:`, urlError);

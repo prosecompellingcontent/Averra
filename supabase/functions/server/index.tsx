@@ -4,6 +4,7 @@ import { logger } from "npm:hono/logger";
 import * as kv from "./kv_store.tsx";
 import Stripe from "npm:stripe@20.4.1";
 import { handleSendPurchaseEmail } from "./send-purchase-email.tsx";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const app = new Hono();
 
@@ -152,6 +153,47 @@ app.get("/make-server-61755bec/check-config", (c) => {
 
 // Test purchase email endpoint
 app.post("/make-server-61755bec/send-purchase-email", handleSendPurchaseEmail);
+
+// Debug route to check storage folders
+app.get('/make-server-61755bec/debug/storage', async (c) => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  );
+
+  // List all folders in digital-products bucket
+  const { data: folders, error } = await supabase
+    .storage
+    .from('digital-products')
+    .list('', {
+      limit: 100,
+      offset: 0,
+    });
+
+  if (error) {
+    return c.json({ error: error.message }, 500);
+  }
+
+  // For each folder, list the files inside
+  const folderContents: any = {};
+  for (const folder of folders || []) {
+    if (folder.name) {
+      const { data: files } = await supabase
+        .storage
+        .from('digital-products')
+        .list(folder.name, {
+          limit: 100,
+          offset: 0,
+        });
+      folderContents[folder.name] = files?.map(f => f.name) || [];
+    }
+  }
+
+  return c.json({
+    folders: folders?.map(f => f.name) || [],
+    folderContents
+  });
+});
 
 // Get Stripe publishable key
 app.get("/make-server-61755bec/stripe-config", (c) => {
