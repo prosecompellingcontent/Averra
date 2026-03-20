@@ -3,6 +3,7 @@ import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
 import * as kv from "./kv_store.tsx";
 import Stripe from "npm:stripe@17.6.0";
+import { handleSendPurchaseEmail } from "./send-purchase-email.tsx";
 
 const app = new Hono();
 
@@ -54,6 +55,26 @@ app.post("/make-server-61755bec/test-email", async (c) => {
 
     console.log("🧪 Testing Resend API...");
     console.log("📧 Sending test email to:", testEmail);
+    console.log("🔑 API Key present:", resendApiKey ? "Yes (length: " + resendApiKey.length + ")" : "No");
+
+    const emailPayload = {
+      from: "AVERRA AI Model Studio <onboarding@resend.dev>",
+      to: [testEmail],
+      subject: "🧪 Test Email from AVERRA",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #301710;">✅ Resend API is Working!</h1>
+          <p style="color: #301710; line-height: 1.8;">
+            This is a test email from your AVERRA backend. If you see this, your Resend API key is configured correctly!
+          </p>
+          <p style="color: #666; font-size: 12px; margin-top: 30px;">
+            Sent at: ${new Date().toISOString()}
+          </p>
+        </div>
+      `,
+    };
+
+    console.log("📤 Sending to Resend API...");
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -61,38 +82,40 @@ app.post("/make-server-61755bec/test-email", async (c) => {
         "Authorization": `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        from: "AVERRA AI Model Studio <onboarding@resend.dev>",
-        to: [testEmail],
-        subject: "🧪 Test Email from AVERRA",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h1 style="color: #301710;">✅ Resend API is Working!</h1>
-            <p style="color: #301710; line-height: 1.8;">
-              This is a test email from your AVERRA backend. If you see this, your Resend API key is configured correctly!
-            </p>
-            <p style="color: #666; font-size: 12px; margin-top: 30px;">
-              Sent at: ${new Date().toISOString()}
-            </p>
-          </div>
-        `,
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     const responseData = await emailResponse.json();
+    
+    console.log("📥 Resend response status:", emailResponse.status);
+    console.log("📥 Resend response data:", JSON.stringify(responseData));
 
     if (emailResponse.ok) {
-      console.log("✅ Test email sent successfully!", responseData);
+      console.log("✅ Test email sent successfully!");
       return c.json({ 
         success: true, 
         message: "Test email sent! Check your inbox.",
-        emailId: responseData.id 
+        emailId: responseData.id,
+        details: responseData
       });
     } else {
       console.error("❌ Resend API error:", responseData);
+      
+      // Provide helpful error messages based on status code
+      let suggestion = "";
+      if (emailResponse.status === 403) {
+        suggestion = "API key is invalid or doesn't have permission. Please check your Resend dashboard and verify the API key.";
+      } else if (emailResponse.status === 422) {
+        suggestion = "Email validation failed. Make sure the 'to' address is valid. If using a custom 'from' domain, verify it in Resend first.";
+      } else if (emailResponse.status === 429) {
+        suggestion = "Rate limit exceeded. Wait a few minutes before trying again.";
+      }
+      
       return c.json({ 
         error: "Resend API call failed", 
-        details: responseData 
+        details: responseData,
+        statusCode: emailResponse.status,
+        suggestion: suggestion || "Check the Resend API documentation for more details."
       }, 400);
     }
   } catch (error) {
@@ -102,6 +125,33 @@ app.post("/make-server-61755bec/test-email", async (c) => {
     }, 500);
   }
 });
+
+// ============================================
+// DIAGNOSTIC ENDPOINT - Check API Keys
+// ============================================
+app.get("/make-server-61755bec/check-config", (c) => {
+  const resendKey = Deno.env.get("RESEND_API_KEY");
+  const stripeSecret = Deno.env.get("STRIPE_SECRET_KEY");
+  const stripePublishable = Deno.env.get("STRIPE_PUBLISHABLE_KEY");
+  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+  
+  return c.json({
+    resend: {
+      configured: !!resendKey,
+      keyLength: resendKey ? resendKey.length : 0,
+      keyPreview: resendKey ? `${resendKey.substring(0, 7)}...${resendKey.substring(resendKey.length - 4)}` : null
+    },
+    stripe: {
+      secretKey: !!stripeSecret,
+      publishableKey: !!stripePublishable,
+      webhookSecret: !!webhookSecret
+    },
+    environment: Deno.env.get("DENO_DEPLOYMENT_ID") ? "production" : "development"
+  });
+});
+
+// Test purchase email endpoint
+app.post("/make-server-61755bec/send-purchase-email", handleSendPurchaseEmail);
 
 // Get Stripe publishable key
 app.get("/make-server-61755bec/stripe-config", (c) => {
@@ -676,7 +726,7 @@ app.post("/make-server-61755bec/contact-submission", async (c) => {
           },
           body: JSON.stringify({
             from: "AVERRA Contact Form <onboarding@resend.dev>",
-            to: ["info@averraaistudio.com"],
+            to: ["prosecompellingcontent@gmail.com"],
             subject: `New Contact Inquiry from ${name}`,
             html: `
               <h2>New Contact Form Submission</h2>
@@ -1167,7 +1217,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  from: "AVERRA AI Model Studio <hello@averraaistudio.com>",
+                  from: "AVERRA AI Model Studio <onboarding@resend.dev>",
                   to: [customerEmail],
                   subject: "Your AVERRA Brand Journey Begins Now ✨",
                   html: `
@@ -1411,7 +1461,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  from: "AVERRA AI Model Studio <delivery@averraaistudio.com>",
+                  from: "AVERRA AI Model Studio <onboarding@resend.dev>",
                   to: [customerEmail],
                   subject: "Your AVERRA Digital Collection Has Arrived ✨",
                   html: `
