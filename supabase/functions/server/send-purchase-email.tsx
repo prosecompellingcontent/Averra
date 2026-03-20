@@ -221,7 +221,7 @@ export async function handleSendPurchaseEmail(c: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "AVERRA AI Model Studio <onboarding@resend.dev>",
+        from: "AVERRA AI Model Studio <hello@averraaistudio.com>",
         to: [customerEmail],
         subject: subject,
         html: emailHtml,
