@@ -178,7 +178,8 @@ export function BrandIntakeForm() {
         addItem({
           id: tier.id,
           name: tier.name,
-          price: tier.price,
+          price: tier.priceNum,
+          originalPrice: tier.originalPriceNum,
           type: 'service',
           description: tierDescriptions[tier.name] || 'Strategic brand visuals designed for beauty professionals'
         });
