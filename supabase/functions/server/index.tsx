@@ -266,6 +266,41 @@ app.get('/make-server-61755bec/download-product/:productName', async (c) => {
   });
 });
 
+// TEST ENDPOINT - List all files in storage
+app.get("/make-server-61755bec/test-storage", async (c) => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  );
+
+  const { data: folders, error } = await supabase
+    .storage
+    .from('digital-products')
+    .list('', {
+      limit: 100,
+    });
+
+  if (error) {
+    return c.json({ error: error.message }, 500);
+  }
+
+  const result: any = { folders: [] };
+
+  for (const folder of folders || []) {
+    const { data: files } = await supabase
+      .storage
+      .from('digital-products')
+      .list(folder.name, { limit: 100 });
+    
+    result.folders.push({
+      name: folder.name,
+      files: files?.map(f => f.name) || []
+    });
+  }
+
+  return c.json(result);
+});
+
 // Get Stripe publishable key
 app.get("/make-server-61755bec/stripe-config", (c) => {
   try {
