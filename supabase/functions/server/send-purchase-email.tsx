@@ -127,7 +127,7 @@ export async function handleSendPurchaseEmail(c: any) {
             
             <div style="height: 1px; background: linear-gradient(to right, transparent, rgba(183, 110, 121, 0.4), transparent); margin: 30px 0;"></div>
             
-            <p style="color: #301710; line-height: 1.8; font-style: italic; text-align: center; font-size: 18px; margin: 30px 0;">
+            <p style="color: #301710; line-height: 1.8; text-align: center; font-size: 18px; margin: 30px 0;">
               "Your brand should feel like the work you create—intentional, refined, unmistakably yours."
             </p>
             
@@ -150,12 +150,8 @@ export async function handleSendPurchaseEmail(c: any) {
       
       for (const item of items) {
         if (item.type === 'digital') {
-          // Normalize product name for folder lookup (e.g., "The Lash Collection" -> "lash-collection")
-          const folderName = item.name
-            .toLowerCase()
-            .replace(/^the\s+/i, '')  // Remove "The" prefix
-            .replace(/\s+/g, '-')      // Replace spaces with dashes
-            .replace(/[^a-z0-9-]/g, ''); // Remove special characters
+          // Use the exact product name as the folder name (e.g., "Fresh Out The Chair")
+          const folderName = item.name;
           
           console.log(`📁 Looking for files in folder: ${folderName}`);
           
