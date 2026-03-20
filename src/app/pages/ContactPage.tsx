@@ -156,23 +156,23 @@ export function ContactPage() {
                       </p>
                       <div className="space-y-2">
                         <Link 
-                          to="/terms" 
+                          to="/terms-of-service" 
                           className="block text-[#301710] hover:text-[#654331] transition-colors text-sm font-medium"
                         >
                           → Terms of Service
                         </Link>
-                        <a 
-                          href="mailto:hello@averrastudio.com" 
+                        <Link 
+                          to="/privacy-policy" 
                           className="block text-[#301710] hover:text-[#654331] transition-colors text-sm font-medium"
                         >
                           → Privacy Policy
-                        </a>
-                        <a 
-                          href="mailto:hello@averrastudio.com" 
+                        </Link>
+                        <Link 
+                          to="/refund-policy" 
                           className="block text-[#301710] hover:text-[#654331] transition-colors text-sm font-medium"
                         >
                           → Refund Policy
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

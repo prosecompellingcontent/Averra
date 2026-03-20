@@ -6,6 +6,7 @@ import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { getImageUrl } from "@/utils/imageHelpers";
 import { FadeInUp, FloatingBox, StaggeredText } from "@/app/components/AnimatedText";
 import { MagneticButton } from "@/app/components/MagneticButton";
+import { CookieConsent } from "@/app/components/CookieConsent";
 
 // All gallery images from /public folder - hero is first
 const galleryImages = [
@@ -988,25 +989,10 @@ export function HomePage() {
             ))}
           </div>
         </section>
-        
-        {/* Privacy Footer - At the bottom of the page */}
-        {isMobile && (
-          <div className="bg-black py-8">
-            <div className="flex flex-col items-center px-6 space-y-2">
-              <p className="text-white/50 text-center text-[0.65rem] uppercase tracking-[0.2em]" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
-                Privacy & Cookies: We use cookies for functionality and analytics.
-              </p>
-              <a
-                href="/privacy"
-                className="text-white/50 hover:text-white/80 transition-colors duration-300 uppercase tracking-[0.3em] text-[0.65rem] underline"
-                style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}
-              >
-                Privacy Policy
-              </a>
-            </div>
-          </div>
-        )}
       </div>
+      
+      {/* Cookie Consent Banner - Sticky at bottom, expands on click */}
+      <CookieConsent />
     </>
   );
 }

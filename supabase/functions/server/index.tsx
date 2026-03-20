@@ -19,7 +19,12 @@ app.use(
   "/*",
   cors({
     origin: "*",
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: [
+      "Content-Type", 
+      "Authorization", 
+      "stripe-signature",  // Add Stripe signature header
+      "Stripe-Signature"   // Stripe uses capital S sometimes
+    ],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -29,6 +34,73 @@ app.use(
 // Health check endpoint
 app.get("/make-server-61755bec/health", (c) => {
   return c.json({ status: "ok" });
+});
+
+// ============================================
+// TEST RESEND EMAIL ENDPOINT
+// ============================================
+app.post("/make-server-61755bec/test-email", async (c) => {
+  try {
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    
+    if (!resendApiKey) {
+      return c.json({ 
+        error: "RESEND_API_KEY not configured in Supabase secrets" 
+      }, 500);
+    }
+
+    const body = await c.req.json();
+    const testEmail = body.to || "test@example.com";
+
+    console.log("🧪 Testing Resend API...");
+    console.log("📧 Sending test email to:", testEmail);
+
+    const emailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "AVERRA AI Model Studio <onboarding@resend.dev>",
+        to: [testEmail],
+        subject: "🧪 Test Email from AVERRA",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #301710;">✅ Resend API is Working!</h1>
+            <p style="color: #301710; line-height: 1.8;">
+              This is a test email from your AVERRA backend. If you see this, your Resend API key is configured correctly!
+            </p>
+            <p style="color: #666; font-size: 12px; margin-top: 30px;">
+              Sent at: ${new Date().toISOString()}
+            </p>
+          </div>
+        `,
+      }),
+    });
+
+    const responseData = await emailResponse.json();
+
+    if (emailResponse.ok) {
+      console.log("✅ Test email sent successfully!", responseData);
+      return c.json({ 
+        success: true, 
+        message: "Test email sent! Check your inbox.",
+        emailId: responseData.id 
+      });
+    } else {
+      console.error("❌ Resend API error:", responseData);
+      return c.json({ 
+        error: "Resend API call failed", 
+        details: responseData 
+      }, 400);
+    }
+  } catch (error) {
+    console.error("❌ Test email error:", error);
+    return c.json({ 
+      error: error instanceof Error ? error.message : "Unknown error" 
+    }, 500);
+  }
 });
 
 // Get Stripe publishable key
@@ -192,13 +264,20 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
         throw new Error(`Price must be at least $0.50`);
       }
 
+      // Build product_data - only include description if it exists and is non-empty
+      const productData: any = {
+        name: item.name,
+      };
+      
+      // Only add description if it exists and is not empty
+      if (item.description && item.description.trim() !== '') {
+        productData.description = item.description;
+      }
+
       return {
         price_data: {
           currency: 'usd',
-          product_data: {
-            name: item.name,
-            description: item.description || '',
-          },
+          product_data: productData,
           unit_amount: unitAmount,
         },
         quantity: 1,
@@ -721,6 +800,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
 
     if (!signature) {
       console.error("No Stripe signature found in request");
+      console.log("Headers:", c.req.header());
       return c.json({ error: "No signature" }, 400);
     }
 
@@ -1014,13 +1094,439 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         console.log("💰 Amount:", (session.amount_total / 100).toFixed(2));
         console.log("🎨 Service Tier:", serviceTier);
         
-        // ** THIS IS WHERE YOU'LL HOOK UP YOUR CALENDLY AUTOMATION **
-        // The saleRecord object contains everything you need:
-        // - customerEmail, customerName, customerPhone
-        // - serviceTier (to route to correct Calendly link)
-        // - All brand intake data
-        // You can trigger your Calendly email automation here or via a separate cron job
-        // that checks for sales with strategySessionBooked === false
+        // ============================================
+        // EMAIL AUTOMATION BASED ON PURCHASE TYPE
+        // ============================================
+        
+        const resendApiKey = Deno.env.get("RESEND_API_KEY");
+        
+        if (!resendApiKey) {
+          console.log("⚠️ RESEND_API_KEY not configured - skipping emails");
+        } else {
+          // Separate items into categories
+          const serviceTiers = items.filter((item: any) => 
+            item.name.includes('Essentials') || 
+            item.name.includes('Signature') || 
+            item.name.includes('Muse')
+          );
+          
+          const digitalProducts = items.filter((item: any) => 
+            item.name.includes('Collection')
+          );
+          
+          console.log(`📦 Order contains: ${serviceTiers.length} service tier(s), ${digitalProducts.length} digital product(s)`);
+          
+          // ============================================
+          // EMAIL #1: SERVICE TIER WELCOME + CALENDLY
+          // ============================================
+          if (serviceTiers.length > 0) {
+            try {
+              const tierName = serviceTiers[0].name; // Get first tier name
+              const tiersList = serviceTiers.map((item: any) => 
+                `<li style="margin-bottom: 10px; color: #301710;">${item.name} - $${item.price}</li>`
+              ).join('');
+              
+              // Map tier names to their specific Calendly links
+              const calendlyLink = tierName.includes('Essentials') 
+                ? "https://calendly.com/averraaistudio-info/averra-s-essential-strategy-session"
+                : tierName.includes('Signature')
+                ? "https://calendly.com/averraaistudio-info/averra-s-essential-strategy-session-clone"
+                : "https://calendly.com/averraaistudio-info/averra-s-signature-strategy-session-clone";
+
+              const emailResponse = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${resendApiKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  from: "AVERRA AI Model Studio <hello@averraaistudio.com>",
+                  to: [customerEmail],
+                  subject: "Your AVERRA Brand Journey Begins Now ✨",
+                  html: `
+                    <div style="font-family: 'Cormorant', Georgia, serif; max-width: 600px; margin: 0 auto; padding: 0; background: #DCDACC;">
+                      <!-- AVERRA Logo Header -->
+                      <div style="background: #301710; padding: 30px 20px; text-align: center;">
+                        <h1 style="font-family: 'Cormorant', Georgia, serif; font-size: 42px; font-weight: 300; color: #DCDACC; margin: 0; letter-spacing: 0.15em;">
+                          AVERRA
+                        </h1>
+                        <p style="color: rgba(220, 218, 204, 0.8); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin: 10px 0 0 0;">
+                          AI Model Studio
+                        </p>
+                      </div>
+                      
+                      <!-- Main Content -->
+                      <div style="background: rgba(255, 255, 255, 0.95); padding: 40px; border-left: 1px solid rgba(48, 23, 16, 0.2); border-right: 1px solid rgba(48, 23, 16, 0.2);">
+                        <h2 style="font-size: 24px; font-weight: 400; color: #301710; margin-bottom: 30px; text-align: center;">
+                          Payment Confirmed! ✨
+                        </h2>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Hi ${customerName},
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Thank you for choosing AVERRA! Your payment has been processed successfully.
+                        </p>
+                        
+                        <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
+                          <h3 style="font-size: 18px; color: #301710; margin-bottom: 15px;">Service Package</h3>
+                          <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${tiersList}
+                          </ul>
+                        </div>
+                        
+                        <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #654331;">
+                          <h3 style="font-size: 20px; color: #301710; margin-bottom: 15px;">📅 Next Step: Book Your Strategy Session</h3>
+                          
+                          <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                            Your strategy session ensures visuals are built with intention before production starts. This is where we define your direction together.
+                          </p>
+                          
+                          <div style="text-align: center; margin: 25px 0;">
+                            <a href="${calendlyLink}" 
+                               style="display: inline-block; padding: 15px 40px; background: #301710; color: #DCDACC; text-decoration: none; font-size: 14px; letter-spacing: 0.3em; text-transform: uppercase;">
+                              Schedule Now
+                            </a>
+                          </div>
+                          
+                          <p style="color: rgba(48, 23, 16, 0.7); font-size: 14px; text-align: center;">
+                            Or copy this link: ${calendlyLink}
+                          </p>
+                        </div>
+                        
+                        <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
+                          <h3 style="font-size: 18px; color: #301710; margin-bottom: 15px;">What Happens Next</h3>
+                          
+                          <div style="margin-bottom: 15px;">
+                            <strong style="color: #301710;">1. Schedule Your Strategy Session</strong><br/>
+                            <span style="color: rgba(48, 23, 16, 0.7);">Click the button above to pick your preferred time.</span>
+                          </div>
+                          
+                          <div style="margin-bottom: 15px;">
+                            <strong style="color: #301710;">2. Define Your Direction</strong><br/>
+                            <span style="color: rgba(48, 23, 16, 0.7);">We'll discuss your brand vision, target audience, and visual direction.</span>
+                          </div>
+                          
+                          <div>
+                            <strong style="color: #301710;">3. Receive Your Brand System</strong><br/>
+                            <span style="color: rgba(48, 23, 16, 0.7);">Custom visuals delivered within 7-10 business days after strategy session.</span>
+                          </div>
+                        </div>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Your project ID: <strong>${saleId}</strong>
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          We're excited to work with you!
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8;">
+                          — The AVERRA Team
+                        </p>
+                      </div>
+                      
+                      <!-- Footer with Social Links -->
+                      <div style="background: #301710; padding: 30px 20px; text-align: center; border-top: 1px solid rgba(220, 218, 204, 0.2);">
+                        <p style="color: rgba(220, 218, 204, 0.7); font-size: 13px; margin-bottom: 20px;">
+                          Questions? Reply to this email or visit <a href="https://www.averraaistudio.com" style="color: #DCDACC; text-decoration: none;">averraaistudio.com</a>
+                        </p>
+                        
+                        <p style="color: rgba(220, 218, 204, 0.8); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 15px;">
+                          Follow Us
+                        </p>
+                        
+                        <!-- Social Media Icons -->
+                        <div style="text-align: center;">
+                          <!-- Instagram -->
+                          <a href="https://www.instagram.com/averraaistudio" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" fill="#DCDACC"/>
+                            </svg>
+                          </a>
+                          
+                          <!-- TikTok -->
+                          <a href="https://www.tiktok.com/@averraaistudio" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" fill="#DCDACC"/>
+                            </svg>
+                          </a>
+                        </div>
+                        
+                        <p style="color: rgba(220, 218, 204, 0.5); font-size: 11px; margin-top: 20px;">
+                          © ${new Date().getFullYear()} AVERRA AI Model Studio. All rights reserved.
+                        </p>
+                      </div>
+                    </div>
+                  `,
+                }),
+              });
+
+              if (emailResponse.ok) {
+                console.log("📧 Service tier welcome email sent to:", customerEmail);
+              } else {
+                const errorData = await emailResponse.json();
+                console.error("❌ Service tier email failed:", errorData);
+              }
+            } catch (emailError) {
+              console.error("❌ Error sending service tier email:", emailError);
+            }
+          }
+          
+          // ============================================
+          // EMAIL #2: DIGITAL PRODUCTS INSTANT DELIVERY
+          // ============================================
+          if (digitalProducts.length > 0) {
+            try {
+              const productsList = digitalProducts.map((item: any) => 
+                `<li style="margin-bottom: 10px; color: #301710;">${item.name} - $${item.price}</li>`
+              ).join('');
+
+              // Map product names to Supabase Storage folder names
+              const productFolderMap: { [key: string]: string } = {
+                'Fresh Out The Chair Collection': 'Fresh Out The Chair',
+                'The Base Bundle': 'The Base Bundle',
+                'The Cuticle Collection': 'The Cuticle Collection',
+                'The Lash Collection': 'The Lash Collection',
+                'The Map Pack': 'The Map Pack',
+                'You Glow Girl Bundle': 'You Glow Girl Bundle',
+              };
+
+              // Fetch files from Supabase Storage for purchased products
+              const { createClient } = await import("jsr:@supabase/supabase-js@2");
+              const supabase = createClient(
+                Deno.env.get('SUPABASE_URL') ?? '',
+                Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+              );
+
+              const attachments = [];
+
+              // Fetch files for each purchased digital product
+              for (const product of digitalProducts) {
+                const folderName = productFolderMap[product.name];
+                
+                if (!folderName) {
+                  console.error(`⚠️ No folder mapping found for product: ${product.name}`);
+                  continue;
+                }
+
+                console.log(`📂 Fetching files from folder: ${folderName}`);
+
+                try {
+                  // List all files in the product folder
+                  const { data: files, error: listError } = await supabase.storage
+                    .from('digital-products')
+                    .list(folderName);
+
+                  if (listError) {
+                    console.error(`❌ Error listing files in ${folderName}:`, listError);
+                    continue;
+                  }
+
+                  if (!files || files.length === 0) {
+                    console.error(`⚠️ No files found in folder: ${folderName}`);
+                    continue;
+                  }
+
+                  console.log(`📄 Found ${files.length} files in ${folderName}`);
+
+                  // Download each file and add to attachments
+                  for (const file of files) {
+                    const filePath = `${folderName}/${file.name}`;
+                    
+                    const { data: fileData, error: downloadError } = await supabase.storage
+                      .from('digital-products')
+                      .download(filePath);
+
+                    if (downloadError) {
+                      console.error(`❌ Error downloading ${filePath}:`, downloadError);
+                      continue;
+                    }
+
+                    // Convert blob to base64
+                    const arrayBuffer = await fileData.arrayBuffer();
+                    const base64Content = btoa(
+                      new Uint8Array(arrayBuffer).reduce(
+                        (data, byte) => data + String.fromCharCode(byte),
+                        ''
+                      )
+                    );
+
+                    // Determine content type
+                    const contentType = file.name.endsWith('.pdf') 
+                      ? 'application/pdf'
+                      : file.name.endsWith('.png')
+                      ? 'image/png'
+                      : file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')
+                      ? 'image/jpeg'
+                      : 'application/octet-stream';
+
+                    attachments.push({
+                      filename: file.name,
+                      content: base64Content,
+                      type: contentType,
+                    });
+
+                    console.log(`✅ Added attachment: ${file.name} (${contentType})`);
+                  }
+                } catch (folderError) {
+                  console.error(`❌ Error processing folder ${folderName}:`, folderError);
+                }
+              }
+
+              console.log(`📎 Total attachments prepared: ${attachments.length}`);
+
+              const emailResponse = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${resendApiKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  from: "AVERRA AI Model Studio <delivery@averraaistudio.com>",
+                  to: [customerEmail],
+                  subject: "Your AVERRA Digital Collection Has Arrived ✨",
+                  html: `
+                    <div style="font-family: 'Cormorant', Georgia, serif; max-width: 600px; margin: 0 auto; padding: 0; background: #DCDACC;">
+                      <!-- AVERRA Logo Header -->
+                      <div style="background: #301710; padding: 30px 20px; text-align: center;">
+                        <h1 style="font-family: 'Cormorant', Georgia, serif; font-size: 42px; font-weight: 300; color: #DCDACC; margin: 0; letter-spacing: 0.15em;">
+                          AVERRA
+                        </h1>
+                        <p style="color: rgba(220, 218, 204, 0.8); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin: 10px 0 0 0;">
+                          AI Model Studio
+                        </p>
+                      </div>
+                      
+                      <!-- Main Content -->
+                      <div style="background: rgba(255, 255, 255, 0.95); padding: 40px; border-left: 1px solid rgba(48, 23, 16, 0.2); border-right: 1px solid rgba(48, 23, 16, 0.2);">
+                        <h2 style="font-size: 24px; font-weight: 400; color: #301710; margin-bottom: 30px; text-align: center;">
+                          Your Digital Products Are Ready! ✨
+                        </h2>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Hi ${customerName},
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Thank you for your purchase! Your digital brand visuals are attached to this email and ready for immediate use.
+                        </p>
+                        
+                        <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
+                          <h3 style="font-size: 18px; color: #301710; margin-bottom: 15px;">Your Purchase</h3>
+                          <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${productsList}
+                          </ul>
+                        </div>
+                        
+                        <div style="background: rgba(101, 67, 49, 0.1); padding: 30px; margin: 30px 0; border: 2px solid #654331; text-align: center;">
+                          <h3 style="font-size: 20px; color: #301710; margin-bottom: 20px;">📥 Your Files Are Attached</h3>
+                          
+                          <p style="color: #301710; line-height: 1.8; margin-bottom: 25px;">
+                            Each digital collection includes 3 high-resolution brand visuals plus a commercial use license (PDF). All files are attached to this email.
+                          </p>
+                          
+                          <p style="color: rgba(48, 23, 16, 0.7); font-size: 14px;">
+                            <strong>Total files attached: ${attachments.length}</strong>
+                          </p>
+                          
+                          <p style="color: rgba(48, 23, 16, 0.6); font-size: 12px; margin-top: 15px;">
+                            Can't see the attachments? Check your spam folder or reply to this email for assistance.
+                          </p>
+                        </div>
+                        
+                        <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
+                          <h3 style="font-size: 18px; color: #301710; margin-bottom: 15px;">📄 Commercial License Included</h3>
+                          
+                          <p style="color: #301710; line-height: 1.8; margin-bottom: 15px;">
+                            Your purchase includes full commercial rights to use these images for:
+                          </p>
+                          
+                          <ul style="color: rgba(48, 23, 16, 0.8); line-height: 2; padding-left: 20px;">
+                            <li>Social media marketing</li>
+                            <li>Website and portfolio</li>
+                            <li>Print marketing materials</li>
+                            <li>Client presentations</li>
+                            <li>Advertising campaigns</li>
+                          </ul>
+                          
+                          <p style="color: rgba(48, 23, 16, 0.7); font-size: 13px; margin-top: 15px;">
+                            License certificate is attached as a PDF.
+                          </p>
+                        </div>
+                        
+                        <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #654331;">
+                          <h3 style="font-size: 18px; color: #301710; margin-bottom: 15px;">💡 Need More?</h3>
+                          
+                          <p style="color: #301710; line-height: 1.8; margin-bottom: 15px;">
+                            Ready to build a complete custom brand system with unlimited AI-generated visuals?
+                          </p>
+                          
+                          <p style="color: #301710; line-height: 1.8;">
+                            <a href="https://www.averraaistudio.com/services" style="color: #654331; text-decoration: underline;">
+                              Explore AVERRA Service Packages →
+                            </a>
+                          </p>
+                        </div>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Order ID: <strong>${saleId}</strong>
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8;">
+                          — The AVERRA Team
+                        </p>
+                      </div>
+                      
+                      <!-- Footer with Social Links -->
+                      <div style="background: #301710; padding: 30px 20px; text-align: center; border-top: 1px solid rgba(220, 218, 204, 0.2);">
+                        <p style="color: rgba(220, 218, 204, 0.7); font-size: 13px; margin-bottom: 20px;">
+                          Questions? Reply to this email or visit <a href="https://www.averraaistudio.com" style="color: #DCDACC; text-decoration: none;">averraaistudio.com</a>
+                        </p>
+                        
+                        <p style="color: rgba(220, 218, 204, 0.8); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 15px;">
+                          Follow Us
+                        </p>
+                        
+                        <!-- Social Media Icons -->
+                        <div style="text-align: center;">
+                          <!-- Instagram -->
+                          <a href="https://www.instagram.com/averraaistudio" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" fill="#DCDACC"/>
+                            </svg>
+                          </a>
+                          
+                          <!-- TikTok -->
+                          <a href="https://www.tiktok.com/@averraaistudio" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" fill="#DCDACC"/>
+                            </svg>
+                          </a>
+                        </div>
+                        
+                        <p style="color: rgba(220, 218, 204, 0.5); font-size: 11px; margin-top: 20px;">
+                          © ${new Date().getFullYear()} AVERRA AI Model Studio. All rights reserved.
+                        </p>
+                      </div>
+                    </div>
+                  `,
+                  attachments: attachments,
+                }),
+              });
+
+              if (emailResponse.ok) {
+                console.log(`📧 Digital products delivery email sent to ${customerEmail} with ${attachments.length} attachments`);
+              } else {
+                const errorData = await emailResponse.json();
+                console.error("❌ Digital products email failed:", errorData);
+              }
+            } catch (emailError) {
+              console.error("❌ Error sending digital products email:", emailError);
+            }
+          }
+        }
         
         break;
       }

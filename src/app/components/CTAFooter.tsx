@@ -40,13 +40,29 @@ export function CTAFooter() {
 
         <div className="pt-16 pb-8 border-t border-[#654331]/30">
           <div className="flex flex-col gap-4">
-            <Link 
-              to="/terms-of-service"
-              className={`text-xs text-[#BFBBA7]/60 ${!isMobile ? 'hover:text-[#DCDACC] transition-colors' : ''} uppercase tracking-[0.2em] font-light`}
-            >
-              Terms of Service
-            </Link>
-            <p className="text-xs text-[#BFBBA7]/60 uppercase tracking-[0.3em] font-light">
+            <div className="flex flex-wrap gap-4 items-center justify-center">
+              <Link 
+                to="/terms-of-service"
+                className={`text-xs text-[#BFBBA7]/60 ${!isMobile ? 'hover:text-[#DCDACC] transition-colors' : ''} uppercase tracking-[0.2em] font-light`}
+              >
+                Terms of Service
+              </Link>
+              <span className="text-[#BFBBA7]/40">•</span>
+              <Link 
+                to="/privacy-policy"
+                className={`text-xs text-[#BFBBA7]/60 ${!isMobile ? 'hover:text-[#DCDACC] transition-colors' : ''} uppercase tracking-[0.2em] font-light`}
+              >
+                Privacy Policy
+              </Link>
+              <span className="text-[#BFBBA7]/40">•</span>
+              <Link 
+                to="/refund-policy"
+                className={`text-xs text-[#BFBBA7]/60 ${!isMobile ? 'hover:text-[#DCDACC] transition-colors' : ''} uppercase tracking-[0.2em] font-light`}
+              >
+                Refund Policy
+              </Link>
+            </div>
+            <p className="text-xs text-[#BFBBA7]/60 uppercase tracking-[0.3em] font-light text-center">
               © {new Date().getFullYear()} AVERRA AI Model Studio. All Rights Reserved.
             </p>
           </div>

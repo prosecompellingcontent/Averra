@@ -12,9 +12,12 @@ import { CheckoutSuccessPage } from "@/app/pages/CheckoutSuccessPage";
 import { BrandIntakeForm } from "@/app/pages/BrandIntakeForm";
 import { ShopPage } from "@/app/pages/ShopPage";
 import { TermsPage } from "@/app/pages/TermsPage";
+import { PrivacyPolicyPage } from "@/app/pages/PrivacyPolicyPage";
+import { RefundPolicyPage } from "@/app/pages/RefundPolicyPage";
 import { AnalyticsPage } from "@/app/pages/AnalyticsPage";
 import { SalesDashboard } from "@/app/pages/SalesDashboard";
 import { AccessPage } from "@/app/pages/AccessPage";
+import TestEmail from "@/app/components/test-email";
 
 export const router = createBrowserRouter(
   [
@@ -33,9 +36,12 @@ export const router = createBrowserRouter(
         { path: "brand-intake", Component: BrandIntakeForm },
         { path: "shop", Component: ShopPage },
         { path: "terms-of-service", Component: TermsPage },
+        { path: "privacy-policy", Component: PrivacyPolicyPage },
+        { path: "refund-policy", Component: RefundPolicyPage },
         { path: "analytics", Component: AnalyticsPage },
         { path: "sales", Component: SalesDashboard },
         { path: "access", Component: AccessPage },
+        { path: "test-email", Component: TestEmail },
       ],
     },
   ],
