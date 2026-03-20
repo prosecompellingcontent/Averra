@@ -151,15 +151,16 @@ export async function handleSendPurchaseEmail(c: any) {
       for (const item of items) {
         if (item.type === 'digital') {
           const productName = item.name;
-          const folderName = `${productName}/`; // Files are in folders!
+          // Convert product name to folder name format (lowercase with hyphens)
+          const folderName = productName.toLowerCase().replace(/\s+/g, '-');
           
-          console.log(`📁 Looking for files in folder: ${folderName}`);
+          console.log(`📁 Product: "${productName}" → Folder: "${folderName}"`);
           
           // List files INSIDE the product folder
           const { data: productFiles, error: listError } = await supabase
             .storage
             .from('digital-products')
-            .list(productName, {
+            .list(folderName, {
               limit: 100,
               offset: 0,
             });
@@ -173,7 +174,7 @@ export async function handleSendPurchaseEmail(c: any) {
           
           if (productFiles && productFiles.length > 0) {
             // Create a download URL that zips all files for this product
-            const downloadUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(productName)}`;
+            const downloadUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(folderName)}`;
             
             // Build file list for display
             let filesList = '';

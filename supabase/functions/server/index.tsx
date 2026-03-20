@@ -1510,14 +1510,16 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
               // Fetch files for each purchased digital product
               for (const product of digitalProducts) {
                 const productName = product.name;
+                // Convert product name to folder name format (lowercase with hyphens)
+                const folderName = productName.toLowerCase().replace(/\s+/g, '-');
                 
-                console.log(`📂 Looking for files in folder: ${productName}`);
+                console.log(`📂 Product: "${productName}" → Folder: "${folderName}"`);
 
                 // List files INSIDE the product folder
                 const { data: productFiles, error: listError } = await supabase
                   .storage
                   .from('digital-products')
-                  .list(productName, {
+                  .list(folderName, {
                     limit: 100,
                     offset: 0,
                   });
@@ -1528,7 +1530,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   continue;
                 }
                 
-                console.log(`✅ Found ${productFiles?.length || 0} files in ${productName}/`);
+                console.log(`✅ Found ${productFiles?.length || 0} files in ${folderName}/`);
                 console.log(`📄 Files:`, productFiles?.map(f => f.name).join(', '));
                 
                 if (productFiles && productFiles.length > 0) {
@@ -1536,7 +1538,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   const filesList = productFiles.map(f => `<li style="font-size: 14px; color: #301710; margin-bottom: 4px;">• ${f.name}</li>`).join('');
                   
                   // Create download URL that will zip all files
-                  const downloadUrl = `https://${Deno.env.get('SUPABASE_URL')?.replace('https://', '')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(productName)}`;
+                  const downloadUrl = `https://${Deno.env.get('SUPABASE_URL')?.replace('https://', '')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(folderName)}`;
                   
                   downloadLinksHtml += `
                     <div style="margin-bottom: 24px;">
