@@ -1276,7 +1276,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  from: "AVERRA AI Model Studio <onboarding@resend.dev>",
+                  from: "AVERRA AI Model Studio <hello@averraaistudio.com>",
                   to: [customerEmail],
                   subject: "Your AVERRA Brand Journey Begins Now ✨",
                   html: `
@@ -1426,16 +1426,6 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                 `<li style="margin-bottom: 10px; color: #301710;">${item.name} - $${item.price}</li>`
               ).join('');
 
-              // Map product names to Supabase Storage folder names
-              const productFolderMap: { [key: string]: string } = {
-                'Fresh Out The Chair Collection': 'Fresh Out The Chair',
-                'The Base Bundle': 'The Base Bundle',
-                'The Cuticle Collection': 'The Cuticle Collection',
-                'The Lash Collection': 'The Lash Collection',
-                'The Map Pack': 'The Map Pack',
-                'You Glow Girl Bundle': 'You Glow Girl Bundle',
-              };
-
               // Fetch files from Supabase Storage for purchased products
               const { createClient } = await import("jsr:@supabase/supabase-js@2");
               const supabase = createClient(
@@ -1443,82 +1433,71 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                 Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
               );
 
-              const attachments = [];
+              // Build download buttons HTML
+              let downloadLinksHtml = '';
 
               // Fetch files for each purchased digital product
               for (const product of digitalProducts) {
-                const folderName = productFolderMap[product.name];
+                const productName = product.name;
                 
-                if (!folderName) {
-                  console.error(`⚠️ No folder mapping found for product: ${product.name}`);
+                console.log(`📂 Looking for files starting with: ${productName}`);
+
+                // List ALL files in the root of digital-products bucket
+                const { data: allFiles, error: listError } = await supabase
+                  .storage
+                  .from('digital-products')
+                  .list('', {
+                    limit: 100,
+                    offset: 0,
+                  });
+                
+                if (listError) {
+                  console.error(`❌ Error listing files:`, listError);
                   continue;
                 }
-
-                console.log(`📂 Fetching files from folder: ${folderName}`);
-
-                try {
-                  // List all files in the product folder
-                  const { data: files, error: listError } = await supabase.storage
-                    .from('digital-products')
-                    .list(folderName);
-
-                  if (listError) {
-                    console.error(`❌ Error listing files in ${folderName}:`, listError);
-                    continue;
-                  }
-
-                  if (!files || files.length === 0) {
-                    console.error(`⚠️ No files found in folder: ${folderName}`);
-                    continue;
-                  }
-
-                  console.log(`📄 Found ${files.length} files in ${folderName}`);
-
-                  // Download each file and add to attachments
-                  for (const file of files) {
-                    const filePath = `${folderName}/${file.name}`;
-                    
-                    const { data: fileData, error: downloadError } = await supabase.storage
+                
+                // Filter files that start with this product's name
+                const productFiles = allFiles?.filter(file => 
+                  file.name.startsWith(productName)
+                ) || [];
+                
+                console.log(`✅ Found ${productFiles.length} files for ${productName}`);
+                
+                if (productFiles && productFiles.length > 0) {
+                  downloadLinksHtml += `
+                    <div style="margin-bottom: 20px;">
+                      <h4 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${product.name}</h4>
+                  `;
+                  
+                  // Generate signed URLs for each file (valid for 7 days)
+                  for (const file of productFiles) {
+                    const { data: signedUrlData, error: urlError } = await supabase
+                      .storage
                       .from('digital-products')
-                      .download(filePath);
-
-                    if (downloadError) {
-                      console.error(`❌ Error downloading ${filePath}:`, downloadError);
+                      .createSignedUrl(file.name, 604800); // 7 days in seconds
+                    
+                    if (urlError) {
+                      console.error(`❌ Error creating signed URL for ${file.name}:`, urlError);
                       continue;
                     }
-
-                    // Convert blob to base64
-                    const arrayBuffer = await fileData.arrayBuffer();
-                    const base64Content = btoa(
-                      new Uint8Array(arrayBuffer).reduce(
-                        (data, byte) => data + String.fromCharCode(byte),
-                        ''
-                      )
-                    );
-
-                    // Determine content type
-                    const contentType = file.name.endsWith('.pdf') 
-                      ? 'application/pdf'
-                      : file.name.endsWith('.png')
-                      ? 'image/png'
-                      : file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')
-                      ? 'image/jpeg'
-                      : 'application/octet-stream';
-
-                    attachments.push({
-                      filename: file.name,
-                      content: base64Content,
-                      type: contentType,
-                    });
-
-                    console.log(`✅ Added attachment: ${file.name} (${contentType})`);
+                    
+                    if (signedUrlData?.signedUrl) {
+                      console.log(`✅ Generated download link for: ${file.name}`);
+                      downloadLinksHtml += `
+                        <a href="${signedUrlData.signedUrl}" 
+                           style="display: block; background: #301710; color: #DCDACC; padding: 14px 20px; text-decoration: none; font-weight: 500; font-size: 14px; margin-bottom: 8px; border-radius: 4px; text-align: center;"
+                           download="${file.name}">
+                          📥 Download ${file.name}
+                        </a>
+                      `;
+                    }
                   }
-                } catch (folderError) {
-                  console.error(`❌ Error processing folder ${folderName}:`, folderError);
+                  
+                  downloadLinksHtml += `</div>`;
                 }
               }
 
-              console.log(`📎 Total attachments prepared: ${attachments.length}`);
+              console.log(`✅ Generated download links for all digital products`);
 
               console.log(`🚀 INSTANT DELIVERY: Sending digital products to ${customerEmail} NOW!`);
               const emailStartTime = Date.now();
@@ -1530,7 +1509,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  from: "AVERRA AI Model Studio <onboarding@resend.dev>",
+                  from: "AVERRA AI Model Studio <hello@averraaistudio.com>",
                   to: [customerEmail],
                   subject: "Your AVERRA Digital Collection Has Arrived ✨",
                   html: `
@@ -1556,7 +1535,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                         </p>
                         
                         <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
-                          Thank you for your purchase! Your digital brand visuals are attached to this email and ready for immediate use.
+                          Thank you for your purchase! Your digital brand visuals are ready for immediate download.
                         </p>
                         
                         <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
@@ -1566,20 +1545,14 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                           </ul>
                         </div>
                         
-                        <div style="background: rgba(101, 67, 49, 0.1); padding: 30px; margin: 30px 0; border: 2px solid #654331; text-align: center;">
-                          <h3 style="font-size: 20px; color: #301710; margin-bottom: 20px;">📥 Your Files Are Attached</h3>
+                        <div style="background: #301710; padding: 30px; margin: 30px 0;">
+                          <h3 style="font-size: 22px; color: #DCDACC; margin-bottom: 15px; text-align: center;">📥 Download Your Files</h3>
                           
-                          <p style="color: #301710; line-height: 1.8; margin-bottom: 25px;">
-                            Each digital collection includes 3 high-resolution brand visuals plus a commercial use license (PDF). All files are attached to this email.
+                          <p style="color: #BFBBA7; line-height: 1.8; margin-bottom: 25px; text-align: center;">
+                            Each collection includes 3 high-resolution images and a commercial license. Download links expire in 7 days.
                           </p>
                           
-                          <p style="color: rgba(48, 23, 16, 0.7); font-size: 14px;">
-                            <strong>Total files attached: ${attachments.length}</strong>
-                          </p>
-                          
-                          <p style="color: rgba(48, 23, 16, 0.6); font-size: 12px; margin-top: 15px;">
-                            Can't see the attachments? Check your spam folder or reply to this email for assistance.
-                          </p>
+                          ${downloadLinksHtml}
                         </div>
                         
                         <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
