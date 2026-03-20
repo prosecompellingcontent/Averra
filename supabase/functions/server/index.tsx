@@ -195,6 +195,77 @@ app.get('/make-server-61755bec/debug/storage', async (c) => {
   });
 });
 
+// Download product files as ZIP
+app.get('/make-server-61755bec/download-product/:productName', async (c) => {
+  const productName = c.req.param('productName');
+  
+  console.log(`📦 Creating ZIP for product: ${productName}`);
+  
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL') ?? '',
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  );
+
+  // List files INSIDE the product folder
+  const { data: productFiles, error: listError } = await supabase
+    .storage
+    .from('digital-products')
+    .list(productName, {
+      limit: 100,
+      offset: 0,
+    });
+  
+  if (listError) {
+    console.error(`❌ Error listing files in ${productName}/:`, listError);
+    return c.json({ error: listError.message }, 500);
+  }
+  
+  if (!productFiles || productFiles.length === 0) {
+    return c.json({ error: 'No files found for this product' }, 404);
+  }
+  
+  console.log(`📁 Found ${productFiles.length} files to zip`);
+  
+  // Import JSZip
+  const JSZip = (await import('npm:jszip@3.10.1')).default;
+  const zip = new JSZip();
+  
+  // Download each file and add to ZIP
+  for (const file of productFiles) {
+    const filePath = `${productName}/${file.name}`;
+    const { data: fileData, error: downloadError } = await supabase
+      .storage
+      .from('digital-products')
+      .download(filePath);
+    
+    if (downloadError) {
+      console.error(`❌ Error downloading ${filePath}:`, downloadError);
+      continue;
+    }
+    
+    if (fileData) {
+      // Convert Blob to ArrayBuffer
+      const arrayBuffer = await fileData.arrayBuffer();
+      zip.file(file.name, arrayBuffer);
+      console.log(`✅ Added ${file.name} to ZIP`);
+    }
+  }
+  
+  // Generate ZIP file
+  const zipBlob = await zip.generateAsync({ type: 'uint8array' });
+  
+  console.log(`✅ Created ZIP file (${zipBlob.length} bytes)`);
+  
+  // Return ZIP file
+  return new Response(zipBlob, {
+    headers: {
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="${productName}.zip"`,
+      'Content-Length': zipBlob.length.toString(),
+    },
+  });
+});
+
 // Get Stripe publishable key
 app.get("/make-server-61755bec/stripe-config", (c) => {
   try {
@@ -1440,64 +1511,59 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
               for (const product of digitalProducts) {
                 const productName = product.name;
                 
-                console.log(`📂 Looking for files starting with: ${productName}`);
+                console.log(`📂 Looking for files in folder: ${productName}`);
 
-                // List ALL files in the root of digital-products bucket
-                const { data: allFiles, error: listError } = await supabase
+                // List files INSIDE the product folder
+                const { data: productFiles, error: listError } = await supabase
                   .storage
                   .from('digital-products')
-                  .list('', {
+                  .list(productName, {
                     limit: 100,
                     offset: 0,
                   });
                 
                 if (listError) {
                   console.error(`❌ Error listing files:`, listError);
+                  console.error(`❌ Error details:`, JSON.stringify(listError));
                   continue;
                 }
                 
-                // Filter files that start with this product's name
-                const productFiles = allFiles?.filter(file => 
-                  file.name.startsWith(productName)
-                ) || [];
-                
-                console.log(`✅ Found ${productFiles.length} files for ${productName}`);
+                console.log(`✅ Found ${productFiles?.length || 0} files in ${productName}/`);
+                console.log(`📄 Files:`, productFiles?.map(f => f.name).join(', '));
                 
                 if (productFiles && productFiles.length > 0) {
+                  // List all files included
+                  const filesList = productFiles.map(f => `<li style="font-size: 14px; color: #301710; margin-bottom: 4px;">• ${f.name}</li>`).join('');
+                  
+                  // Create download URL that will zip all files
+                  const downloadUrl = `https://${Deno.env.get('SUPABASE_URL')?.replace('https://', '')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(productName)}`;
+                  
                   downloadLinksHtml += `
-                    <div style="margin-bottom: 20px;">
+                    <div style="margin-bottom: 24px;">
                       <h4 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${product.name}</h4>
+                      <p style="font-size: 14px; color: #301710; margin: 0 0 12px 0;">Includes ${productFiles.length} files:</p>
+                      <ul style="margin: 0 0 16px 0; padding-left: 20px;">${filesList}</ul>
+                      <a href="${downloadUrl}" 
+                         style="display: inline-block; background: #E91E63; color: white; padding: 16px 32px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 4px; text-align: center;"
+                         download="${productName}.zip">
+                        📥 DOWNLOAD ALL FILES
+                      </a>
+                      <p style="font-size: 12px; color: #BFBBA7; margin: 12px 0 0 0; text-align: center;">Files are zipped. Windows: Right-click > Extract All. Mac: Double-click to unzip.</p>
+                    </div>
                   `;
                   
-                  // Generate signed URLs for each file (valid for 7 days)
-                  for (const file of productFiles) {
-                    const { data: signedUrlData, error: urlError } = await supabase
-                      .storage
-                      .from('digital-products')
-                      .createSignedUrl(file.name, 604800); // 7 days in seconds
-                    
-                    if (urlError) {
-                      console.error(`❌ Error creating signed URL for ${file.name}:`, urlError);
-                      continue;
-                    }
-                    
-                    if (signedUrlData?.signedUrl) {
-                      console.log(`✅ Generated download link for: ${file.name}`);
-                      downloadLinksHtml += `
-                        <a href="${signedUrlData.signedUrl}" 
-                           style="display: block; background: #301710; color: #DCDACC; padding: 14px 20px; text-decoration: none; font-weight: 500; font-size: 14px; margin-bottom: 8px; border-radius: 4px; text-align: center;"
-                           download="${file.name}">
-                          📥 Download ${file.name}
-                        </a>
-                      `;
-                    }
-                  }
-                  
-                  downloadLinksHtml += `</div>`;
+                  console.log(`✅ Generated download button for ${productName} with ${productFiles.length} files`);
+                } else {
+                  console.warn(`⚠️ No files found for product: ${productName}`);
+                  downloadLinksHtml += `
+                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 0, 0, 0.1); border-left: 3px solid red;">
+                      <p style="color: #301710; margin: 0;">⚠️ Files for "${productName}" could not be found. Please contact support.</p>
+                    </div>
+                  `;
                 }
               }
 
-              console.log(`✅ Generated download links for all digital products`);
+              console.log(`✅ Generated download links HTML (${downloadLinksHtml.length} characters)`);
 
               console.log(`🚀 INSTANT DELIVERY: Sending digital products to ${customerEmail} NOW!`);
               const emailStartTime = Date.now();
