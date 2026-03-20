@@ -1,6 +1,0 @@
-{
-  "type": "module",
-  "dependencies": {
-    "stripe": "^20.4.1"
-  }
-}
