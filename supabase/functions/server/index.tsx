@@ -2,14 +2,14 @@ import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
 import * as kv from "./kv_store.tsx";
-import Stripe from "npm:stripe@17.6.0";
+import Stripe from "npm:stripe@20.4.1";
 import { handleSendPurchaseEmail } from "./send-purchase-email.tsx";
 
 const app = new Hono();
 
 // Initialize Stripe with your secret key
 const stripe = new Stripe(Deno.env.get("Stripe_Secret_Key") || "", {
-  apiVersion: "2024-12-18.acacia",
+  apiVersion: "2026-02-25.clover",
 });
 
 // Enable logger
