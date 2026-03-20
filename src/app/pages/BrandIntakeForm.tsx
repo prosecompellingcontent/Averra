@@ -16,7 +16,7 @@ const tierDescriptions: Record<string, string> = {
 export function BrandIntakeForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { items } = useCart();
+  const { items, addItem } = useCart();
   const isMobile = useIsMobile();
   
   // ALL useState hooks must be declared FIRST, before any conditional returns
@@ -172,7 +172,19 @@ export function BrandIntakeForm() {
       // Also store form data for backward compatibility
       sessionStorage.setItem('brandIntakeData', JSON.stringify(formData));
       
-      // Navigate to checkout
+      // Add the service tier to cart if not already there
+      const isAlreadyInCart = items.some(item => item.id === tier.id);
+      if (!isAlreadyInCart) {
+        addItem({
+          id: tier.id,
+          name: tier.name,
+          price: tier.price,
+          type: 'service',
+          description: tierDescriptions[tier.name] || 'Strategic brand visuals designed for beauty professionals'
+        });
+      }
+      
+      // Navigate to checkout after adding to cart
       navigate('/checkout');
     } catch (error) {
       console.error('Error submitting brand intake:', error);

@@ -13,7 +13,15 @@ interface CartPreviewPopupProps {
 
 export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }: CartPreviewPopupProps) {
   const [autoCloseTimer, setAutoCloseTimer] = useState<NodeJS.Timeout | null>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
   const isMobile = useIsMobile();
+
+  // Capture scroll position when popup becomes visible
+  useEffect(() => {
+    if (isVisible) {
+      setScrollPosition(window.scrollY);
+    }
+  }, [isVisible]);
 
   useEffect(() => {
     if (isVisible && !isMobile) {

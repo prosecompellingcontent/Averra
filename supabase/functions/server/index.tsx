@@ -285,21 +285,26 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
     });
 
     // Prepare metadata with brand intake data if available
+    // NOTE: Stripe limits metadata values to 500 characters
     const metadata: any = {
       customerName: customerInfo?.name || '',
       customerEmail: customerInfo?.email || '',
       customerPhone: customerInfo?.phone || '',
-      items: JSON.stringify(validItems.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        type: item.type,
-      }))),
+      // Store item count and types instead of full items array to avoid 500 char limit
+      itemCount: validItems.length.toString(),
+      itemTypes: validItems.map((item: any) => item.type).join(','),
+      hasServiceTier: validItems.some((item: any) => item.type === 'service') ? 'true' : 'false',
+      hasDigitalProduct: validItems.some((item: any) => item.type === 'digital') ? 'true' : 'false',
     };
 
     // Add brand intake data to metadata if provided
     if (brandIntakeData) {
-      metadata.brandIntakeData = JSON.stringify(brandIntakeData);
+      // Store a reference ID instead of full data to avoid character limit
+      const intakeRefId = `intake_${Date.now()}`;
+      metadata.intakeRefId = intakeRefId;
+      
+      // Store the full brand intake data in KV store
+      await kv.set(intakeRefId, brandIntakeData);
     }
 
     // Create Stripe Checkout Session with timeout protection
@@ -829,7 +834,10 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         const customerName = paymentIntent.metadata?.customerName || "N/A";
         const customerEmail = paymentIntent.metadata?.customerEmail || "N/A";
         const customerPhone = paymentIntent.metadata?.customerPhone || "N/A";
-        const items = paymentIntent.metadata?.items ? JSON.parse(paymentIntent.metadata.items) : [];
+        
+        // Note: Items are stored in checkout session, not payment intent
+        // For payment_intent.succeeded without checkout, items won't be available
+        const items = [];
 
         // Create project record
         const projectId = `project_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -1002,12 +1010,31 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         const session = event.data.object;
         console.log("🛒 Checkout completed:", session.id);
         
+        // Retrieve line items from Stripe (contains product details)
+        const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+          expand: ['data.price.product'],
+        });
+        
+        // Convert line items to our items format
+        const items = lineItems.data.map((lineItem: any) => ({
+          name: lineItem.description || lineItem.price?.product?.name || 'Unknown Product',
+          price: lineItem.amount_total / 100,
+          quantity: lineItem.quantity,
+        }));
+        
+        console.log("📦 Line items retrieved:", items.length, "items");
+        
         // Extract metadata
         const customerName = session.customer_details?.name || session.metadata?.customerName || "N/A";
         const customerEmail = session.customer_details?.email || session.metadata?.customerEmail || "N/A";
         const customerPhone = session.customer_details?.phone || session.metadata?.customerPhone || "N/A";
-        const items = session.metadata?.items ? JSON.parse(session.metadata.items) : [];
-        const brandIntakeData = session.metadata?.brandIntakeData ? JSON.parse(session.metadata.brandIntakeData) : null;
+        
+        // Retrieve brand intake data from KV store if reference ID exists
+        let brandIntakeData = null;
+        if (session.metadata?.intakeRefId) {
+          brandIntakeData = await kv.get(session.metadata.intakeRefId);
+          console.log("📋 Brand intake data retrieved from KV store");
+        }
         
         // Determine service tier from items
         const serviceTier = items.find((item: any) => 

@@ -444,18 +444,34 @@ export function ServicesPage() {
             </div>
               
             <div className="mt-8 mb-32 hidden md:block text-center">
-              <h3 className="text-3xl text-[#221412]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
-                Not sure which tier?
-              </h3>
-              <p className="text-base text-[#221412]/70 font-light mt-4">
-                Take our 2-minute Brand Quiz to get a personalized recommendation.
-              </p>
-              <Link
-                to="/quiz"
-                className="inline-block px-12 py-4 bg-[#221412] text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light hover:bg-[#3d2b26] transition-all mt-6"
-              >
-                Start Brand Quiz
-              </Link>
+              <div className="relative mx-auto max-w-6xl">
+                {/* Decorative corner accents */}
+                <div className="absolute -top-3 -left-3 w-6 h-6 border-t-2 border-l-2 border-[#221412]/20"></div>
+                <div className="absolute -top-3 -right-3 w-6 h-6 border-t-2 border-r-2 border-[#221412]/20"></div>
+                <div className="absolute -bottom-3 -left-3 w-6 h-6 border-b-2 border-l-2 border-[#221412]/20"></div>
+                <div className="absolute -bottom-3 -right-3 w-6 h-6 border-b-2 border-r-2 border-[#221412]/20"></div>
+                
+                <div className="bg-[#221412] px-20 py-10 relative overflow-hidden">
+                  {/* Subtle texture overlay */}
+                  <div className="absolute inset-0 opacity-5" style={{ 
+                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.1) 10px, rgba(255,255,255,.1) 20px)'
+                  }}></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-center gap-3 mb-3">
+                      <div className="w-12 h-px bg-[#DCDACC]/40"></div>
+                      <span className="text-[9px] uppercase tracking-[0.5em] text-[#DCDACC]/60" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
+                        Exclusive Offer
+                      </span>
+                      <div className="w-12 h-px bg-[#DCDACC]/40"></div>
+                    </div>
+                    
+                    <p className="text-4xl text-[#DCDACC]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, fontStyle: 'italic' }}>
+                      Limited Time Only
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
