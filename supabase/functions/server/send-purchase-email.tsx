@@ -173,7 +173,7 @@ export async function handleSendPurchaseEmail(c: any) {
           
           if (productFiles && productFiles.length > 0) {
             // Create a download URL that zips all files for this product
-            const downloadUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/make-server-61755bec/download-product?product=${encodeURIComponent(productName)}`;
+            const downloadUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(productName)}`;
             
             // Build file list for display
             let filesList = '';
