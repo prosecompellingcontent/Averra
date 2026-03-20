@@ -1,8 +1,7 @@
 {
   "functions": {
     "api/**/*.ts": {
-      "runtime": "@vercel/node@3.2.21",
-      "includeFiles": "api/**"
+      "runtime": "@vercel/node@3.2.21"
     }
   },
   "routes": [
