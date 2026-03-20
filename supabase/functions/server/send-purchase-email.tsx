@@ -151,61 +151,49 @@ export async function handleSendPurchaseEmail(c: any) {
       for (const item of items) {
         if (item.type === 'digital') {
           const productName = item.name;
+          const folderName = `${productName}/`; // Files are in folders!
           
-          console.log(`📁 Looking for files starting with: ${productName}`);
+          console.log(`📁 Looking for files in folder: ${folderName}`);
           
-          // List ALL files in the root of digital-products bucket
-          const { data: allFiles, error: listError } = await supabase
+          // List files INSIDE the product folder
+          const { data: productFiles, error: listError } = await supabase
             .storage
             .from('digital-products')
-            .list('', {
+            .list(productName, {
               limit: 100,
               offset: 0,
             });
           
           if (listError) {
-            console.error(`❌ Error listing files:`, listError);
+            console.error(`❌ Error listing files in ${folderName}:`, listError);
             continue;
           }
           
-          // Filter files that start with this product's name
-          const productFiles = allFiles?.filter(file => 
-            file.name.startsWith(productName)
-          ) || [];
-          
-          console.log(`✅ Found ${productFiles.length} files for ${productName}`);
+          console.log(`✅ Found ${productFiles?.length || 0} files in ${folderName}`);
           
           if (productFiles && productFiles.length > 0) {
-            downloadLinksHtml += `
-              <div style="margin-bottom: 25px;">
-                <h3 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${item.name}</h3>
-            `;
+            // Create a download URL that zips all files for this product
+            const downloadUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/make-server-61755bec/download-product?product=${encodeURIComponent(productName)}`;
             
-            // Generate signed URLs for each file (valid for 7 days)
+            // Build file list for display
+            let filesList = '';
             for (const file of productFiles) {
-              const { data: signedUrlData, error: urlError } = await supabase
-                .storage
-                .from('digital-products')
-                .createSignedUrl(file.name, 604800); // 7 days in seconds
-              
-              if (urlError) {
-                console.error(`❌ Error creating signed URL for ${file.name}:`, urlError);
-                continue;
-              }
-              
-              if (signedUrlData?.signedUrl) {
-                console.log(`✅ Generated download link for: ${file.name}`);
-                downloadLinksHtml += `
-                  <a href="${signedUrlData.signedUrl}" 
-                     style="display: block; background: #DCDACC; color: #301710; padding: 12px 20px; text-decoration: none; font-weight: 500; font-size: 14px; margin-bottom: 8px; border-radius: 4px; text-align: center;"
-                     download="${file.name}">
-                    📥 Download ${file.name}
-                  </a>
-                `;
-              }
+              filesList += `<li style="color: #654331; font-size: 13px;">${file.name}</li>`;
             }
             
-            downloadLinksHtml += `</div>`;
+            downloadLinksHtml += `
+              <div style="margin-bottom: 24px;">
+                <h4 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${item.name}</h4>
+                <p style="font-size: 14px; color: #301710; margin: 0 0 12px 0;">Includes ${productFiles.length} files:</p>
+                <ul style="margin: 0 0 16px 0; padding-left: 20px;">${filesList}</ul>
+                <a href="${downloadUrl}" 
+                   style="display: inline-block; background: #E91E63; color: white; padding: 16px 32px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 4px; text-align: center;"
+                   download="${productName}.zip">
+                  📥 DOWNLOAD ALL FILES
+                </a>
+                <p style="font-size: 12px; color: #BFBBA7; margin: 12px 0 0 0; text-align: center;">Files are zipped. Windows: Right-click > Extract All. Mac: Double-click to unzip.</p>
+              </div>
+            `;
           }
         }
       }
