@@ -42,8 +42,8 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
   const latestItem = items[items.length - 1];
   const totalItemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
   
-  // Calculate position relative to viewport
-  const topPosition = isMobile ? 80 : 100;
+  // Calculate position relative to viewport - center it where user is scrolling
+  const topPosition = isMobile ? '50%' : 100;
   
   // Simple non-animated version for mobile
   if (isMobile) {
@@ -51,7 +51,8 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
       <div 
         className="fixed right-4 left-4 z-[9999] border-2 border-[#301710] shadow-2xl p-4 bg-white"
         style={{
-          top: `${topPosition}px`,
+          top: topPosition,
+          transform: 'translateY(-50%)',
           contain: 'layout style paint',
         }}
       >

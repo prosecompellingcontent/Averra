@@ -8,7 +8,7 @@ import { handleSendPurchaseEmail } from "./send-purchase-email.tsx";
 const app = new Hono();
 
 // Initialize Stripe with your secret key
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+const stripe = new Stripe(Deno.env.get("Stripe_Secret_Key") || "", {
   apiVersion: "2024-12-18.acacia",
 });
 
@@ -131,7 +131,7 @@ app.post("/make-server-61755bec/test-email", async (c) => {
 // ============================================
 app.get("/make-server-61755bec/check-config", (c) => {
   const resendKey = Deno.env.get("RESEND_API_KEY");
-  const stripeSecret = Deno.env.get("STRIPE_SECRET_KEY");
+  const stripeSecret = Deno.env.get("Stripe_Secret_Key");
   const stripePublishable = Deno.env.get("STRIPE_PUBLISHABLE_KEY");
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
   
@@ -157,7 +157,7 @@ app.post("/make-server-61755bec/send-purchase-email", handleSendPurchaseEmail);
 app.get("/make-server-61755bec/stripe-config", (c) => {
   try {
     const publishableKey = Deno.env.get("STRIPE_PUBLISHABLE_KEY");
-    const secretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const secretKey = Deno.env.get("Stripe_Secret_Key");
     
     if (!publishableKey) {
       console.error("STRIPE_PUBLISHABLE_KEY environment variable not set");
@@ -224,14 +224,13 @@ app.get("/make-server-61755bec/stripe-config", (c) => {
 // Create payment intent
 app.post("/make-server-61755bec/create-payment-intent", async (c) => {
   try {
-    const secretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const secretKey = Deno.env.get("Stripe_Secret_Key");
     
     // Better error message if key is invalid
-    if (!secretKey || secretKey === "Lovemenot1.") {
-      console.error("STRIPE_SECRET_KEY is not set correctly. Current value:", secretKey);
+    if (!secretKey) {
+      console.error("STRIPE_SECRET_KEY is not set");
       return c.json({ 
-        error: "Stripe is not configured correctly. Please update STRIPE_SECRET_KEY environment variable with your actual Stripe secret key (starts with sk_test_...)",
-        currentKey: secretKey?.substring(0, 10) + "..." // Show first 10 chars for debugging
+        error: "Stripe is not configured. Please contact support."
       }, 500);
     }
 
@@ -277,12 +276,12 @@ app.post("/make-server-61755bec/create-payment-intent", async (c) => {
 // ============================================
 app.post("/make-server-61755bec/create-checkout-session", async (c) => {
   try {
-    const secretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const secretKey = Deno.env.get("Stripe_Secret_Key");
     
-    if (!secretKey || secretKey === "Lovemenot1.") {
-      console.error("STRIPE_SECRET_KEY is not set correctly");
+    if (!secretKey) {
+      console.error("STRIPE_SECRET_KEY is not set");
       return c.json({ 
-        error: "Stripe is not configured correctly. Please update STRIPE_SECRET_KEY environment variable."
+        error: "Stripe is not configured. Please contact support."
       }, 500);
     }
 
@@ -381,11 +380,20 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
       url: session.url,
     });
   } catch (error) {
-    console.error("❌ Error creating checkout session:", error);
+    console.error("❌ Error creating checkout session:");
+    console.error("Error type:", error?.constructor?.name);
+    console.error("Error message:", error instanceof Error ? error.message : String(error));
+    console.error("Full error:", JSON.stringify(error, null, 2));
+    
+    // Stripe errors have specific structure
+    if (error && typeof error === 'object' && 'type' in error) {
+      console.error("Stripe error type:", (error as any).type);
+      console.error("Stripe error code:", (error as any).code);
+      console.error("Stripe error param:", (error as any).param);
+    }
     
     // Provide detailed error info for debugging
     const errorMessage = error instanceof Error ? error.message : "Checkout session creation failed";
-    console.error("Error details:", errorMessage);
     
     return c.json(
       { error: errorMessage },
