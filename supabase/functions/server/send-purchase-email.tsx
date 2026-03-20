@@ -4,20 +4,32 @@ export async function handleSendPurchaseEmail(c: any) {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     
     if (!resendApiKey) {
+      console.error("❌ RESEND_API_KEY not configured");
       return c.json({ 
         error: "RESEND_API_KEY not configured in Supabase secrets" 
       }, 500);
     }
 
-    const { to, customerName, items, total, calendlyLink } = await c.req.json();
+    const body = await c.req.json();
+    console.log("📧 Received request body:", JSON.stringify(body, null, 2));
 
-    console.log("📧 Testing purchase email...");
-    console.log("To:", to);
-    console.log("Items:", items);
+    const { sessionId, customerEmail, customerName, items, amountTotal, metadata } = body;
+    
+    if (!customerEmail) {
+      console.error("❌ No customer email provided");
+      return c.json({ error: "Customer email is required" }, 400);
+    }
 
-    // Check if this is a service tier or digital product
-    const hasServiceTier = items.some((item: any) => item.type === 'service');
-    const hasDigitalProduct = items.some((item: any) => item.type === 'digital');
+    // Determine what type of purchase this is
+    const hasServiceTier = metadata?.hasServiceTier === 'true';
+    const hasDigitalProduct = metadata?.hasDigitalProduct === 'true';
+    
+    console.log("📊 Purchase type:", { hasServiceTier, hasDigitalProduct });
+    console.log("📧 Sending email to:", customerEmail);
+    console.log("💰 Amount total:", amountTotal);
+
+    // Format the total correctly (convert from cents to dollars)
+    const total = (amountTotal || 0) / 100;
 
     let emailHtml = '';
     let subject = '';
@@ -210,7 +222,7 @@ export async function handleSendPurchaseEmail(c: any) {
       },
       body: JSON.stringify({
         from: "AVERRA AI Model Studio <onboarding@resend.dev>",
-        to: [to],
+        to: [customerEmail],
         subject: subject,
         html: emailHtml,
       }),

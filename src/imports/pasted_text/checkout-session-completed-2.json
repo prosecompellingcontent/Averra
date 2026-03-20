@@ -1,0 +1,320 @@
+checkout.session.completed
+Resend
+Delivery status
+Failed
+Next retry in 60 minutes
+Attempt date
+Mar 20, 2026, 12:13:37 PM
+Resent manually
+Event ID
+evt_1TD4fJKLeJj1g28UXgBT1ZnU
+Origin date
+Mar 20, 2026, 10:08:45 AM CDT
+Source
+Automatic
+API version
+2026-01-28.clover
+Description
+A Checkout Session was completed
+Response
+HTTP status code
+500
+{
+"error"
+: {
+"code": 
+"500",
+"message": 
+"A server error has occurred",
+},
+}
+Request
+{
+"id": 
+"evt_1TD4fJKLeJj1g28UXgBT1ZnU",
+"object": 
+"event",
+"api_version": 
+"2026-01-28.clover",
+"created": 
+1774019325,
+"data"
+: {
+"object"
+: {
+"id": 
+"cs_live_a1Te2RGU3cVazyAzODNFuSFAS2wmYrHCvSDvg21rPwZB6EfqESvfCaoOZa",
+"object": 
+"checkout.session",
+"adaptive_pricing"
+: {
+"enabled": 
+true,
+},
+"after_expiration": 
+null,
+"allow_promotion_codes": 
+null,
+"amount_subtotal": 
+3000,
+"amount_total": 
+3000,
+"automatic_tax"
+: {
+"enabled": 
+false,
+"liability": 
+null,
+"provider": 
+null,
+"status": 
+null,
+},
+"billing_address_collection": 
+null,
+"branding_settings"
+: {
+"background_color": 
+"#ffffff",
+"border_style": 
+"rounded",
+"button_color": 
+"#0074d4",
+"display_name": 
+"AVERRA AI Studio",
+"font_family": 
+"default",
+"icon": 
+null,
+"logo": 
+null,
+},
+"cancel_url": 
+"https://www.averraaistudio.com/checkout",
+"client_reference_id": 
+null,
+"client_secret": 
+null,
+"collected_information"
+: {
+"business_name": 
+null,
+"individual_name": 
+null,
+"shipping_details": 
+null,
+},
+"consent": 
+null,
+"consent_collection": 
+null,
+"created": 
+1774019309,
+"currency": 
+"usd",
+"currency_conversion": 
+null,
+"custom_fields"
+:
+[]
+,
+"custom_text"
+: {
+"after_submit": 
+null,
+"shipping_address": 
+null,
+"submit": 
+null,
+"terms_of_service_acceptance": 
+null,
+},
+"customer": 
+null,
+"customer_account": 
+null,
+"customer_creation": 
+"if_required",
+"customer_details"
+: {
+"address"
+: {
+"city": 
+"Joliet",
+"country": 
+"US",
+"line1": 
+"2219 N Bogdan Ln",
+"line2": 
+"B",
+"postal_code": 
+"60432",
+"state": 
+"IL",
+},
+"business_name": 
+null,
+"email": 
+"Iamjaylamay@gmail.com",
+"individual_name": 
+null,
+"name": 
+"Jayla Smith",
+"phone": 
+null,
+"tax_exempt": 
+"none",
+"tax_ids"
+:
+[]
+,
+},
+"customer_email": 
+"Iamjaylamay@gmail.com",
+"discounts"
+:
+[]
+,
+"expires_at": 
+1774105709,
+"integration_identifier": 
+null,
+"invoice": 
+null,
+"invoice_creation"
+: {
+"enabled": 
+false,
+"invoice_data"
+: {
+"account_tax_ids": 
+null,
+"custom_fields": 
+null,
+"description": 
+null,
+"footer": 
+null,
+"issuer": 
+null,
+"metadata"
+:
+{}
+,
+"rendering_options": 
+null,
+},
+},
+"livemode": 
+true,
+"locale": 
+null,
+"metadata"
+: {
+"itemCount": 
+"1",
+"hasDigitalProduct": 
+"true",
+"customerName": 
+"Jayla",
+"itemTypes": 
+"digital",
+"customerEmail": 
+"Iamjaylamay@gmail.com",
+"hasServiceTier": 
+"false",
+"customerPhone": 
+"",
+},
+"mode": 
+"payment",
+"origin_context": 
+null,
+"payment_intent": 
+"pi_3TD4fHKLeJj1g28U0vDbO2qA",
+"payment_link": 
+null,
+"payment_method_collection": 
+"if_required",
+"payment_method_configuration_details"
+: {
+"id": 
+"pmc_1SvKs0KLeJj1g28UdRUmhYro",
+"parent": 
+null,
+},
+"payment_method_options"
+: {
+"card"
+: {
+"request_three_d_secure": 
+"automatic",
+},
+},
+"payment_method_types"
+: [
+"card",
+"klarna",
+"link",
+"cashapp",
+"amazon_pay",
+],
+"payment_status": 
+"paid",
+"permissions": 
+null,
+"phone_number_collection"
+: {
+"enabled": 
+false,
+},
+"recovered_from": 
+null,
+"saved_payment_method_options": 
+null,
+"setup_intent": 
+null,
+"shipping_address_collection": 
+null,
+"shipping_cost": 
+null,
+"shipping_options"
+:
+[]
+,
+"status": 
+"complete",
+"submit_type": 
+null,
+"subscription": 
+null,
+"success_url": 
+"https://www.averraaistudio.com/checkout/success?session_id={CHECKOUT_SESSION_ID}",
+"total_details"
+: {
+"amount_discount": 
+0,
+"amount_shipping": 
+0,
+"amount_tax": 
+0,
+},
+"ui_mode": 
+"hosted",
+"url": 
+null,
+"wallet_options": 
+null,
+},
+},
+"livemode": 
+true,
+"pending_webhooks": 
+1,
+"request"
+:
+{… 2 items}
+,
+"type": 
+"checkout.session.completed",
+}
