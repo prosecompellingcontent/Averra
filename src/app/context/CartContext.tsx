@@ -7,12 +7,14 @@ export interface CartItem {
   originalPrice?: number;
   type: 'service' | 'digital' | 'membership';
   description?: string;
+  quantity?: number;
 }
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -67,11 +69,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setItems(prev => {
         // Check if item already exists
-        const exists = prev.find(i => i.id === item.id);
-        if (exists) {
-          return prev; // Don't add duplicates
+        const existingIndex = prev.findIndex(i => i.id === item.id);
+        if (existingIndex >= 0) {
+          // Item exists, increment quantity
+          const updated = [...prev];
+          updated[existingIndex] = {
+            ...updated[existingIndex],
+            quantity: (updated[existingIndex].quantity || 1) + 1
+          };
+          return updated;
         }
-        return [...prev, item];
+        // New item, add with quantity 1
+        return [...prev, { ...item, quantity: 1 }];
       });
       
       // Show the preview popup
@@ -90,6 +99,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Memoize updateQuantity to prevent re-creating function
+  const updateQuantity = useCallback((id: string, quantity: number) => {
+    try {
+      setItems(prev => prev.map(item => {
+        if (item.id === id) {
+          return { ...item, quantity };
+        }
+        return item;
+      }));
+    } catch (error) {
+      console.error('Failed to update item quantity:', error);
+    }
+  }, []);
+
   // Memoize clearCart to prevent re-creating function
   const clearCart = useCallback(() => {
     try {
@@ -101,20 +124,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Memoize computed values to prevent recalculation on every render
-  const totalItems = useMemo(() => items.length, [items.length]);
-  const totalPrice = useMemo(() => items.reduce((sum, item) => sum + item.price, 0), [items]);
+  const totalItems = useMemo(() => items.reduce((sum, item) => sum + (item.quantity || 1), 0), [items]);
+  const totalPrice = useMemo(() => items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0), [items]);
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(() => ({
     items,
     addItem,
     removeItem,
+    updateQuantity,
     clearCart,
     totalItems,
     totalPrice,
     showPreview,
     setShowPreview
-  }), [items, addItem, removeItem, clearCart, totalItems, totalPrice, showPreview]);
+  }), [items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, showPreview]);
 
   return (
     <CartContext.Provider value={contextValue}>

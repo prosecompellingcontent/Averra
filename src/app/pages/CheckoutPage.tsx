@@ -4,6 +4,7 @@ import { useCart } from "@/app/context/CartContext";
 import { Navigation } from "@/app/components/Navigation";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { ArrowLeft } from "lucide-react";
 
 // Product descriptions for checkout
 const productDescriptions: Record<string, string> = {
@@ -157,6 +158,19 @@ export function CheckoutPage() {
       <Navigation />
       
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
+        {/* Back Button */}
+        <div className="mb-8">
+          <Link
+            to="/cart"
+            className="group inline-flex items-center gap-2 text-[#301710]/60 hover:text-[#301710] transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span className={`uppercase tracking-wider ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+              Back to Cart
+            </span>
+          </Link>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-16">
           <p className={`uppercase tracking-[0.4em] text-[#b76e79] mb-4 ${isMobile ? 'text-[8px]' : 'text-[10px]'}`}>

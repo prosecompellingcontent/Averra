@@ -24,7 +24,7 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
   }, [isVisible]);
 
   useEffect(() => {
-    if (isVisible && !isMobile) {
+    if (isVisible) {
       // Auto-close after 4 seconds
       const timer = setTimeout(() => {
         onClose();
@@ -35,19 +35,24 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
         if (timer) clearTimeout(timer);
       };
     }
-  }, [isVisible, onClose, isMobile]);
+  }, [isVisible, onClose]);
 
   if (!isVisible || items.length === 0) return null;
 
   const latestItem = items[items.length - 1];
+  const totalItemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  
+  // Calculate position relative to viewport
+  const topPosition = isMobile ? 80 : 100;
   
   // Simple non-animated version for mobile
   if (isMobile) {
     return (
       <div 
-        className="fixed top-20 right-4 left-4 z-50 border-2 border-[#301710] shadow-2xl p-4 bg-white"
+        className="fixed right-4 left-4 z-[9999] border-2 border-[#301710] shadow-2xl p-4 bg-white"
         style={{
-          contain: 'layout style paint', // CSS containment for performance
+          top: `${topPosition}px`,
+          contain: 'layout style paint',
         }}
       >
         <div className="flex items-start justify-between mb-3">
@@ -61,30 +66,39 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
             onClick={onClose}
             className="text-[#301710]/60 hover:text-[#301710]"
             aria-label="Close"
-            style={{
-              transform: 'translateZ(0)', // GPU acceleration
-              willChange: 'transform',
-            }}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
         
         <div className="mb-3">
-          <p className="text-sm text-[#301710] font-medium">{latestItem.name}</p>
-          <p className="text-xs text-[#654331]">${latestItem.price}</p>
+          <div className="flex items-baseline gap-2 mb-1">
+            <p className="text-sm text-[#301710] font-medium">{latestItem.name}</p>
+            {latestItem.quantity && latestItem.quantity > 1 && (
+              <span className="text-xs text-[#654331] font-medium">
+                × {latestItem.quantity}
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-[#654331]">
+            ${latestItem.price}
+            {latestItem.quantity && latestItem.quantity > 1 && (
+              <span className="text-[#654331]/60"> each</span>
+            )}
+          </p>
+          {latestItem.quantity && latestItem.quantity > 1 && (
+            <p className="text-xs text-[#301710] font-medium mt-1">
+              Subtotal: ${(latestItem.price * latestItem.quantity).toFixed(2)}
+            </p>
+          )}
         </div>
         
         {onNavigateToCart && (
           <button
             onClick={onNavigateToCart}
             className="w-full py-2 bg-[#301710] text-[#DCDACC] text-xs uppercase tracking-[0.2em]"
-            style={{
-              transform: 'translateZ(0)', // GPU acceleration
-              willChange: 'transform',
-            }}
           >
-            View Cart ({items.length})
+            View Cart ({totalItemCount} {totalItemCount === 1 ? 'item' : 'items'})
           </button>
         )}
       </div>
@@ -96,12 +110,13 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="fixed top-24 right-8 z-50 w-96 bg-white border-2 border-[#301710] shadow-2xl"
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="fixed right-8 z-[9999] w-96 bg-white border-2 border-[#301710] shadow-2xl"
           style={{
+            top: `${topPosition}px`,
             boxShadow: '8px 8px 0px 0px rgba(48, 23, 16, 0.8)'
           }}
         >
@@ -123,7 +138,14 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
             </div>
             
             <div className="mb-4 pb-4 border-b border-[#301710]/20">
-              <p className="text-sm text-[#301710] font-medium mb-1">{latestItem.name}</p>
+              <div className="flex items-baseline gap-2 mb-1">
+                <p className="text-sm text-[#301710] font-medium">{latestItem.name}</p>
+                {latestItem.quantity && latestItem.quantity > 1 && (
+                  <span className="text-sm text-[#654331] font-semibold">
+                    × {latestItem.quantity}
+                  </span>
+                )}
+              </div>
               {latestItem.description && (
                 <p className="text-xs text-[#654331] mb-2">{latestItem.description}</p>
               )}
@@ -135,8 +157,16 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
                 )}
                 <span className="text-lg text-[#301710] font-medium">
                   ${latestItem.price}
+                  {latestItem.quantity && latestItem.quantity > 1 && (
+                    <span className="text-sm text-[#654331]/80"> each</span>
+                  )}
                 </span>
               </div>
+              {latestItem.quantity && latestItem.quantity > 1 && (
+                <p className="text-sm text-[#301710] font-semibold mt-2 pt-2 border-t border-[#301710]/10">
+                  Subtotal: ${(latestItem.price * latestItem.quantity).toFixed(2)}
+                </p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -145,7 +175,7 @@ export function CartPreviewPopup({ items, isVisible, onClose, onNavigateToCart }
                   onClick={onNavigateToCart}
                   className="w-full py-3 bg-[#301710] text-[#DCDACC] text-sm uppercase tracking-[0.2em] hover:bg-[#2d1810] transition-colors"
                 >
-                  View Cart ({items.length})
+                  View Cart ({totalItemCount} {totalItemCount === 1 ? 'item' : 'items'})
                 </button>
               )}
               <button

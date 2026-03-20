@@ -330,7 +330,7 @@ app.post("/make-server-61755bec/create-checkout-session", async (c) => {
           product_data: productData,
           unit_amount: unitAmount,
         },
-        quantity: 1,
+        quantity: item.quantity || 1,
       };
     });
 

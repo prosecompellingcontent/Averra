@@ -7,6 +7,7 @@ import { CTAFooter } from '@/app/components/CTAFooter';
 import { MarqueeScroll } from '@/app/components/MarqueeScroll';
 import { trackAction } from '@/utils/analytics';
 import { getImageUrl } from '@/utils/imageHelpers';
+import { useState, useCallback } from 'react';
 
 const tiers = [
   {

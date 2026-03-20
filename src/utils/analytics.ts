@@ -5,7 +5,7 @@ const API_BASE_URL = `https://${projectId}.supabase.co/functions/v1/make-server-
 
 // Rate limiting: Track last call time to prevent excessive requests
 const rateLimitMap = new Map<string, number>();
-const RATE_LIMIT_MS = 1000; // Max 1 call per second per action type
+const RATE_LIMIT_MS = 500; // Max 1 call per 500ms per action type (2 per second)
 
 function isRateLimited(key: string): boolean {
   const lastCall = rateLimitMap.get(key);
