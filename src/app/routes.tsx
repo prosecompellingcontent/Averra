@@ -19,6 +19,7 @@ import { SalesDashboard } from "@/app/pages/SalesDashboard";
 import { AccessPage } from "@/app/pages/AccessPage";
 import { EmailTestPage } from "@/app/pages/EmailTestPage";
 import TestEmail from "@/app/components/test-email";
+import WebhookTestPage from "@/app/pages/WebhookTestPage";
 
 export const router = createBrowserRouter(
   [
@@ -44,6 +45,7 @@ export const router = createBrowserRouter(
         { path: "access", Component: AccessPage },
         { path: "email-test", Component: EmailTestPage },
         { path: "test-email", Component: TestEmail },
+        { path: "webhook-test", Component: WebhookTestPage },
       ],
     },
   ],
