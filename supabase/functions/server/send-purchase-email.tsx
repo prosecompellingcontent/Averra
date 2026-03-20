@@ -1,4 +1,6 @@
 // This endpoint is imported and used in the main server
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
 export async function handleSendPurchaseEmail(c: any) {
   try {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
@@ -9,6 +11,12 @@ export async function handleSendPurchaseEmail(c: any) {
         error: "RESEND_API_KEY not configured in Supabase secrets" 
       }, 500);
     }
+
+    // Initialize Supabase client for Storage access
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
 
     const body = await c.req.json();
     console.log("📧 Received request body:", JSON.stringify(body, null, 2));
@@ -136,6 +144,73 @@ export async function handleSendPurchaseEmail(c: any) {
         `<li style="margin-bottom: 10px; color: #301710;">${item.name} - $${item.price}</li>`
       ).join('');
 
+      // Fetch files from Supabase Storage for each digital product
+      console.log("📂 Fetching files from Supabase Storage...");
+      let downloadLinksHtml = '';
+      
+      for (const item of items) {
+        if (item.type === 'digital') {
+          // Normalize product name for folder lookup (e.g., "The Lash Collection" -> "lash-collection")
+          const folderName = item.name
+            .toLowerCase()
+            .replace(/^the\s+/i, '')  // Remove "The" prefix
+            .replace(/\s+/g, '-')      // Replace spaces with dashes
+            .replace(/[^a-z0-9-]/g, ''); // Remove special characters
+          
+          console.log(`📁 Looking for files in folder: ${folderName}`);
+          
+          // List files in the product folder
+          const { data: files, error: listError } = await supabase
+            .storage
+            .from('digital-products')
+            .list(folderName, {
+              limit: 10,
+              offset: 0,
+            });
+          
+          if (listError) {
+            console.error(`❌ Error listing files for ${item.name}:`, listError);
+            continue;
+          }
+          
+          console.log(`✅ Found ${files?.length || 0} files for ${item.name}`);
+          
+          if (files && files.length > 0) {
+            downloadLinksHtml += `
+              <div style="margin-bottom: 25px;">
+                <h3 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${item.name}</h3>
+            `;
+            
+            // Generate signed URLs for each file (valid for 7 days)
+            for (const file of files) {
+              const filePath = `${folderName}/${file.name}`;
+              const { data: signedUrlData, error: urlError } = await supabase
+                .storage
+                .from('digital-products')
+                .createSignedUrl(filePath, 604800); // 7 days in seconds
+              
+              if (urlError) {
+                console.error(`❌ Error creating signed URL for ${file.name}:`, urlError);
+                continue;
+              }
+              
+              if (signedUrlData?.signedUrl) {
+                console.log(`✅ Generated download link for: ${file.name}`);
+                downloadLinksHtml += `
+                  <a href="${signedUrlData.signedUrl}" 
+                     style="display: block; background: #DCDACC; color: #301710; padding: 12px 20px; text-decoration: none; font-weight: 500; font-size: 14px; margin-bottom: 8px; border-radius: 4px; text-align: center;"
+                     download="${file.name}">
+                    📥 Download ${file.name}
+                  </a>
+                `;
+              }
+            }
+            
+            downloadLinksHtml += `</div>`;
+          }
+        }
+      }
+
       emailHtml = `
         <div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: #F7F3EF; padding: 40px 20px;">
           <div style="background: white; padding: 40px; border: 1px solid rgba(48, 23, 16, 0.1);">
@@ -168,19 +243,14 @@ export async function handleSendPurchaseEmail(c: any) {
               </p>
             </div>
             
-            <div style="background: #301710; padding: 30px; margin: 30px 0; text-align: center;">
-              <h2 style="color: #DCDACC; font-size: 22px; margin: 0 0 15px 0; font-weight: 400;">
+            <div style="background: #301710; padding: 30px; margin: 30px 0;">
+              <h2 style="color: #DCDACC; font-size: 22px; margin: 0 0 15px 0; font-weight: 400; text-align: center;">
                 📥 Download Your Files
               </h2>
-              <p style="color: #BFBBA7; line-height: 1.8; margin-bottom: 20px;">
-                Click below to access your high-resolution editorial images (3 files included).
+              <p style="color: #BFBBA7; line-height: 1.8; margin-bottom: 20px; text-align: center;">
+                Your high-resolution editorial images are ready. Links expire in 7 days.
               </p>
-              <a href="#" style="display: inline-block; background: #DCDACC; color: #301710; padding: 15px 40px; text-decoration: none; font-weight: 600; letter-spacing: 0.2em; font-size: 12px; text-transform: uppercase; margin-top: 10px;">
-                Download Files →
-              </a>
-              <p style="color: #BFBBA7; font-size: 11px; margin-top: 15px; opacity: 0.7;">
-                (Test mode - In production, these would be real download links)
-              </p>
+              ${downloadLinksHtml}
             </div>
             
             <div style="background: rgba(183, 110, 121, 0.1); padding: 25px; margin: 30px 0;">
@@ -199,8 +269,8 @@ export async function handleSendPurchaseEmail(c: any) {
               <ul style="color: #654331; line-height: 2; margin: 0; padding-left: 20px;">
                 <li>Format: High-resolution JPG & PNG</li>
                 <li>Resolution: Optimized for web & print</li>
-                <li>Files: 3 unique images</li>
                 <li>License: Full commercial use</li>
+                <li>Access: Download links valid for 7 days</li>
               </ul>
             </div>
             
