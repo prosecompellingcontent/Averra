@@ -1222,16 +1222,17 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         console.log("⏰ Webhook received at:", new Date().toISOString());
         console.log("💳 Processing payment immediately - NO DELAYS!");
         
-        // Retrieve line items from Stripe (contains product details)
+        // Retrieve line items from Stripe (contains product details AND price IDs)
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
           expand: ['data.price.product'],
         });
         
-        // Convert line items to our items format
+        // Convert line items to our items format (including price ID for digital product matching)
         const items = lineItems.data.map((lineItem: any) => ({
           name: lineItem.description || lineItem.price?.product?.name || 'Unknown Product',
           price: lineItem.amount_total / 100,
           quantity: lineItem.quantity,
+          priceId: lineItem.price?.id || '', // CRITICAL: Store price ID for matching
         }));
         
         console.log("📦 Line items retrieved:", items.length, "items");
@@ -1342,6 +1343,36 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         if (!resendApiKey) {
           console.log("⚠️ RESEND_API_KEY not configured - skipping emails");
         } else {
+          // ============================================
+          // DIGITAL PRODUCT MAPPING (BY PRICE ID)
+          // ============================================
+          const DIGITAL_PRODUCT_MAP: Record<string, { name: string; url: string }> = {
+            'price_1T6jvhKLeJj1g28UvIxFbI3O': {
+              name: 'The Map Pack',
+              url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-map-pack/the-map-pack.zip'
+            },
+            'price_1T6jvrKLeJj1g28URaMIEaL3': {
+              name: 'The Base Bundle',
+              url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-base-bundle/the-base-bundle.zip'
+            },
+            'price_1T6jvyKLeJj1g28UVyqmrr5U': {
+              name: 'The Cuticle Collection',
+              url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-cuticle-collection/the-cuticle-collection.zip'
+            },
+            'price_1T6jw5KLeJj1g28UcpqJcnvL': {
+              name: 'You Glow Girl Bundle',
+              url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/you-glow-girl-bundle/you-glow-girl-bundle.zip'
+            },
+            'price_1TCQF9KLeJj1g28Ui7ESZUAF': {
+              name: 'Fresh Out The Chair',
+              url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/fresh-out-the-chair/fresh-out-the-chair.zip'
+            },
+            'price_1TCQGHKLeJj1g28UJqHVf7wl': {
+              name: 'The Lash Collection',
+              url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-lash-collection/the-lash-collection.zip'
+            }
+          };
+
           // Separate items into categories
           const serviceTiers = items.filter((item: any) => 
             item.name.includes('Essentials') || 
@@ -1349,9 +1380,14 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
             item.name.includes('Muse')
           );
           
-          const digitalProducts = items.filter((item: any) => 
-            item.name.includes('Collection')
-          );
+          // Match digital products by PRICE ID (stable identifier)
+          const digitalProducts = items
+            .filter((item: any) => DIGITAL_PRODUCT_MAP[item.priceId])
+            .map((item: any) => ({
+              ...item,
+              productName: DIGITAL_PRODUCT_MAP[item.priceId].name,
+              downloadUrl: DIGITAL_PRODUCT_MAP[item.priceId].url
+            }));
           
           console.log(`📦 Order contains: ${serviceTiers.length} service tier(s), ${digitalProducts.length} digital product(s)`);
           
@@ -1528,81 +1564,28 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
           // ============================================
           if (digitalProducts.length > 0) {
             try {
-              const productsList = digitalProducts.map((item: any) => 
-                `<li style="margin-bottom: 10px; color: #301710;">${item.name} - $${item.price}</li>`
-              ).join('');
-
-              // Fetch files from Supabase Storage for purchased products
-              const { createClient } = await import("jsr:@supabase/supabase-js@2");
-              const supabase = createClient(
-                Deno.env.get('SUPABASE_URL') ?? '',
-                Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-              );
-
-              // Build download buttons HTML
-              let downloadLinksHtml = '';
-
-              // Fetch files for each purchased digital product
-              for (const product of digitalProducts) {
-                const productName = product.name;
-                // Convert product name to folder name format (lowercase with hyphens)
-                const folderName = productName.toLowerCase().replace(/\s+/g, '-');
-                
-                console.log(`📂 Product: "${productName}" → Folder: "${folderName}"`);
-
-                // List files INSIDE the product folder
-                const { data: productFiles, error: listError } = await supabase
-                  .storage
-                  .from('digital-products')
-                  .list(folderName, {
-                    limit: 100,
-                    offset: 0,
-                  });
-                
-                if (listError) {
-                  console.error(`❌ Error listing files:`, listError);
-                  console.error(`❌ Error details:`, JSON.stringify(listError));
-                  continue;
-                }
-                
-                console.log(`✅ Found ${productFiles?.length || 0} files in ${folderName}/`);
-                console.log(`📄 Files:`, productFiles?.map(f => f.name).join(', '));
-                
-                if (productFiles && productFiles.length > 0) {
-                  // List all files included
-                  const filesList = productFiles.map(f => `<li style="font-size: 14px; color: #301710; margin-bottom: 4px;">• ${f.name}</li>`).join('');
-                  
-                  // Create download URL that will zip all files
-                  const downloadUrl = `https://${Deno.env.get('SUPABASE_URL')?.replace('https://', '')}/functions/v1/make-server-61755bec/download-product/${encodeURIComponent(folderName)}`;
-                  
-                  downloadLinksHtml += `
-                    <div style="margin-bottom: 24px;">
-                      <h4 style="color: #301710; font-size: 16px; margin: 0 0 12px 0; font-weight: 600;">${product.name}</h4>
-                      <p style="font-size: 14px; color: #301710; margin: 0 0 12px 0;">Includes ${productFiles.length} files:</p>
-                      <ul style="margin: 0 0 16px 0; padding-left: 20px;">${filesList}</ul>
-                      <a href="${downloadUrl}" 
-                         style="display: inline-block; background: #E91E63; color: white; padding: 16px 32px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 4px; text-align: center;"
-                         download="${productName}.zip">
-                        📥 DOWNLOAD ALL FILES
-                      </a>
-                      <p style="font-size: 12px; color: #BFBBA7; margin: 12px 0 0 0; text-align: center;">Files are zipped. Windows: Right-click > Extract All. Mac: Double-click to unzip.</p>
-                    </div>
-                  `;
-                  
-                  console.log(`✅ Generated download button for ${productName} with ${productFiles.length} files`);
-                } else {
-                  console.warn(`⚠️ No files found for product: ${productName}`);
-                  downloadLinksHtml += `
-                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 0, 0, 0.1); border-left: 3px solid red;">
-                      <p style="color: #301710; margin: 0;">⚠️ Files for "${productName}" could not be found. Please contact support.</p>
-                    </div>
-                  `;
-                }
-              }
-
-              console.log(`✅ Generated download links HTML (${downloadLinksHtml.length} characters)`);
-
               console.log(`🚀 INSTANT DELIVERY: Sending digital products to ${customerEmail} NOW!`);
+              console.log(`📦 Digital products matched by PRICE ID:`, digitalProducts.map((p: any) => `${p.productName} (x${p.quantity})`).join(', '));
+              
+              // Build download buttons HTML - ONE button per product (with quantity)
+              const downloadButtonsHtml = digitalProducts.map((product: any) => {
+                const quantityLabel = product.quantity > 1 ? ` (x${product.quantity})` : '';
+                return `
+                  <div style="margin-bottom: 20px; text-align: center;">
+                    <h4 style="color: #DCDACC; font-size: 18px; margin: 0 0 15px 0; font-weight: 600;">${product.productName}${quantityLabel}</h4>
+                    <a href="${product.downloadUrl}" 
+                       style="display: inline-block; background: #E91E63; color: white; padding: 16px 32px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 4px; text-align: center;">
+                      📥 DOWNLOAD
+                    </a>
+                  </div>
+                `;
+              }).join('');
+
+              const productsList = digitalProducts.map((item: any) => {
+                const quantityLabel = item.quantity > 1 ? ` (x${item.quantity})` : '';
+                return `<li style="margin-bottom: 10px; color: #301710;">${item.productName}${quantityLabel} - $${item.price}</li>`;
+              }).join('');
+
               const emailStartTime = Date.now();
               
               const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -1652,10 +1635,21 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                           <h3 style="font-size: 22px; color: #DCDACC; margin-bottom: 15px; text-align: center;">📥 Download Your Files</h3>
                           
                           <p style="color: #BFBBA7; line-height: 1.8; margin-bottom: 25px; text-align: center;">
-                            Each collection includes 3 high-resolution images and a commercial license. Download links expire in 7 days.
+                            Click below to download your files. Each collection is a ZIP file with images and commercial license.
                           </p>
                           
-                          ${downloadLinksHtml}
+                          ${downloadButtonsHtml}
+                          
+                          <div style="background: rgba(220, 218, 204, 0.1); padding: 20px; margin-top: 25px; border-radius: 4px;">
+                            <p style="color: #DCDACC; font-size: 14px; font-weight: 600; margin-bottom: 10px;">📂 How to unzip:</p>
+                            <ul style="color: #BFBBA7; font-size: 13px; line-height: 1.8; padding-left: 20px; margin: 0;">
+                              <li>iPhone/iPad: Tap link → Files app → Downloads → tap ZIP to unzip</li>
+                              <li>Android: Tap link → Files/Downloads → Extract</li>
+                              <li>Mac: Double-click ZIP in Downloads</li>
+                              <li>Windows: Right-click ZIP → Extract All</li>
+                              <li>Chromebook: Files app → Downloads → Extract</li>
+                            </ul>
+                          </div>
                         </div>
                         
                         <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #301710;">
@@ -1674,7 +1668,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                           </ul>
                           
                           <p style="color: rgba(48, 23, 16, 0.7); font-size: 13px; margin-top: 15px;">
-                            License certificate is attached as a PDF.
+                            License certificate is included in the ZIP file.
                           </p>
                         </div>
                         
@@ -1734,7 +1728,6 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                       </div>
                     </div>
                   `,
-                  attachments: attachments,
                 }),
               });
 
@@ -1744,7 +1737,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
               if (emailResponse.ok) {
                 const resendData = await emailResponse.json();
                 console.log(`✅ INSTANT DELIVERY SUCCESS!`);
-                console.log(`📧 Digital products email sent to ${customerEmail} with ${attachments.length} attachments`);
+                console.log(`📧 Digital products email sent to ${customerEmail}`);
                 console.log(`⚡ Email sent in ${emailDuration.toFixed(2)} seconds`);
                 console.log(`📬 Resend Email ID: ${resendData.id}`);
                 console.log(`🎯 Total webhook processing time: ${((Date.now() - startTime) / 1000).toFixed(2)} seconds`);
