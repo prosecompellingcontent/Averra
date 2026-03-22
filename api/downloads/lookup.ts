@@ -5,7 +5,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || process.env.Stripe_Se
   apiVersion: '2026-02-25.clover',
 });
 
-// Product ID to ZIP URL mapping
 const PRODUCT_MAP: Record<string, { name: string; zipUrl: string }> = {
   'prod_U4tjELgIEdNp8R': {
     name: 'The Map Pack',
@@ -40,7 +39,6 @@ export const config = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Add CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -58,39 +56,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🔍 DOWNLOAD LOOKUP REQUEST", new Date().toISOString());
+  console.log("DOWNLOAD LOOKUP REQUEST", new Date().toISOString());
 
   try {
     const { session_id, email } = req.body;
 
-    // Validate inputs
     if (!session_id) {
-      console.error("❌ Missing session_id");
+      console.error("Missing session_id");
       return res.status(400).json({ error: 'session_id is required' });
     }
 
     if (!email) {
-      console.error("❌ Missing email");
+      console.error("Missing email");
       return res.status(400).json({ error: 'email is required' });
     }
 
-    console.log("📧 Lookup for email:", email);
-    console.log("🔑 Session ID:", session_id);
+    console.log("Lookup for email:", email);
+    console.log("Session ID:", session_id);
 
-    // Check environment variables
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("❌ Supabase credentials not configured");
+      console.error("Supabase credentials not configured");
       return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    // Query Supabase using REST API (no supabase-js dependency)
-    console.log("🔍 Checking Supabase for existing order record...");
+    console.log("Checking Supabase for existing order record...");
     
-    const queryUrl = `${supabaseUrl}/rest/v1/orders?session_id=eq.${encodeURIComponent(session_id)}&select=session_id,customer_email,customer_name,items,has_service,has_digital,amount_total`;
-    console.log("🔗 Supabase query URL (without key):", queryUrl.replace(supabaseUrl, 'SUPABASE_URL'));
+    const queryUrl = `${supabaseUrl}/rest/v1/orders?session_id=eq.${encodeURIComponent(session_id)}&select=session_id,customer_email,customer_name,items`;
+    const sanitizedUrl = queryUrl.replace(supabaseUrl, 'SUPABASE_URL');
+    console.log("Query URL:", sanitizedUrl);
     
     const supabaseResponse = await fetch(queryUrl, {
       method: 'GET',
@@ -101,14 +97,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     });
 
-    console.log("📡 Supabase response status:", supabaseResponse.status);
+    console.log("Supabase response status:", supabaseResponse.status);
 
     if (!supabaseResponse.ok) {
       const errorText = await supabaseResponse.text();
-      console.error("❌ Supabase REST API error:", {
+      console.error("SUPABASE_REST_FAIL", {
         status: supabaseResponse.status,
         statusText: supabaseResponse.statusText,
-        body: errorText
+        body: errorText,
+        url: sanitizedUrl
       });
       return res.status(500).json({ 
         error: 'Supabase query failed',
@@ -120,30 +117,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const ordersArray = await supabaseResponse.json();
     let orderData = ordersArray && ordersArray.length > 0 ? ordersArray[0] : null;
 
-    // If order doesn't exist in Supabase, fetch from Stripe and create it
     if (!orderData) {
-      console.log("⚠️ No order found in Supabase, fetching from Stripe...");
+      console.log("No order found in Supabase, fetching from Stripe...");
       
       try {
         const session = await stripe.checkout.sessions.retrieve(session_id);
         
         if (!session) {
-          console.error("❌ Session not found in Stripe");
+          console.error("Session not found in Stripe");
           return res.status(404).json({ error: 'Order not found' });
         }
 
-        console.log("✅ Stripe session retrieved");
-        console.log("📧 Stripe customer email:", session.customer_details?.email);
+        console.log("Stripe session retrieved");
+        console.log("Stripe customer email:", session.customer_details?.email);
 
-        // Get line items
         const lineItems = await stripe.checkout.sessions.listLineItems(session_id, {
           limit: 100,
           expand: ['data.price.product'],
         });
 
-        console.log(`📦 Found ${lineItems.data.length} line items`);
+        console.log(`Found ${lineItems.data.length} line items`);
 
-        // Build items array with product IDs
         const items = lineItems.data.map((item: any) => {
           const productId = typeof item.price?.product === 'object' 
             ? item.price.product.id 
@@ -159,9 +153,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           };
         });
 
-        console.log("📋 Line items:", JSON.stringify(items, null, 2));
+        console.log("Line items:", JSON.stringify(items, null, 2));
 
-        // Determine if order has digital products or service tiers
         const hasDigital = items.some(item => item.productId && PRODUCT_MAP[item.productId]);
         const hasService = items.some(item => 
           item.name?.toLowerCase().includes('averra') && 
@@ -170,9 +163,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            item.name?.toLowerCase().includes('muse'))
         );
 
-        console.log("📊 Order classification:", { hasDigital, hasService });
+        console.log("Order classification:", { hasDigital, hasService });
 
-        // Store order in Supabase using REST API
         const insertResponse = await fetch(
           `${supabaseUrl}/rest/v1/orders`,
           {
@@ -197,37 +189,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         );
 
         if (!insertResponse.ok) {
-          console.error("❌ Error storing order:", insertResponse.status, await insertResponse.text());
+          const insertError = await insertResponse.text();
+          console.error("Error storing order:", insertResponse.status, insertError);
         } else {
           const insertedOrders = await insertResponse.json();
           orderData = insertedOrders && insertedOrders.length > 0 ? insertedOrders[0] : null;
-          console.log("✅ Order stored in Supabase");
+          console.log("Order stored in Supabase");
         }
       } catch (stripeError) {
-        console.error("❌ Stripe error:", stripeError);
+        console.error("Stripe error:", stripeError);
         return res.status(404).json({ error: 'Order not found' });
       }
     }
 
     if (!orderData) {
-      console.error("❌ Could not retrieve order data");
+      console.error("Could not retrieve order data");
       return res.status(404).json({ error: 'Order not found' });
     }
 
-    // Verify email matches (case-insensitive)
     const orderEmail = orderData.customer_email?.toLowerCase();
     const providedEmail = email.toLowerCase();
 
-    console.log("🔐 Email verification:", { orderEmail, providedEmail });
+    console.log("Email verification:", { orderEmail, providedEmail });
 
     if (orderEmail !== providedEmail) {
-      console.error("❌ Email mismatch");
+      console.error("Email mismatch");
       return res.status(403).json({ error: 'Email does not match order' });
     }
 
-    console.log("✅ Email verified");
+    console.log("Email verified");
 
-    // Build downloads array from items (support both camelCase and snake_case)
     const downloads = orderData.items
       .filter((item: any) => {
         const prodId = item.productId || item.product_id;
@@ -243,21 +234,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         };
       });
 
-    console.log(`📦 Matched ${downloads.length} digital products`);
+    console.log(`Matched ${downloads.length} digital products`);
 
     const response = {
       customer_name: orderData.customer_name,
       downloads,
-      has_service: orderData.has_service || false
+      has_service: false
     };
 
-    console.log("✅ Returning download data:", JSON.stringify(response, null, 2));
+    console.log("Returning download data:", JSON.stringify(response, null, 2));
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
     return res.status(200).json(response);
 
   } catch (error) {
-    console.error("❌ downloads/lookup error:", error);
+    console.error("downloads/lookup error:", error);
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     return res.status(500).json({ 
       error: error instanceof Error ? error.message : 'Server error' 

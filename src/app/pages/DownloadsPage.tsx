@@ -42,10 +42,15 @@ export function DownloadsPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        console.error("API error:", { status: response.status, data });
+        
         if (response.status === 403) {
           setError('Email does not match. Please use the email address from your purchase.');
         } else if (response.status === 404) {
           setError('Order not found. Please check your session link or contact support.');
+        } else if (response.status === 500 && data.error === 'Supabase query failed') {
+          console.error("Supabase error details:", { status: data.status, detail: data.detail });
+          setError('We couldn\'t verify your order right now. Please try again in a minute.');
         } else {
           setError(data.error || 'Unable to verify your order. Please try again.');
         }
@@ -53,9 +58,11 @@ export function DownloadsPage() {
         return;
       }
 
+      console.log("Download data received:", data);
       setDownloadData(data);
       setIsUnlocked(true);
     } catch (err) {
+      console.error("Network error:", err);
       setError('Network error. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
