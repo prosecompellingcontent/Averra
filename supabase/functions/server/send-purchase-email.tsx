@@ -179,7 +179,7 @@ export async function handleSendPurchaseEmail(c: any) {
       const unmatchedPriceIds: string[] = [];
       
       for (const item of items) {
-        if (item.type === 'digital' && item.priceId) {
+        if (item.priceId) {
           console.log(`🔍 Checking price ID: ${item.priceId}`);
           
           if (DIGITAL_PRODUCT_MAP[item.priceId]) {

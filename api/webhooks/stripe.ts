@@ -36,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Log everything for debugging
-  console.log("━━━━━━━━━━━━━━━━━��━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("🔔 WEBHOOK RECEIVED FROM STRIPE!", new Date().toISOString());
   console.log("📍 Request Method:", req.method);
   console.log("📍 Request URL:", req.url);
@@ -94,14 +94,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Get line items
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+        limit: 100,
         expand: ['data.price.product'],
       });
 
       const items = lineItems.data.map((lineItem: any) => ({
-        name: lineItem.description || lineItem.price?.product?.name || 'Unknown Product',
-        price: lineItem.amount_total / 100,
-        quantity: lineItem.quantity,
+        // ✅ REQUIRED for matching in Supabase
+        priceId: lineItem.price?.id ?? null,
+        type: 'digital', // ✅ because your Supabase matcher requires item.type === 'digital'
+
+        // helpful fields
+        name:
+          lineItem.description ||
+          (typeof lineItem.price?.product === 'object' ? lineItem.price.product.name : undefined) ||
+          'Unknown Product',
+
+        // Stripe amounts can vary by object; this makes it safer
+        price: ((lineItem.amount_total ?? lineItem.amount_subtotal ?? 0) / 100),
+        quantity: lineItem.quantity ?? 1,
       }));
+      
+      console.log("✅ ITEMS SENT TO SUPABASE:", JSON.stringify(items, null, 2));
 
       // Call Supabase backend
       const backendResponse = await fetch(supabaseUrl, {
