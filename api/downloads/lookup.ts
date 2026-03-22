@@ -5,31 +5,25 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || process.env.Stripe_Se
   apiVersion: '2026-02-25.clover',
 });
 
-const PRODUCT_MAP: Record<string, { name: string; zipUrl: string }> = {
-  'prod_U4tjELgIEdNp8R': {
-    name: 'The Map Pack',
-    zipUrl: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-map-pack/the-map-pack.zip'
-  },
-  'prod_U4tj3TpmVuEi6v': {
-    name: 'The Base Bundle',
-    zipUrl: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-base-bundle/the-base-bundle.zip'
-  },
-  'prod_U4tjFfvIwptjfn': {
-    name: 'The Cuticle Collection',
-    zipUrl: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-cuticle-collection/the-cuticle-collection.zip'
-  },
-  'prod_U4tjvZqmdppfZE': {
-    name: 'You Glow Girl Bundle',
-    zipUrl: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/you-glow-girl-bundle/you-glow-girl-bundle.zip'
-  },
-  'prod_UAlmvz04pAYbco': {
-    name: 'Fresh Out The Chair',
-    zipUrl: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/fresh-out-the-chair/fresh-out-the-chair.zip'
-  },
-  'prod_UAlnkF1MY2zjzW': {
-    name: 'The Lash Collection',
-    zipUrl: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-lash-collection/the-lash-collection.zip'
-  }
+const PRICE_MAP: Record<string, { name: string; zipUrl: string }> = {
+  // Map Pack
+  'price_1T6jvhKLeJj1g28UvIxFbI3O': PRODUCT_MAP['prod_U4tjELgIEdNp8R'],
+
+  // Base Bundle
+  'price_1T6jvrKLeJj1g28URaMIEaL3': PRODUCT_MAP['prod_U4tj3TpmVuEi6v'],
+
+  // Cuticle Collection
+  'price_1T6jvyKLeJj1g28UVyqmrr5U': PRODUCT_MAP['prod_U4tjFfvIwptjfn'],
+
+  // You Glow Girl Bundle
+  'price_1T6jw5KLeJj1g28UcpqJcnvL': PRODUCT_MAP['prod_U4tjvZqmdppfZE'],
+
+  // Fresh Out The Chair
+  'price_1TCQF9KLeJj1g28Ui7ESZUAF': PRODUCT_MAP['prod_UAlmvz04pAYbco'],
+
+  // Lash Collection (include BOTH known lash price IDs from your history)
+  'price_1TCQGHKLeJj1g28UJqHVf7wl': PRODUCT_MAP['prod_UAlnkF1MY2zjzW'],
+  'price_1TDI8QKLeJj1g28UjrrtR6In': PRODUCT_MAP['prod_UAlnkF1MY2zjzW'],
 };
 
 export const config = {
