@@ -4,11 +4,21 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 export async function handleSendPurchaseEmail(c: any) {
   try {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    const resendTemplateId = Deno.env.get("RESEND_TEMPLATE_ID");
+    const emailFrom = Deno.env.get("EMAIL_FROM") || "AVERRA Deliveries <deliveries@averraaistudio.com>";
+    const publicSiteUrl = Deno.env.get("PUBLIC_SITE_URL") || "https://www.averraaistudio.com";
     
     if (!resendApiKey) {
       console.error("❌ RESEND_API_KEY not configured");
       return c.json({ 
         error: "RESEND_API_KEY not configured in Supabase secrets" 
+      }, 500);
+    }
+
+    if (!resendTemplateId) {
+      console.error("❌ RESEND_TEMPLATE_ID not configured");
+      return c.json({ 
+        error: "RESEND_TEMPLATE_ID not configured in Supabase secrets" 
       }, 500);
     }
 
@@ -139,167 +149,125 @@ export async function handleSendPurchaseEmail(c: any) {
       `;
     } else if (hasDigitalProduct) {
       // ============================================
-      // DIGITAL PRODUCT MAPPING (BY PRICE ID)
+      // DIGITAL PRODUCT EMAIL - USING RESEND TEMPLATE
       // ============================================
-      const DIGITAL_PRODUCT_MAP: Record<string, { name: string; url: string }> = {
-        'price_1T6jvhKLeJj1g28UvIxFbI3O': {
-          name: 'The Map Pack',
-          url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-map-pack/the-map-pack.zip'
-        },
-        'price_1T6jvrKLeJj1g28URaMIEaL3': {
-          name: 'The Base Bundle',
-          url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-base-bundle/the-base-bundle.zip'
-        },
-        'price_1T6jvyKLeJj1g28UVyqmrr5U': {
-          name: 'The Cuticle Collection',
-          url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-cuticle-collection/the-cuticle-collection.zip'
-        },
-        'price_1T6jw5KLeJj1g28UcpqJcnvL': {
-          name: 'You Glow Girl Bundle',
-          url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/you-glow-girl-bundle/you-glow-girl-bundle.zip'
-        },
-        'price_1TCQF9KLeJj1g28Ui7ESZUAF': {
-          name: 'Fresh Out The Chair',
-          url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/fresh-out-the-chair/fresh-out-the-chair.zip'
-        },
-        'price_1TCQGHKLeJj1g28UJqHVf7wl': {
-          name: 'The Lash Collection',
-          url: 'https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/digital-products/the-lash-collection/the-lash-collection.zip'
-        }
-      };
-
-      // TEST MARKER - Change subject for ONE test
-      subject = "DIGITAL DELIVERY TEST 123";
       
-      // Match digital products by PRICE ID
-      console.log("📦 Matching digital products by PRICE ID...");
+      console.log("📧 Digital product purchase detected - using Resend template");
       console.log("📦 Items received:", JSON.stringify(items, null, 2));
       
-      const matchedProducts: any[] = [];
-      const unmatchedPriceIds: string[] = [];
-      
-      for (const item of items) {
-        if (item.priceId) {
-          console.log(`🔍 Checking price ID: ${item.priceId}`);
-          
-          if (DIGITAL_PRODUCT_MAP[item.priceId]) {
-            const productInfo = DIGITAL_PRODUCT_MAP[item.priceId];
-            matchedProducts.push({
-              productName: productInfo.name,
-              downloadUrl: productInfo.url,
-              quantity: item.quantity || 1,
-              price: item.price
-            });
-            console.log(`✅ MATCHED: ${item.priceId} → ${productInfo.name}`);
-          } else {
-            unmatchedPriceIds.push(item.priceId);
-            console.warn(`⚠️ NO MATCH for price ID: ${item.priceId}`);
-          }
-        }
-      }
-      
-      console.log(`📊 Matched ${matchedProducts.length} digital products`);
-      if (unmatchedPriceIds.length > 0) {
-        console.warn(`⚠️ Unmatched price IDs:`, unmatchedPriceIds.join(', '));
-      }
-      
-      // Build download buttons HTML
-      let downloadLinksHtml = '';
-      
-      if (matchedProducts.length > 0) {
-        downloadLinksHtml = matchedProducts.map((product: any) => {
-          const quantityLabel = product.quantity > 1 ? ` (x${product.quantity})` : '';
-          return `
-            <div style="margin-bottom: 20px; text-align: center;">
-              <h4 style="color: #DCDACC; font-size: 18px; margin: 0 0 15px 0; font-weight: 600;">${product.productName}${quantityLabel}</h4>
-              <a href="${product.downloadUrl}" 
-                 style="display: inline-block; background: #E91E63; color: white; padding: 16px 32px; text-decoration: none; font-weight: 600; font-size: 16px; border-radius: 4px; text-align: center;">
-                📥 DOWNLOAD
-              </a>
-            </div>
-          `;
-        }).join('');
-        
-        console.log(`✅ Generated downloadButtonsHtml: ${downloadLinksHtml.length} characters`);
-      } else {
-        // FAILSAFE: No products matched
-        console.error(`❌ NO PRODUCTS MATCHED! downloadLinksHtml will be empty.`);
-        downloadLinksHtml = `
-          <div style="background: rgba(255, 193, 7, 0.1); padding: 20px; border-left: 3px solid #FFC107; text-align: center;">
-            <p style="color: #301710; margin: 0; font-size: 16px;">
-              Your download links are being prepared. Reply to this email and we'll send them immediately.
-            </p>
-          </div>
-        `;
-      }
-      
-      const itemsList = matchedProducts.map((item: any) => {
+      // Build ORDER_ITEMS_HTML from items
+      const orderItemsHtml = items.map((item: any) => {
         const quantityLabel = item.quantity > 1 ? ` (x${item.quantity})` : '';
-        return `<li style="margin-bottom: 10px; color: #301710;">${item.productName}${quantityLabel} - $${item.price}</li>`;
+        const itemPrice = typeof item.price === 'number' ? item.price.toFixed(2) : '0.00';
+        return `<li style="margin-bottom: 10px; color: #301710;">${item.name}${quantityLabel} - $${itemPrice}</li>`;
       }).join('');
+      
+      console.log("📝 ORDER_ITEMS_HTML:", orderItemsHtml);
+      
+      // Build DOWNLOAD_URL
+      const downloadUrl = `${publicSiteUrl}/downloads?session_id=${sessionId}`;
+      console.log("🔗 DOWNLOAD_URL:", downloadUrl);
+      
+      // Format TOTAL as string with 2 decimals
+      const totalFormatted = total.toFixed(2);
+      console.log("💰 TOTAL:", totalFormatted);
+      
+      // Prepare template variables
+      const templateVariables = {
+        CUSTOMER_NAME: customerName || 'Valued Customer',
+        ORDER_ITEMS_HTML: orderItemsHtml,
+        TOTAL: totalFormatted,
+        DOWNLOAD_URL: downloadUrl
+      };
+      
+      console.log("📋 Template variables:", JSON.stringify(templateVariables, null, 2));
+      
+      // Send email using Resend template
+      const emailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: emailFrom,
+          to: [customerEmail],
+          template: {
+            id: resendTemplateId,
+            variables: templateVariables
+          }
+        }),
+      });
 
-      emailHtml = `
-        <div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: #F7F3EF; padding: 40px 20px;">
-          <div style="background: white; padding: 40px; border: 1px solid rgba(48, 23, 16, 0.1);">
-            <p style="color: red; font-weight: bold; text-align: center; margin: 0 0 20px 0;">DOWNLOADTEST123</p>
-            
-            <h1 style="color: #301710; font-size: 42px; font-weight: 300; font-style: italic; margin: 0 0 10px 0; text-align: center;">
-              Your Assets Are Ready
-            </h1>
-            <p style="text-align: center; color: #654331; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 30px 0;">
-              Download & Create
-            </p>
-            
-            <div style="height: 1px; background: linear-gradient(to right, transparent, rgba(183, 110, 121, 0.4), transparent); margin: 30px 0;"></div>
-            
-            <p style="color: #301710; font-size: 18px; line-height: 1.8; margin-bottom: 20px;">
-              Dear ${customerName},
-            </p>
-            
-            <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
-              Thank you for your purchase! Your digital brand visuals are ready for immediate download and use.
-            </p>
-            
-            <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #b76e79;">
-              <h2 style="color: #301710; font-size: 20px; margin: 0 0 15px 0; font-weight: 400;">
-                Your Order
-              </h2>
-              <ul style="list-style: none; padding: 0; margin: 0;">
-                ${itemsList}
-              </ul>
-              <p style="color: #301710; font-size: 20px; font-weight: 600; margin: 20px 0 0 0; padding-top: 15px; border-top: 1px solid rgba(48, 23, 16, 0.2);">
-                Total: $${total}
-              </p>
-            </div>
-            
-            <div style="background: #301710; padding: 30px; margin: 30px 0;">
-              <h2 style="color: #DCDACC; font-size: 22px; margin: 0 0 15px 0; font-weight: 400; text-align: center;">
-                📥 Download Your Files
-              </h2>
-              <p style="color: #BFBBA7; line-height: 1.8; margin-bottom: 20px; text-align: center;">
-                Click below to download your files. Each collection is a ZIP file with images and commercial license.
-              </p>
-              ${downloadLinksHtml}
-            </div>
-            
-            <div style="background: rgba(183, 110, 121, 0.1); padding: 25px; margin: 30px 0;">
-              <h3 style="color: #301710; font-size: 18px; margin: 0 0 15px 0; font-weight: 500;">
-                ✓ Commercial License Included
-              </h3>
-              <p style="color: #654331; line-height: 1.8; margin: 0;">
-                All images come with a full commercial license. Use them freely in your marketing, website, social media, client presentations, and any professional materials.
-              </p>
-            </div>
-            
-            <div style="height: 1px; background: linear-gradient(to right, transparent, rgba(183, 110, 121, 0.4), transparent); margin: 30px 0;"></div>
-            
-            <p style="color: #301710; line-height: 1.8; text-align: center; margin: 20px 0;">
-              Questions? Reach out to <a href="mailto:info@averraaistudio.com" style="color: #b76e79; text-decoration: none;">info@averraaistudio.com</a>
+      const responseData = await emailResponse.json();
+      
+      console.log("📥 Response status:", emailResponse.status);
+      console.log("📥 Response data:", JSON.stringify(responseData));
+
+      if (emailResponse.ok) {
+        console.log("✅ Digital product email sent successfully using template!");
+        return c.json({ 
+          success: true, 
+          message: "Digital product email sent! Check your inbox.",
+          emailId: responseData.id,
+          details: responseData
+        });
+      } else {
+        console.error("❌ Resend API error:", responseData);
+        
+        let suggestion = "";
+        if (emailResponse.status === 403) {
+          suggestion = "API key is invalid. Check your Resend dashboard.";
+        } else if (emailResponse.status === 422) {
+          suggestion = "Email validation or template error. Check template ID and variables.";
+        } else if (emailResponse.status === 404) {
+          suggestion = "Template not found. Verify RESEND_TEMPLATE_ID in Supabase secrets.";
+        }
+        
+        return c.json({ 
+          error: "Resend API call failed", 
+          details: responseData,
+          statusCode: emailResponse.status,
+          suggestion: suggestion || "Check Resend API documentation."
+        }, 400);
+      }
+    }
+
+    // If neither service tier nor digital product, send generic confirmation
+    subject = "Thank you for your purchase";
+    const itemsList = items.map((item: any) => 
+      `<li style="margin-bottom: 10px; color: #301710;">${item.name} - $${item.price}</li>`
+    ).join('');
+
+    emailHtml = `
+      <div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: #F7F3EF; padding: 40px 20px;">
+        <div style="background: white; padding: 40px; border: 1px solid rgba(48, 23, 16, 0.1);">
+          <h1 style="color: #301710; font-size: 42px; font-weight: 300; font-style: italic; margin: 0 0 10px 0; text-align: center;">
+            Thank You
+          </h1>
+          
+          <p style="color: #301710; font-size: 18px; line-height: 1.8; margin-bottom: 20px;">
+            Dear ${customerName},
+          </p>
+          
+          <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+            Thank you for your purchase from AVERRA AI MODEL STUDIO.
+          </p>
+          
+          <div style="background: rgba(48, 23, 16, 0.05); padding: 25px; margin: 30px 0; border-left: 3px solid #b76e79;">
+            <h2 style="color: #301710; font-size: 20px; margin: 0 0 15px 0; font-weight: 400;">
+              Your Order
+            </h2>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              ${itemsList}
+            </ul>
+            <p style="color: #301710; font-size: 20px; font-weight: 600; margin: 20px 0 0 0; padding-top: 15px; border-top: 1px solid rgba(48, 23, 16, 0.2);">
+              Total: $${total}
             </p>
           </div>
         </div>
-      `;
-    }
+      </div>
+    `;
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -308,7 +276,7 @@ export async function handleSendPurchaseEmail(c: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "AVERRA Deliveries <deliveries@averraaistudio.com>",
+        from: emailFrom,
         to: [customerEmail],
         subject: subject,
         html: emailHtml,
