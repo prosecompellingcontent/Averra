@@ -235,6 +235,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
 
     console.log(`Matched ${downloads.length} digital products`);
+    console.log("Product IDs found in items:", orderData.items.map((item: any) => item.productId || item.product_id || 'NO_PRODUCT_ID'));
+    console.log("Downloads array:", JSON.stringify(downloads, null, 2));
 
     const response = {
       customer_name: orderData.customer_name,

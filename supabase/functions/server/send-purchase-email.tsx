@@ -43,17 +43,24 @@ export async function handleSendPurchaseEmail(c: any) {
     // ============================================
     console.log("💾 Storing order in Supabase orders table...");
     
-    // Product ID mapping for classification
     const DIGITAL_PRODUCT_IDS = [
-      'prod_U4tjELgIEdNp8R', // The Map Pack
-      'prod_U4tj3TpmVuEi6v', // The Base Bundle
-      'prod_U4tjFfvIwptjfn', // The Cuticle Collection
-      'prod_U4tjvZqmdppfZE', // You Glow Girl Bundle
-      'prod_UAlmvz04pAYbco', // Fresh Out The Chair
-      'prod_UAlnkF1MY2zjzW'  // The Lash Collection
+      'prod_U4tjELgIEdNp8R',
+      'prod_U4tj3TpmVuEi6v',
+      'prod_U4tjFfvIwptjfn',
+      'prod_U4tjvZqmdppfZE',
+      'prod_UAlmvz04pAYbco',
+      'prod_UAlnkF1MY2zjzW'
     ];
     
-    // Classify order
+    console.log("📦 Items received from webhook:", JSON.stringify(items, null, 2));
+    
+    items.forEach((item: any, index: number) => {
+      console.log(`  Item ${index + 1}: ${item.name}`);
+      console.log(`    - productId: ${item.productId || 'MISSING!'}`);
+      console.log(`    - priceId: ${item.priceId}`);
+      console.log(`    - quantity: ${item.quantity}`);
+    });
+    
     const hasDigital = items.some((item: any) => 
       item.productId && DIGITAL_PRODUCT_IDS.includes(item.productId)
     );
@@ -66,9 +73,8 @@ export async function handleSendPurchaseEmail(c: any) {
     );
     
     console.log("📊 Order classification:", { hasDigital, hasService });
-    console.log("📦 Items to store:", JSON.stringify(items, null, 2));
+    console.log("💾 Upserting order with session_id:", sessionId);
     
-    // Store order in database
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
       .upsert({
@@ -87,9 +93,9 @@ export async function handleSendPurchaseEmail(c: any) {
     
     if (orderError) {
       console.error("❌ Failed to store order:", orderError);
-      // Continue with email even if DB storage fails
     } else {
-      console.log("✅ Order stored successfully:", orderData);
+      console.log("✅ Order stored successfully");
+      console.log("✅ Stored items array:", JSON.stringify(orderData?.[0]?.items || [], null, 2));
     }
 
     // Determine what type of purchase this is

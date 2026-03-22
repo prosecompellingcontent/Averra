@@ -98,28 +98,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         expand: ['data.price.product'],
       });
 
-      const items = lineItems.data.map((lineItem: any) => ({
-        // ✅ REQUIRED: productId for download mapping
-        productId: typeof lineItem.price?.product === 'object' 
+      console.log(`📦 Found ${lineItems.data.length} line items from Stripe`);
+
+      const items = lineItems.data.map((lineItem: any) => {
+        const productId = typeof lineItem.price?.product === 'object' 
           ? lineItem.price.product.id 
-          : lineItem.price?.product,
+          : lineItem.price?.product;
         
-        // ✅ REQUIRED for matching in Supabase
-        priceId: lineItem.price?.id ?? null,
-        type: 'digital', // ✅ because your Supabase matcher requires item.type === 'digital'
-
-        // helpful fields
-        name:
-          lineItem.description ||
+        const name = lineItem.description ||
           (typeof lineItem.price?.product === 'object' ? lineItem.price.product.name : undefined) ||
-          'Unknown Product',
-
-        // Stripe amounts can vary by object; this makes it safer
-        price: ((lineItem.amount_total ?? lineItem.amount_subtotal ?? 0) / 100),
-        quantity: lineItem.quantity ?? 1,
-      }));
+          'Unknown Product';
+        
+        const item = {
+          productId,
+          priceId: lineItem.price?.id ?? null,
+          name,
+          quantity: lineItem.quantity ?? 1,
+          price: ((lineItem.amount_total ?? lineItem.amount_subtotal ?? 0) / 100),
+        };
+        
+        console.log(`  - Item: ${name} (productId: ${productId}, quantity: ${item.quantity})`);
+        return item;
+      });
       
-      console.log("✅ ITEMS SENT TO SUPABASE:", JSON.stringify(items, null, 2));
+      console.log("✅ ITEMS WITH PRODUCT IDS:", JSON.stringify(items, null, 2));
 
       // Call Supabase backend
       const backendResponse = await fetch(supabaseUrl, {
