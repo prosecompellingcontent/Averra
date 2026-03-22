@@ -9,6 +9,7 @@ import { QuizPage } from "@/app/pages/QuizPage";
 import { CartPage } from "@/app/pages/CartPage";
 import { CheckoutPage } from "@/app/pages/CheckoutPage";
 import { CheckoutSuccessPage } from "@/app/pages/CheckoutSuccessPage";
+import { DownloadsPage } from "@/app/pages/DownloadsPage";
 import { BrandIntakeForm } from "@/app/pages/BrandIntakeForm";
 import { ShopPage } from "@/app/pages/ShopPage";
 import { TermsPage } from "@/app/pages/TermsPage";
@@ -35,6 +36,7 @@ export const router = createBrowserRouter(
         { path: "cart", Component: CartPage },
         { path: "checkout", Component: CheckoutPage },
         { path: "checkout/success", Component: CheckoutSuccessPage },
+        { path: "downloads", Component: DownloadsPage },
         { path: "brand-intake", Component: BrandIntakeForm },
         { path: "shop", Component: ShopPage },
         { path: "terms-of-service", Component: TermsPage },
