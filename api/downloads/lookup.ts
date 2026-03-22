@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || process.env.Stripe_Secret_Key || '', {
   apiVersion: '2026-02-25.clover',
@@ -78,7 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log("📧 Lookup for email:", email);
     console.log("🔑 Session ID:", session_id);
 
-    // Initialize Supabase client
+    // Check environment variables
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -87,17 +86,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Server configuration error' });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Try to fetch order from Supabase
+    // Query Supabase using REST API (no supabase-js dependency)
     console.log("🔍 Checking Supabase for existing order record...");
-    const { data: existingOrder, error: fetchError } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('session_id', session_id)
-      .single();
+    
+    const supabaseResponse = await fetch(
+      `${supabaseUrl}/rest/v1/orders?session_id=eq.${encodeURIComponent(session_id)}&select=session_id,customer_email,customer_name,items,has_service,has_digital,amount_total`,
+      {
+        method: 'GET',
+        headers: {
+          'apikey': supabaseServiceKey,
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
 
-    let orderData = existingOrder;
+    if (!supabaseResponse.ok) {
+      console.error("❌ Supabase REST API error:", supabaseResponse.status, await supabaseResponse.text());
+      return res.status(500).json({ error: 'Database query failed' });
+    }
+
+    const ordersArray = await supabaseResponse.json();
+    let orderData = ordersArray && ordersArray.length > 0 ? ordersArray[0] : null;
 
     // If order doesn't exist in Supabase, fetch from Stripe and create it
     if (!orderData) {
@@ -151,27 +161,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log("📊 Order classification:", { hasDigital, hasService });
 
-        // Store order in Supabase
-        const { data: newOrder, error: insertError } = await supabase
-          .from('orders')
-          .insert({
-            session_id: session_id,
-            customer_email: session.customer_details?.email?.toLowerCase(),
-            customer_name: session.customer_details?.name || 'Customer',
-            items,
-            has_digital: hasDigital,
-            has_service: hasService,
-            amount_total: session.amount_total,
-            created_at: new Date().toISOString()
-          })
-          .select()
-          .single();
+        // Store order in Supabase using REST API
+        const insertResponse = await fetch(
+          `${supabaseUrl}/rest/v1/orders`,
+          {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseServiceKey,
+              'Authorization': `Bearer ${supabaseServiceKey}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({
+              session_id: session_id,
+              customer_email: session.customer_details?.email?.toLowerCase(),
+              customer_name: session.customer_details?.name || 'Customer',
+              items,
+              has_digital: hasDigital,
+              has_service: hasService,
+              amount_total: session.amount_total,
+              created_at: new Date().toISOString()
+            })
+          }
+        );
 
-        if (insertError) {
-          console.error("❌ Error storing order:", insertError);
+        if (!insertResponse.ok) {
+          console.error("❌ Error storing order:", insertResponse.status, await insertResponse.text());
         } else {
+          const insertedOrders = await insertResponse.json();
+          orderData = insertedOrders && insertedOrders.length > 0 ? insertedOrders[0] : null;
           console.log("✅ Order stored in Supabase");
-          orderData = newOrder;
         }
       } catch (stripeError) {
         console.error("❌ Stripe error:", stripeError);
@@ -197,11 +216,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     console.log("✅ Email verified");
 
-    // Build downloads array from items
+    // Build downloads array from items (support both camelCase and snake_case)
     const downloads = orderData.items
-      .filter((item: any) => item.productId && PRODUCT_MAP[item.productId])
+      .filter((item: any) => {
+        const prodId = item.productId || item.product_id;
+        return prodId && PRODUCT_MAP[prodId];
+      })
       .map((item: any) => {
-        const productInfo = PRODUCT_MAP[item.productId];
+        const prodId = item.productId || item.product_id;
+        const productInfo = PRODUCT_MAP[prodId];
         return {
           name: productInfo.name,
           quantity: item.quantity || 1,
@@ -223,7 +246,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json(response);
 
   } catch (error) {
-    console.error("❌ Lookup error:", error);
+    console.error("❌ downloads/lookup error:", error);
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     return res.status(500).json({ 
       error: error instanceof Error ? error.message : 'Server error' 
