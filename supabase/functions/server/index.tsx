@@ -1227,6 +1227,14 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
           expand: ['data.price.product'],
         });
         
+        // ============================================
+        // MANDATORY DEBUG LOGGING (VERIFY LINE ITEMS)
+        // ============================================
+        console.log("SESSION ID:", session.id);
+        console.log("LINE ITEMS COUNT:", lineItems.data.length);
+        console.log("LINE ITEM PRICE IDS:", lineItems.data.map((li: any) => li.price?.id));
+        console.log("LINE ITEM QUANTITIES:", lineItems.data.map((li: any) => li.quantity));
+        
         // Convert line items to our items format (including price ID for digital product matching)
         const items = lineItems.data.map((lineItem: any) => ({
           name: lineItem.description || lineItem.price?.product?.name || 'Unknown Product',
@@ -1381,6 +1389,8 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
           );
           
           // Match digital products by PRICE ID (stable identifier)
+          console.log("🔍 Matching digital products by PRICE ID...");
+          
           const digitalProducts = items
             .filter((item: any) => DIGITAL_PRODUCT_MAP[item.priceId])
             .map((item: any) => ({
@@ -1388,6 +1398,24 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
               productName: DIGITAL_PRODUCT_MAP[item.priceId].name,
               downloadUrl: DIGITAL_PRODUCT_MAP[item.priceId].url
             }));
+          
+          // Log matched and unmatched products
+          const unmatchedPriceIds = items
+            .filter((item: any) => !DIGITAL_PRODUCT_MAP[item.priceId] && item.priceId)
+            .map((item: any) => item.priceId);
+          
+          if (digitalProducts.length > 0) {
+            console.log(`✅ MATCHED ${digitalProducts.length} digital product(s):`);
+            digitalProducts.forEach((p: any) => {
+              console.log(`   - ${p.priceId} → ${p.productName} (x${p.quantity})`);
+            });
+          } else {
+            console.log("⚠️ NO digital products matched!");
+          }
+          
+          if (unmatchedPriceIds.length > 0) {
+            console.warn(`⚠️ UNMATCHED PRICE IDs:`, unmatchedPriceIds.join(', '));
+          }
           
           console.log(`📦 Order contains: ${serviceTiers.length} service tier(s), ${digitalProducts.length} digital product(s)`);
           
@@ -1580,6 +1608,12 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                   </div>
                 `;
               }).join('');
+              
+              console.log(`✅ Generated downloadButtonsHtml: ${downloadButtonsHtml.length} characters`);
+              
+              if (downloadButtonsHtml.length === 0) {
+                console.error("❌ WARNING: downloadButtonsHtml is EMPTY despite having digitalProducts!");
+              }
 
               const productsList = digitalProducts.map((item: any) => {
                 const quantityLabel = item.quantity > 1 ? ` (x${item.quantity})` : '';
@@ -1597,7 +1631,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                 body: JSON.stringify({
                   from: "AVERRA Deliveries <deliveries@averraaistudio.com>",
                   to: [customerEmail],
-                  subject: `Your download is ready (Order ${saleId})`,
+                  subject: "DIGITAL DELIVERY TEST 123",
                   html: `
                     <div style="font-family: 'Cormorant', Georgia, serif; max-width: 600px; margin: 0 auto; padding: 0; background: #DCDACC;">
                       <!-- AVERRA Logo Header -->
@@ -1612,6 +1646,8 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                       
                       <!-- Main Content -->
                       <div style="background: rgba(255, 255, 255, 0.95); padding: 40px; border-left: 1px solid rgba(48, 23, 16, 0.2); border-right: 1px solid rgba(48, 23, 16, 0.2);">
+                        <p style="color: red; font-weight: bold; text-align: center; margin: 0 0 20px 0; font-size: 18px;">DOWNLOADTEST123</p>
+                        
                         <h2 style="font-size: 24px; font-weight: 400; color: #301710; margin-bottom: 30px; text-align: center;">
                           Your Digital Products Are Ready
                         </h2>
@@ -1713,6 +1749,59 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
               }
             } catch (emailError) {
               console.error("❌ Error sending digital products email:", emailError);
+            }
+          } else {
+            // FAILSAFE: Check if there were non-service items that didn't match
+            const possibleDigitalProducts = items.filter((item: any) => 
+              !item.name.includes('Essentials') && 
+              !item.name.includes('Signature') && 
+              !item.name.includes('Muse')
+            );
+            
+            if (possibleDigitalProducts.length > 0) {
+              console.warn("⚠️ FAILSAFE TRIGGERED: Items exist but NO digital products matched!");
+              console.warn("⚠️ Possible digital products that didn't match:", possibleDigitalProducts.map((p: any) => `${p.name} (Price ID: ${p.priceId})`).join(', '));
+              
+              try {
+                // Send failsafe email
+                await fetch("https://api.resend.com/emails", {
+                  method: "POST",
+                  headers: {
+                    "Authorization": `Bearer ${resendApiKey}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    from: "AVERRA Deliveries <deliveries@averraaistudio.com>",
+                    to: [customerEmail],
+                    subject: "Your AVERRA Download (Processing)",
+                    html: `
+                      <div style="font-family: 'Cormorant', Georgia, serif; max-width: 600px; margin: 0 auto; padding: 40px; background: #F7F3EF;">
+                        <h1 style="color: #301710; font-size: 32px; margin-bottom: 20px;">Thank You for Your Purchase</h1>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Hi ${customerName},
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          We could not automatically match your download. Reply to this email and we'll send it immediately.
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8; margin-bottom: 20px;">
+                          Order ID: <strong>${saleId}</strong>
+                        </p>
+                        
+                        <p style="color: #301710; line-height: 1.8;">
+                          Questions? Reply to <a href="mailto:info@averraaistudio.com" style="color: #654331;">info@averraaistudio.com</a>
+                        </p>
+                      </div>
+                    `,
+                  }),
+                });
+                
+                console.log("✅ Failsafe email sent to:", customerEmail);
+              } catch (failsafeError) {
+                console.error("❌ Error sending failsafe email:", failsafeError);
+              }
             }
           }
         }
