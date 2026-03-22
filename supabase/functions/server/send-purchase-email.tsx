@@ -22,7 +22,7 @@ export async function handleSendPurchaseEmail(c: any) {
       }, 500);
     }
 
-    // Initialize Supabase client for Storage access
+    // Initialize Supabase client for Storage access AND orders table
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -36,6 +36,60 @@ export async function handleSendPurchaseEmail(c: any) {
     if (!customerEmail) {
       console.error("❌ No customer email provided");
       return c.json({ error: "Customer email is required" }, 400);
+    }
+
+    // ============================================
+    // STORE ORDER IN DATABASE (CRITICAL!)
+    // ============================================
+    console.log("💾 Storing order in Supabase orders table...");
+    
+    // Product ID mapping for classification
+    const DIGITAL_PRODUCT_IDS = [
+      'prod_U4tjELgIEdNp8R', // The Map Pack
+      'prod_U4tj3TpmVuEi6v', // The Base Bundle
+      'prod_U4tjFfvIwptjfn', // The Cuticle Collection
+      'prod_U4tjvZqmdppfZE', // You Glow Girl Bundle
+      'prod_UAlmvz04pAYbco', // Fresh Out The Chair
+      'prod_UAlnkF1MY2zjzW'  // The Lash Collection
+    ];
+    
+    // Classify order
+    const hasDigital = items.some((item: any) => 
+      item.productId && DIGITAL_PRODUCT_IDS.includes(item.productId)
+    );
+    
+    const hasService = items.some((item: any) => 
+      item.name?.toLowerCase().includes('averra') && 
+      (item.name?.toLowerCase().includes('essentials') || 
+       item.name?.toLowerCase().includes('signature') || 
+       item.name?.toLowerCase().includes('muse'))
+    );
+    
+    console.log("📊 Order classification:", { hasDigital, hasService });
+    console.log("📦 Items to store:", JSON.stringify(items, null, 2));
+    
+    // Store order in database
+    const { data: orderData, error: orderError } = await supabase
+      .from('orders')
+      .upsert({
+        session_id: sessionId,
+        customer_email: customerEmail?.toLowerCase(),
+        customer_name: customerName || 'Customer',
+        items: items,
+        has_digital: hasDigital,
+        has_service: hasService,
+        amount_total: amountTotal,
+        created_at: new Date().toISOString()
+      }, {
+        onConflict: 'session_id'
+      })
+      .select();
+    
+    if (orderError) {
+      console.error("❌ Failed to store order:", orderError);
+      // Continue with email even if DB storage fails
+    } else {
+      console.log("✅ Order stored successfully:", orderData);
     }
 
     // Determine what type of purchase this is

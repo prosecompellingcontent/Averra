@@ -89,21 +89,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Query Supabase using REST API (no supabase-js dependency)
     console.log("🔍 Checking Supabase for existing order record...");
     
-    const supabaseResponse = await fetch(
-      `${supabaseUrl}/rest/v1/orders?session_id=eq.${encodeURIComponent(session_id)}&select=session_id,customer_email,customer_name,items,has_service,has_digital,amount_total`,
-      {
-        method: 'GET',
-        headers: {
-          'apikey': supabaseServiceKey,
-          'Authorization': `Bearer ${supabaseServiceKey}`,
-          'Content-Type': 'application/json',
-        }
+    const queryUrl = `${supabaseUrl}/rest/v1/orders?session_id=eq.${encodeURIComponent(session_id)}&select=session_id,customer_email,customer_name,items,has_service,has_digital,amount_total`;
+    console.log("🔗 Supabase query URL (without key):", queryUrl.replace(supabaseUrl, 'SUPABASE_URL'));
+    
+    const supabaseResponse = await fetch(queryUrl, {
+      method: 'GET',
+      headers: {
+        'apikey': supabaseServiceKey,
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json',
       }
-    );
+    });
+
+    console.log("📡 Supabase response status:", supabaseResponse.status);
 
     if (!supabaseResponse.ok) {
-      console.error("❌ Supabase REST API error:", supabaseResponse.status, await supabaseResponse.text());
-      return res.status(500).json({ error: 'Database query failed' });
+      const errorText = await supabaseResponse.text();
+      console.error("❌ Supabase REST API error:", {
+        status: supabaseResponse.status,
+        statusText: supabaseResponse.statusText,
+        body: errorText
+      });
+      return res.status(500).json({ 
+        error: 'Supabase query failed',
+        status: supabaseResponse.status,
+        detail: errorText 
+      });
     }
 
     const ordersArray = await supabaseResponse.json();

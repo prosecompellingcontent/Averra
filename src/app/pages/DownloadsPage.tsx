@@ -175,7 +175,7 @@ export function DownloadsPage() {
             </div>
 
             {/* Download Cards */}
-            {downloadData.downloads.length > 0 && (
+            {downloadData.downloads.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-6 mb-12">
                 {downloadData.downloads.map((item, index) => (
                   <div 
@@ -212,6 +212,26 @@ export function DownloadsPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            ) : (
+              <div className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-12 shadow-lg text-center mb-12">
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 rounded-full bg-[#301710]/10 flex items-center justify-center">
+                    <AlertCircle className="w-10 h-10 text-[#b76e79]" />
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl text-[#301710] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
+                  No Digital Downloads Found
+                </h3>
+                
+                <p className="text-[#654331]/80 mb-4" style={{ fontFamily: 'Lora, serif' }}>
+                  This order doesn't contain any digital products that can be downloaded.
+                </p>
+                
+                <p className="text-[#654331]/60 text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  If you believe this is an error, please reply to your purchase confirmation email for assistance.
+                </p>
               </div>
             )}
 

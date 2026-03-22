@@ -99,6 +99,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
 
       const items = lineItems.data.map((lineItem: any) => ({
+        // ✅ REQUIRED: productId for download mapping
+        productId: typeof lineItem.price?.product === 'object' 
+          ? lineItem.price.product.id 
+          : lineItem.price?.product,
+        
         // ✅ REQUIRED for matching in Supabase
         priceId: lineItem.price?.id ?? null,
         type: 'digital', // ✅ because your Supabase matcher requires item.type === 'digital'
