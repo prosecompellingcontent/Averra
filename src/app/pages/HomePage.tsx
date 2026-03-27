@@ -155,10 +155,10 @@ export function HomePage() {
               <div
                 key={index}
                 className={`relative bg-black ${
-                  isMobile 
-                    ? "w-full flex-shrink-0 overflow-hidden" 
-                    : "min-w-full h-full flex-shrink-0"
-                }`}
+  isMobile
+    ? "w-full flex-shrink-0 overflow-hidden h-[100svh]"
+    : "min-w-full h-full flex-shrink-0"
+}`}
               >
                 {/* Gradient overlay - fills gaps with soft fade - DESKTOP ONLY */}
                 {!isMobile && (
