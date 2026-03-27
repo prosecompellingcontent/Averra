@@ -156,9 +156,7 @@ export function HomePage() {
                 key={index}
                 className={`relative bg-black ${
   isMobile
-    ? "w-full flex-shrink-0 overflow-hidden h-[100svh]"
-    : "min-w-full h-full flex-shrink-0"
-}`}
+? "w-full flex-shrink-0 overflow-hidden h-[100svh] pb-[env(safe-area-inset-bottom)]"}`}
               >
                 {/* Gradient overlay - fills gaps with soft fade - DESKTOP ONLY */}
                 {!isMobile && (
