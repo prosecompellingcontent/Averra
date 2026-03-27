@@ -172,12 +172,14 @@ export function HomePage() {
                 
                 {/* Main image layer - 95% size on desktop, full natural height on mobile */}
                 {isMobile ? (
-                  <img 
-                    src={getImageUrl(image)}
-                    alt=""
-                    className="w-full min-h-[70vh] object-cover"
-                    style={{ objectPosition: 'center' }}
-                  />
+                  <img
+  src={getImageUrl(image)}
+  alt=""
+  className="absolute inset-0 w-full h-full object-cover"
+  style={{ objectPosition: "center" }}
+  loading={index === 0 ? "eager" : "lazy"}
+  decoding="async"
+/>
                 ) : (
                   <div 
                     className="absolute inset-0"
