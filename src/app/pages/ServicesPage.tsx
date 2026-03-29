@@ -18,16 +18,34 @@ const tiers = [
     salePrice: "$100",
     priceNum: 100,
     originalPriceNum: 200,
-    description: "For The Entrepreneur That Deserves Elevated Branding.",
-    features: [
-      { name: "10 Custom AI Brand Models", detail: "High-quality, custom-built AI visuals that give your brand a face and elevated presence. Each model is created to align with your industry niche and strategy." },
-      { name: "AVERRA Strategy Session", detail: "A focused session that defines your visual positioning, target audience alignment, and brand tone before production begins." },
-      { name: "Brand Presence Guide", detail: "Every image sends a message. This guide breaks down who it attracts, what pricing it supports, and how it changes the way people see your brand. When you look the part, the right clients follow." },
-      { name: "AVERRA Visual System Guide", detail: "A clear, easy-to-follow PDF that covers your color palette, overall tone, and styling standards so your brand is consistent." },
-      { name: "Commercial License Use", detail: "Rights to use all visuals across social media, websites, booking platforms, and marketing materials." }
-    ]
+   description: "For The Entrepreneur That Deserves Elevated Branding.",
+features: [
+  {
+    name: "Brand Interpretation Session",
+    detail:
+      "A focused session where we review what you’re trying to build and where it isn’t translating clearly.",
   },
   {
+    name: "Visual Alignment Direction",
+    detail:
+      "A clear definition of how your brand should look, feel, and present so it reflects the level you intend.",
+  },
+  {
+    name: "Foundational Visual System Guide",
+    detail:
+      "A structured guide covering tone, color environment, and styling standards so your brand stays consistent.",
+  },
+  {
+    name: "Controlled Visual Assets (AI-Supported)",
+    detail:
+      "A set of aligned visuals used to anchor your brand and eliminate inconsistency across your content.",
+  },
+  {
+    name: "Commercial License Use",
+    detail:
+      "Rights to use all visuals across social media, websites, booking platforms, and marketing materials.",
+  },
+]
     id: "signature",
     name: "AVERRA Signature",
     subtitle: "Brand Authority Package",
