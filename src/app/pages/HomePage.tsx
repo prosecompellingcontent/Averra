@@ -154,9 +154,11 @@ export function HomePage() {
             {galleryImages.map((image, index) => (
               <div
                 key={index}
-                className={`relative bg-black ${
+               className={`relative bg-black ${
   isMobile
-? "w-full flex-shrink-0 overflow-hidden h-[100svh] pb-[env(safe-area-inset-bottom)]"}`}
+    ? "w-full flex-shrink-0 overflow-hidden h-[100svh] pb-[env(safe-area-inset-bottom)]"
+    : "min-w-full h-full flex-shrink-0"
+}`}
               >
                 {/* Gradient overlay - fills gaps with soft fade - DESKTOP ONLY */}
                 {!isMobile && (
