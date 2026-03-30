@@ -361,84 +361,113 @@ export function QuizPage() {
   }
 
   // Intro screen before quiz questions
-  if (showIntro) {
-    return (
-      <div className="min-h-svh flex flex-row">
-        {/* Left Side - Quiz Intro */}
-        <div className="w-1/2 bg-[#12080A] text-[#F1E9E9] relative z-10">
-          <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#12080A]/95">
-            <Navigation />
-          </div>
-          <div className={`mx-auto ${isMobile ? 'px-4 py-16' : 'px-8 py-32'} max-w-2xl min-h-svh flex flex-col justify-center items-center`}>
-            <div className="text-center w-full">
-              <p className={`uppercase tracking-[0.4em] text-[#F1E9E9]/60 mb-4 ${isMobile ? 'text-[8px]' : 'text-[10px]'}`}>
-                Brand Assessment
-              </p>
-              <p className={`text-[#F1E9E9]/80 mb-6 font-light ${isMobile ? 'text-xl' : 'text-3xl'}`} style={{ fontFamily: 'Cormorant, serif' }}>
-                Be Honest.
-              </p>
-              <h1 className={`text-[#F1E9E9] mb-12 leading-[0.95] ${isMobile ? 'text-[clamp(1.5rem,6vw,3rem)]' : 'text-[clamp(3rem,8vw,5.5rem)]'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
-                Does Your Brand<br />Match Your Work?
-              </h1>
-              <div className={`text-[#F1E9E9]/90 font-light mx-auto leading-relaxed mb-16 ${isMobile ? 'text-sm max-w-xs' : 'text-xl max-w-xl'}`} style={{ fontFamily: 'Lora, serif' }}>
-                <p className="mb-6">You've grown a lot since you first started.</p>
-                <div className="space-y-2 mb-6">
-                  <p>Your work is better.</p>
-                  <p>Your clientele is better.</p>
-                  <p>Your standards are higher.</p>
-                </div>
-                <p className="mb-8">But sometimes the brand doesn't evolve at the same pace.</p>
-                <p className={`text-[#F1E9E9] font-bold ${isMobile ? 'text-lg' : 'text-2xl'}`} style={{ fontFamily: 'Cormorant, serif' }}>
-                  See where yours stands.
-                </p>
-              </div>
-
-              <div className="flex justify-center">
-                <button
-                  onClick={() => setShowIntro(false)}
-                  className={`inline-block bg-[#F1E9E9] text-[#12080A] uppercase tracking-[0.4em] font-semibold transition-all duration-500 shadow-2xl ${
-                    isMobile 
-                      ? 'px-8 py-3 text-[0.65rem]' 
-                      : 'px-16 py-5 text-sm hover:bg-[#F1E9E9]/90 hover:scale-105'
-                  }`}
-                >
-                  Start Your Brand Quiz
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side - Visual Panel */}
-        <div className="w-1/2 relative bg-[#12080A]">
-          <div className="sticky top-0 h-screen">
-            <div className="absolute inset-0">
-              <img 
-                src={getImageUrl("/quizIntroImage.png")}
-                alt="AVERRA Brand Visual"
-                className="w-full h-full object-cover"
-                style={{ objectPosition: '40% 30%' }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-[#12080A]/10 to-[#12080A]/30"></div>
-            </div>
-            
-            {!isMobile && (
-              <div className="absolute bottom-12 left-12 z-10">
-                <p className="text-white/40 text-sm uppercase tracking-[0.4em] font-light">
-                  AVERRA AI Model Studio
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Navigation overlay for desktop split-screen */}
-        <div className="hidden lg:block fixed top-0 left-0 right-0 z-50">
+if (showIntro) {
+  return (
+    <div className="min-h-svh flex flex-row items-stretch">
+      {/* Left Side - Quiz Intro */}
+      <div className="w-1/2 bg-[#12080A] text-[#F1E9E9] relative z-10">
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#12080A]/95">
           <Navigation />
         </div>
+        <div
+          className={`mx-auto ${isMobile ? "px-4 py-16" : "px-8 py-32"} max-w-2xl min-h-svh flex flex-col justify-center items-center`}
+        >
+          <div className="text-center w-full">
+            <p
+              className={`uppercase tracking-[0.4em] text-[#F1E9E9]/60 mb-4 ${
+                isMobile ? "text-[8px]" : "text-[10px]"
+              }`}
+            >
+              Brand Assessment
+            </p>
+            <p
+              className={`text-[#F1E9E9]/80 mb-6 font-light ${
+                isMobile ? "text-xl" : "text-3xl"
+              }`}
+              style={{ fontFamily: "Cormorant, serif" }}
+            >
+              Be Honest.
+            </p>
+            <h1
+              className={`text-[#F1E9E9] mb-12 leading-[0.95] ${
+                isMobile
+                  ? "text-[clamp(1.5rem,6vw,3rem)]"
+                  : "text-[clamp(3rem,8vw,5.5rem)]"
+              }`}
+              style={{ fontFamily: "Cormorant, serif", fontWeight: 400 }}
+            >
+              Does Your Brand
+              <br />Match Your Work?
+            </h1>
+            <div
+              className={`text-[#F1E9E9]/90 font-light mx-auto leading-relaxed mb-16 ${
+                isMobile ? "text-sm max-w-xs" : "text-xl max-w-xl"
+              }`}
+              style={{ fontFamily: "Lora, serif" }}
+            >
+              <p className="mb-6">You've grown a lot since you first started.</p>
+              <div className="space-y-2 mb-6">
+                <p>Your work is better.</p>
+                <p>Your clientele is better.</p>
+                <p>Your standards are higher.</p>
+              </div>
+              <p className="mb-8">
+                But sometimes the brand doesn't evolve at the same pace.
+              </p>
+              <p
+                className={`text-[#F1E9E9] font-bold ${
+                  isMobile ? "text-lg" : "text-2xl"
+                }`}
+                style={{ fontFamily: "Cormorant, serif" }}
+              >
+                See where yours stands.
+              </p>
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                onClick={() => setShowIntro(false)}
+                className={`inline-block bg-[#F1E9E9] text-[#12080A] uppercase tracking-[0.4em] font-semibold transition-all duration-500 shadow-2xl ${
+                  isMobile
+                    ? "px-8 py-3 text-[0.65rem]"
+                    : "px-16 py-5 text-sm hover:bg-[#F1E9E9]/90 hover:scale-105"
+                }`}
+              >
+                Start Your Brand Quiz
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    );
-  }
+
+      {/* Right Side - Visual Panel (stretches full height of the split layout) */}
+      <div
+        className="w-1/2 relative bg-[#12080A]"
+        style={{
+          backgroundImage: `url(${getImageUrl("/quizIntroImage.png")})`,
+          backgroundSize: "cover",
+          backgroundPosition: "40% 30%",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-[#12080A]/10 to-[#12080A]/30"></div>
+
+        {!isMobile && (
+          <div className="absolute bottom-12 left-12 z-10">
+            <p className="text-white/40 text-sm uppercase tracking-[0.4em] font-light">
+              AVERRA AI Model Studio
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation overlay for desktop split-screen */}
+      <div className="hidden lg:block fixed top-0 left-0 right-0 z-50">
+        <Navigation />
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-[#f4e4e6] text-[#301710]">
