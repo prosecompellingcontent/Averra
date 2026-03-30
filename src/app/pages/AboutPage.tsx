@@ -38,7 +38,7 @@ export function AboutPage() {
                   className="text-base lg:text-xl leading-relaxed text-[#D4CFC1]/80"
                   style={{ fontFamily: 'Lora, serif' }}
                 >
-                  Most beauty professionals do not struggle because they lack skill. They struggle because their brand does not reflect how good they <span className="text-[#A88F6B]">actually are</span>.
+                  Most entrepreneurs do not struggle because they lack skill. They struggle because their brand does not reflect how good they <span className="text-[#A88F6B]">actually are</span>.
                 </p>
               </div>
             </div>
@@ -65,15 +65,15 @@ export function AboutPage() {
             <div className="col-span-12 lg:col-span-6 lg:col-start-6">
               <div className="space-y-4 lg:space-y-6 text-lg lg:text-xl leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
                 <p className="text-[#1E2823]/90">
-                  The work evolves. The pricing inches up. The clientele improves. But the visuals stay stuck.
+                  Most brands start with an intention. A goal they’re working toward. A presence they want to be known for.
                 </p>
                 <div className="pl-4 lg:pl-6 space-y-2 lg:space-y-3 text-base lg:text-lg text-[#425145]">
-                  <p>A feed that feels scattered.</p>
-                  <p>Content that looks inconsistent.</p>
-                  <p>A brand that doesn't fully support the level they are operating at.</p>
+                  <p>The talent evolves.</p>
+                  <p>The pricing inches up.</p>
+                  <p>The clientele improves.</p>
                 </div>
                 <p className="text-[#1E2823]/80 pt-4 border-l-4 border-[#A88F6B] pl-4 lg:pl-6 lg:hover:pl-8 transition-all duration-300">
-                  That gap is subtle. But it shows up everywhere. In hesitation when raising prices. In comparison shopping. In being seen as <span className="text-[#A88F6B] font-medium">"good"</span> instead of <span className="text-[#A88F6B] font-medium">established</span>.
+                  But the visuals stay the same as when you first started. This almost never fully supports the level you intended to step into. The gap is subtle. But it shows up everywhere.
                 </p>
               </div>
             </div>
@@ -106,7 +106,7 @@ export function AboutPage() {
                   </p>
                 </div>
                 <p className="text-base lg:text-lg leading-relaxed text-[#1E2823]/80" style={{ fontFamily: 'Lora, serif' }}>
-                  AVERRA is a strategic AI model studio created specifically for beauty founders, salon owners, and service-based professionals who have outgrown DIY branding but are not interested in looking corporate or generic.
+                  AVERRA was created to align your beauty brand with the intention you already set out for it to be. We look at what you’re trying to create, identify where it’s not translating clearly, and define how it should actually present to create that perception you intended to have.
                 </p>
               </div>
             </div>
@@ -142,20 +142,20 @@ export function AboutPage() {
                     className="text-xl lg:text-2xl leading-relaxed text-[#A88F6B] italic relative z-10 mb-4 lg:mb-6"
                     style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}
                   >
-                    The AI is not the product. Strategy is.
+                    The skill is not the problem.
                   </p>
                 </div>
                 <p 
                   className="text-base lg:text-lg leading-relaxed text-[#D4CFC1]/80"
                   style={{ fontFamily: 'Lora, serif' }}
                 >
-                  Every tier begins with positioning. Who you are now. Where you are stepping next. How you want to be perceived before someone books. The visuals are built after that clarity is locked.
+                  Most have already set the level they’re trying to reach. What’s missing is alignment between that level and how their brand actually shows up. It’s about perception. If a brand’s perception is inconsistent, it gets questioned. That’s where the gap forms.
                 </p>
                 <p 
                   className="text-lg lg:text-xl leading-relaxed text-[#D4CFC1] pt-2 lg:pt-4"
                   style={{ fontFamily: 'Lora, serif' }}
                 >
-                  Because clients do not book what they cannot see. They book what they can <span className="text-[#A88F6B] font-medium">visualize</span>.
+                  AVERRA exists to correct that. We build what’s already created &amp; translate properly. Clients don’t book what they have to figure out. They book what’s clear.
                 </p>
               </div>
             </div>
@@ -181,21 +181,25 @@ export function AboutPage() {
             <div className="col-span-12 lg:col-span-6 lg:col-start-6">
               <div className="space-y-5 lg:space-y-6">
                 <p className="text-base lg:text-lg leading-relaxed text-[#1E2823]/80" style={{ fontFamily: 'Lora, serif' }}>
-                  When content is inconsistent, visibility drops. When visibility drops, perception softens. And when perception softens, pricing power weakens.
+                  We don’t create more content. We do not keep up with trends. We align your brand to operate at the level you intended to step into.
                 </p>
                 <p className="text-base lg:text-lg leading-relaxed text-[#1E2823]/80" style={{ fontFamily: 'Lora, serif' }}>
-                  AVERRA creates structured, cohesive brand visuals that reinforce the level you operate at. Whether you are refining your presence, raising your standards, or building something that extends beyond appointments, your brand should support that evolution — not lag behind it.
+                  Perception happens fast in the beauty industry. Before someone reads your caption, they’ve already decided what your brand feels like. If your visuals don’t support your level, you get positioned below it.
                 </p>
                 <div className="bg-[#1E2823] p-6 lg:p-8 mt-6 lg:mt-8">
                   <div className="space-y-3 lg:space-y-4 text-base lg:text-lg text-[#D4CFC1]" style={{ fontFamily: 'Lora, serif' }}>
-                    <p className="text-[#A88F6B] italic text-lg lg:text-xl" style={{ fontFamily: 'Cormorant, serif' }}>This is not about trends. It is not about viral posts. It is not about looking flashy.</p>
-                    <p className="text-xl lg:text-2xl text-[#D4CFC1] font-medium" style={{ fontFamily: 'Cormorant, serif' }}>It is about alignment.</p>
+                    <p className="text-[#A88F6B] italic text-lg lg:text-xl" style={{ fontFamily: 'Cormorant, serif' }}>
+                      We don’t create more content. We do not keep up with trends.
+                    </p>
+                    <p className="text-xl lg:text-2xl text-[#D4CFC1] font-medium" style={{ fontFamily: 'Cormorant, serif' }}>
+                      It is about alignment.
+                    </p>
                   </div>
                 </div>
                 <div className="space-y-2 lg:space-y-3 pt-4 lg:pt-6 text-base lg:text-lg text-[#425145]" style={{ fontFamily: 'Lora, serif' }}>
-                  <p>When presentation matches skill, confidence changes.</p>
-                  <p>When confidence changes, pricing shifts.</p>
-                  <p>When perception shifts, the type of clients you attract shifts with it.</p>
+                  <p>Perception happens fast in the beauty industry.</p>
+                  <p>Before someone reads your caption, they’ve already decided what your brand feels like.</p>
+                  <p>If your visuals don’t support your level, you get positioned below it.</p>
                 </div>
               </div>
             </div>
@@ -222,7 +226,7 @@ export function AboutPage() {
             <div className="col-span-12 lg:col-span-6 lg:col-start-6">
               <div className="space-y-6 lg:space-y-8">
                 <p className="text-lg lg:text-xl leading-relaxed text-[#D4CFC1]/90" style={{ fontFamily: 'Lora, serif' }}>
-                  AVERRA exists for the beauty professional who is done looking smaller than she is. For the founder building something structured. For the business that is growing and needs its brand to grow with it.
+                  AVERRA exists for the beauty brands who already know their visuals are not fully operating at their highest yet. For the business that is stepping into something bigger and needs its presence to reflect that.
                 </p>
                 <div className="border-l-4 border-[#A88F6B] pl-6 lg:pl-8 py-3 lg:py-4">
                   <div className="space-y-2 text-xl lg:text-2xl text-[#D4CFC1]" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300 }}>
