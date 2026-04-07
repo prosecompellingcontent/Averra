@@ -37,12 +37,12 @@ const editorialContent = [
   {
     process: true,
     title: "THE AVERRA METHOD",
-    subtitle: "72 Hours. Zero Stress. Premium Results.",
+    subtitle: "Clarify  Align  Standardize",
     steps: [
-      { number: "01", label: "DISCOVER", subtitle: "Brand Quiz", detail: "2-minute style assessment" },
-      { number: "02", label: "CREATE", subtitle: "AI Precision", detail: "Custom brand assets generated" },
-      { number: "03", label: "LAUNCH", subtitle: "Instant Delivery", detail: "Full brand kit in 72 hours" }
-    ]
+  { number: "01", label: "CLARIFY", subtitle: "Identify Current Brand Perception", detail: " " },
+  { number: "02", label: "ALIGN", subtitle: "Establish Clarity & Value In Visual Direction", detail: " " },
+  { number: "03", label: "STANDARDIZE", subtitle: "Execute Your New System", detail: " " }
+]
   },
   null, // Nail Photo - clean, no text
   {
