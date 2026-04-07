@@ -46,8 +46,6 @@ const editorialContent = [
   },
   null, // Nail Photo - clean, no text
   {
-    boldStatement: {
-      lines: [
 boldStatement: {
   lines: [
     { text: "Set your", size: "small", align: "left" },
@@ -57,7 +55,7 @@ boldStatement: {
     { text: "Your pricing", size: "small", align: "right" },
     { text: "FOLLOWS", size: "large", align: "right" }
       ]
-    }
+    },
   }, // Lash Photo - from about
   null, // Facial Treatment - clean, no text
   {
