@@ -48,12 +48,14 @@ const editorialContent = [
   {
     boldStatement: {
       lines: [
-51:         { text: "Set your", size: "small", align: "left" },
-52:         { text: "STANDARD", size: "large", align: "left" },
-53:         { text: "Control your", size: "small", align: "center" },
-54:         { text: "PERCEPTION", size: "large", align: "center" },
-55:         { text: "Your pricing", size: "small", align: "right" },
-56:         { text: "FOLLOWS", size: "large", align: "right" }
+boldStatement: {
+  lines: [
+    { text: "Set your", size: "small", align: "left" },
+    { text: "STANDARD", size: "large", align: "left" },
+    { text: "Control your", size: "small", align: "center" },
+    { text: "PERCEPTION", size: "large", align: "center" },
+    { text: "Your pricing", size: "small", align: "right" },
+    { text: "FOLLOWS", size: "large", align: "right" }
       ]
     }
   }, // Lash Photo - from about
