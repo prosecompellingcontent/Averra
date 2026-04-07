@@ -48,7 +48,7 @@ const editorialContent = [
   {
     boldStatement: {
       lines: [
-       51:         { text: "Set your", size: "small", align: "left" },
+51:         { text: "Set your", size: "small", align: "left" },
 52:         { text: "STANDARD", size: "large", align: "left" },
 53:         { text: "Control your", size: "small", align: "center" },
 54:         { text: "PERCEPTION", size: "large", align: "center" },
