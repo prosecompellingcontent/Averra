@@ -21,24 +21,24 @@ const tiers = [
     description: "For The Entrepreneur That Deserves Elevated Branding.",
     features: [
       {
-        name: "Brand Interpretation Session",
+        name: "Brand Clarity",
         detail:
-          "A focused session where we go through your brand and identify what you’re trying to build and where it’s not translating clearly.",
+          "We show you exactly what your brand is communicating right now and where it’s falling short so you finally have a clear answer instead of a feeling you can’t explain.",
       },
       {
-        name: "Visual Alignment Direction",
+        name: "Visual Direction",
         detail:
-          "A clear definition of how your brand should look, feel, and present so it reflects your intended level.",
+          "A strategic visual content structure built to avoid guessing brand decisions.",
       },
       {
-        name: "Foundational Visual System Guide",
+        name: "Brand Foundation",
         detail:
-          "A structured guide covering your tone, color environment, and styling standards so your brand stays consistent.",
+          "A session to set and standardize your environment so your brand stops feeling scattered and starts feeling intentional.",
       },
       {
-        name: "Controlled Visual Assets",
+        name: "Base Visuals",
         detail:
-          "A set of aligned visuals used to anchor your brand and eliminate inconsistency across your content.",
+          "Custom AI visuals so your page looks intentional immediately, no waiting until everything is perfect. Optional.",
       },
       {
         name: "Commercial License Use",
