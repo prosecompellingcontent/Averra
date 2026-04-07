@@ -31,22 +31,22 @@ const questions = [
   {
     id: 3,
     question: "Before someone books, what do you think they assume about you?",
-    options: [
-      "They're talented",
-      "They're affordable",
-      "They're busy",
-      "They're established"
-    ]
+options: [
+  "Skilled, but not positioned at a higher level",
+  "Affordable and accessible",
+  "Busy and in demand",
+  "Unclear or inconsistent"
+]
   },
   {
     id: 4,
-    question: "When you don't have new client photos to post, what do you usually do?",
-    options: [
-      "I throw something together",
-      "My page starts looking random",
-      "I repost older work",
-      "I slow down and post less"
-    ]
+    question: "When you don’t have new client photos to post, what do you usually do?",
+options: [
+  "I post whatever I can",
+  "My page starts to feel inconsistent",
+  "I repost older work",
+  "I slow down or stop posting"
+]
   },
   {
     id: 5,
