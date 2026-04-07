@@ -59,34 +59,34 @@ const tiers = [
     featured: true,
     features: [
       {
-        name: "Advanced Brand Interpretation Session",
+        name: "Brand Reset",
         detail:
-          "A focused session where we go through your brand and identify what you’re trying to build and where it’s not translating clearly.",
+          "We find exactly where your brand loses its consistency and why to avoid repeating the same cycle without realizing it.",
       },
       {
-        name: "Refined Visual Alignment Direction",
+        name: "Visual System",
         detail:
-          "A clear definition of how your brand should look, feel, and present so it reflects your intended level.",
+          "We help define your overall visual identity and lock in exactly how your brand should look across every platform. This ensures your brand has one clear, consistent look that doesn’t drift based on your mood or what’s trending that week.",
       },
       {
-        name: "Expanded Visual System",
+        name: "Content Audit",
         detail:
-          "A deeper breakdown of your visual rules so your brand remains consistent across all content and platforms.",
+          "A clear structure for planning and posting your content so you always know what belongs on your page before you start creating. No more posting just to stay active or throwing something up because you feel like you have to.",
       },
       {
-        name: "Visual Translation Framework",
+        name: "Content Consistency Standardization",
         detail:
-          "A clear structure for how your brand should show up across your page, promotions, and everyday content so nothing feels random or disconnected.",
+          "Simple, direct guidelines built around your brand so you always have a reference point for what’s on-brand or off-brand. You’ll know immediately if the next decision aligns with your goals.",
       },
       {
-        name: "Extended Controlled Visual Assets",
+        name: "Core Visuals",
         detail:
-          "Additional aligned visuals to support consistency and strengthen your overall brand presence.",
+          "A set of custom AI visuals designed to match your brand so your page looks polished every time someone lands on it. Built around your identity so every visual reinforces who you are instead of creating more inconsistency. Optional.",
       },
       {
-        name: "Brand Presence Structure Guide",
+        name: "Execution Plan",
         detail:
-          "A simplified system that keeps your visuals cohesive, intentional, and recognizable at a glance.",
+          "A realistic, repeatable system for maintaining your brand even when you’re fully booked or running low. The goal isn’t to look consistent only when you have time. It’s to look consistent all the time, without it feeling like a second job.",
       },
       {
         name: "Commercial License",
