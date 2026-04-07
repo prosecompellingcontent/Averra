@@ -108,12 +108,13 @@ const tiers = [
       {
         name: "Executive Brand Interpretation Session",
         detail:
-          "A focused session where we go through your brand and identify what you’re trying to build and where it’s not translating clearly.",
-      {
-        name: "Market Position",
-        detail:
-          "We break down exactly how your brand is currently being perceived in your current market and identify the specific gaps between where you’re positioned and where you belong. You’ll understand what signals you’re sending, why your ideal clients aren’t finding you, and what’s keeping people from recognizing your value at first glance.",
-      },
+         "A focused session where we go through your brand and identify what you’re trying to build and where it’s not translating clearly.",
+},
+{
+  name: "Market Position",
+  detail:
+    "We break down exactly how your brand is currently being perceived in your current market and identify the specific gaps between where you’re positioned and where you belong. You’ll understand what signals you’re sending, why your ideal clients aren't finding you, and what's keeping people from recognizing your value at first glance.",
+},
       {
         name: "Identity Elevation",
         detail:
