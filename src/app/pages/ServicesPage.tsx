@@ -109,31 +109,40 @@ const tiers = [
         name: "Executive Brand Interpretation Session",
         detail:
           "A focused session where we go through your brand and identify what you’re trying to build and where it’s not translating clearly.",
+      {
+        name: "Market Position",
+        detail:
+          "We break down exactly how your brand is currently being perceived in your current market and identify the specific gaps between where you’re positioned and where you belong. You’ll understand what signals you’re sending, why your ideal clients aren’t finding you, and what’s keeping people from recognizing your value at first glance.",
       },
       {
-        name: "Complete Visual Alignment Direction",
+        name: "Identity Elevation",
         detail:
-          "A clear definition of how your brand should look, feel, and present so it reflects your intended level.",
+          "We refine and define an intentional aesthetic built for the moment someone finds you so your value reads immediately. No explaining, no convincing, no justifying your rates.",
       },
       {
-        name: "Complete Brand Direction System",
+        name: "Scale System",
         detail:
-          "A full breakdown of your visual identity so every part of your brand is clearly defined and aligned.",
+          "Every element of your brand is organized so everything connects intentionally. This creates a complete, deliberate presence that elevates client perception that you’re the one to go to.",
       },
       {
-        name: "Multi-Use Visual Library",
+        name: "Content System",
         detail:
-          "A larger set of aligned visuals designed for campaigns, promotions, and ongoing brand use.",
+          "A complete and structured content system so it’s presented as originally intended to support your goals. Every post reinforces your brand authority, supports your position, and attracts your ideal clientele.",
       },
       {
-        name: "Brand Consistency Infrastructure",
+        name: "Growth System",
         detail:
-          "A system that ensures your brand remains aligned as you grow, expand, and evolve.",
+          "A brand foundation built as you grow to raise your prices, expand your services, and step into bigger spaces. This ensures your brand doesn’t start cracking under the pressure of your own elevation.",
       },
       {
-        name: "Team Visual Standards Guide (If Applicable)",
+        name: "Visual Library",
         detail:
-          "A clear guide for teams to maintain consistent visual presentation across all touchpoints.",
+          "A full, extensive set of visuals built around your brand so you always have something polished and on-point ready to go. No more settling for content that’s close enough. A visual library that reflects where you are and where you’re going.",
+      },
+      {
+        name: "Team Standards",
+        detail:
+          "Clear guidelines so your brand identity stays consistent no matter who is creating, posting, or working on your behalf. Whether it’s you or someone you bring in, the brand still looks, sounds, and feels the same across every touchpoint. Your standard doesn’t disappear the moment someone else takes over.",
       },
       {
         name: "Commercial License",
