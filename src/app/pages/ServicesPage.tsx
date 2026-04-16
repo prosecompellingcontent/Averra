@@ -86,7 +86,7 @@ const tiers = [
       {
         name: "Core Visuals",
         detail:
-          "A set of custom AI visuals designed to match your brand so your page looks polished every time someone lands on it. Built around your identity so every visual reinforces your brand instead of replacing it. Optional.",
+          "A set of custom AI visuals designed to match your brand. Built around your identity so your content remains consistent and relevant. Optional.",
       },
       {
         name: "Commercial License",
