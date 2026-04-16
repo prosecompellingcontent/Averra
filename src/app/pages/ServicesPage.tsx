@@ -423,16 +423,16 @@ export function ServicesPage() {
             <div className="absolute inset-0 flex items-center justify-center px-8">
               <div className="max-w-7xl mx-auto text-center">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-[#221412]/60 font-light mb-6">
-                  Branding Packages
+                  The Process
                 </p>
                 <h1
                   className="text-[clamp(2.5rem,8vw,6rem)] text-[#221412] mb-8"
                   style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
                 >
-                  Compare & Choose
+                  The AVERRA Alignment System
                 </h1>
                 <p className="text-lg text-[#221412]/70 font-light max-w-2xl mx-auto">
-                  Three Tiers. All Custom. Find Yours.
+                  One Standard. One System.
                 </p>
               </div>
             </div>
