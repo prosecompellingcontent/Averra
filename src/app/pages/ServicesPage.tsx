@@ -429,7 +429,7 @@ export function ServicesPage() {
                   className="text-[clamp(2.5rem,8vw,6rem)] text-[#221412] mb-8"
                   style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
                 >
-                  AVERRA'S Alignment System
+                  AVERRA Alignment System
                 </h1>
                 <p className="text-lg text-[#221412]/70 font-light max-w-2xl mx-auto">
                   Clarify. Align. Standardize.
