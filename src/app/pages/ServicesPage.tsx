@@ -18,7 +18,7 @@ const tiers = [
     salePrice: "$100",
     priceNum: 100,
     originalPriceNum: 200,
-    description: "For The Entrepreneur That Deserves Elevated Branding.",
+    description: "Find every place your brand is losing its message, conflicting visually, and dropping perceived value.",
     features: [
       {
         name: "Brand Clarity",
