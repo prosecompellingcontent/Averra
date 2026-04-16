@@ -301,7 +301,7 @@ export function HomePage() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.6, delay: 1.1 }}
                         >
-                          No Shoots.
+                          Apply
                         </motion.p>
                         <motion.p
                           className={`text-white/80 tracking-wide ${isMobile ? "text-xs" : "text-lg xl:text-xl"}`}
@@ -310,7 +310,7 @@ export function HomePage() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.6, delay: 1.3 }}
                         >
-                          No Designers.
+                          The
                         </motion.p>
                         <motion.p
                           className={`text-white/80 tracking-wide ${isMobile ? "text-xs" : "text-lg xl:text-xl"}`}
@@ -319,7 +319,7 @@ export function HomePage() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.6, delay: 1.5 }}
                         >
-                          No Stress.
+                          Standard
                         </motion.p>
                       </motion.div>
                     </div>
