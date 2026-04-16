@@ -28,7 +28,7 @@ const tiers = [
       {
         name: "Visual Direction",
         detail:
-          "When your visuals aren't aligned, your brand feels inconsistent without anyone knowing why. We pinpoint exactly where your content is working against you.",
+          "When your visuals aren't aligned, your brand feels inconsistent. We pinpoint exactly where your content is working against you.",
       },
       {
         name: "Perception Value",
@@ -41,7 +41,7 @@ const tiers = [
     "Posting without traction is a clarity issue. We reveal why your content isn't holding attention or building recognition.",
 },
       {
-        name: "Base Visuals",
+        name: "Brand Visuals",
         detail:
           "Custom AI visuals so your page looks intentional immediately, no waiting until everything is perfect. Optional.",
       },
