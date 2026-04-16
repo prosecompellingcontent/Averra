@@ -432,7 +432,7 @@ export function ServicesPage() {
                   AVERRA'S Alignment System
                 </h1>
                 <p className="text-lg text-[#221412]/70 font-light max-w-2xl mx-auto">
-                  Inerpret. Align. Stabilize.
+                  Clarify. Align. Standardize.
                 </p>
               </div>
             </div>
