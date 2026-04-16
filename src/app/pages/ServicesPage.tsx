@@ -81,12 +81,12 @@ const tiers = [
       {
         name: "Content Structure",
         detail:
-          "Without a clear system, consistency will always be a struggle. We assis in building a repeatable structure around your visual elements so your brand stays aligned across every post, without starting from scratch each time.",
+          "Without a clear system, consistency will always be a struggle. We assist in building a repeatable structure around your visual elements so your brand stays aligned across every platform, without guessing.",
       },
       {
         name: "Core Visuals",
         detail:
-          "A set of custom AI visuals designed to match your brand so your page looks polished every time someone lands on it. Built around your identity so every visual reinforces who you are instead of creating more inconsistency. Optional.",
+          "A set of custom AI visuals designed to match your brand so your page looks polished every time someone lands on it. Built around your identity so every visual reinforces your brand instead of replacing it. Optional.",
       },
       {
         name: "Commercial License",
