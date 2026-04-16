@@ -34,11 +34,11 @@ const tiers = [
         name: "Perception Value",
         detail:
           "Before a client reads a word, they've already formed an opinion. This uncovers what's quietly signaling the wrong level of value.",
-      },
-      name: "Content Performance",
-      detail:
-      "Posting without traction is a clarity issue. We reveal why your content isn't holding attention or building recognition.
-      },
+      {
+  name: "Content Performance",
+  detail:
+    "Posting without traction is a clarity issue. We reveal why your content isn't holding attention or building recognition.",
+},
       {
         name: "Base Visuals",
         detail:
