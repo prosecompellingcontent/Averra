@@ -55,43 +55,38 @@ const tiers = [
   {
     id: "signature",
     name: "AVERRA Signature",
-    subtitle: "Brand Authority Package",
+    subtitle: "The Alignment System",
     price: "$350",
     salePrice: "$250",
     priceNum: 250,
     originalPriceNum: 350,
-    description: "For Brands Ready to Raise Pricing & Presence.",
+    description: "A complete system for defining your brand, aligning your communication, and maintaining consistency.",
     featured: true,
     features: [
       {
-        name: "Brand Reset",
+        name: "Interpretation",
         detail:
-          "We find exactly where your brand loses its consistency and why to avoid repeating the same cycle without realizing it.",
+          "Most brand issues are a result of a lack of clarity. We define what your brand is actually trying to communicate, what level it's operating at, and where it's heading. From there, anything unoriginal, conflicting, or inconsistent gets removed until your core brand identity is clear.",
       },
       {
-        name: "Visual System",
+        name: "Visual Alignment",
         detail:
-          "We help define your overall visual identity and lock in exactly how your brand should look across every platform. This ensures your brand has one clear, consistent look that doesn’t drift based on your mood or what’s trending that week.",
+          "A brand is made up of six visual elements. If even one is off, it contradicts the rest. We evaluate how each element is working, identify where they're conflicting, and brings them into alignment so your brand communicates one clear message.",
       },
       {
-        name: "Content Audit",
+        name: "Perception Control",
         detail:
-          "A clear structure for planning and posting your content so you always know what belongs on your page before you start creating. No more posting just to stay active or throwing something up because you feel like you have to.",
+          "Clients form an opinion about your brand before they engage with it. We ensure that what they see accurately reflects the level you're operating at and the clients you're trying to attract.",
       },
       {
-        name: "Content Consistency Standardization",
+        name: "Content Structure",
         detail:
-          "Simple, direct guidelines built around your brand so you always have a reference point for what’s on-brand or off-brand. You’ll know immediately if the next decision aligns with your goals.",
+          "Without a clear system, consistency will always be a struggle. We assis in building a repeatable structure around your visual elements so your brand stays aligned across every post, without starting from scratch each time.",
       },
       {
         name: "Core Visuals",
         detail:
           "A set of custom AI visuals designed to match your brand so your page looks polished every time someone lands on it. Built around your identity so every visual reinforces who you are instead of creating more inconsistency. Optional.",
-      },
-      {
-        name: "Execution Plan",
-        detail:
-          "A realistic, repeatable system for maintaining your brand even when you’re fully booked or running low. The goal isn’t to look consistent only when you have time. It’s to look consistent all the time, without it feeling like a second job.",
       },
       {
         name: "Commercial License",
