@@ -21,19 +21,23 @@ const tiers = [
     description: "Find every place your brand is losing its message, conflicting visually, and dropping perceived value.",
     features: [
       {
-        name: "Brand Clarity",
+        name: "Message Clarity",
         detail:
-          "Define what your brand is trying to communicate to your clients and see exactly where it’s not translating, where your visuals conflict, and what’s lowering your perceived value.",
+          "Your brand has a message but if it's not landing clearly, clients are filling in the blanks themselves. We identify where the disconnect happens.",
       },
       {
         name: "Visual Direction",
         detail:
-          "A strategic visual content structure built to avoid guessing brand decisions.",
+          "When your visuals aren't aligned, your brand feels inconsistent without anyone knowing why. We pinpoint exactly where your content is working against you.",
       },
       {
-        name: "Brand Foundation",
+        name: "Perception Value",
         detail:
-          "A session to set and standardize your environment so your brand stops feeling scattered and starts feeling intentional.",
+          "Before a client reads a word, they've already formed an opinion. This uncovers what's quietly signaling the wrong level of value.",
+      },
+      name: "Content Performance",
+      detail:
+      "Posting without traction is a clarity issue. We reveal why your content isn't holding attention or building recognition.
       },
       {
         name: "Base Visuals",
