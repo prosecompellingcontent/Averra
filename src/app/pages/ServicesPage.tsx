@@ -13,7 +13,7 @@ const tiers = [
   {
     id: "essentials",
     name: "AVERRA Essentials",
-    subtitle: "Starter Brand Kit",
+    subtitle: "Brand Perception Audit",
     price: "$200",
     salePrice: "$100",
     priceNum: 100,
@@ -23,7 +23,7 @@ const tiers = [
       {
         name: "Brand Clarity",
         detail:
-          "We show you exactly what your brand is communicating right now and where it’s falling short so you finally have a clear answer instead of a feeling you can’t explain.",
+          "Define what your brand is trying to communicate to your clients and see exactly where it’s not translating, where your visuals conflict, and what’s lowering your perceived value.",
       },
       {
         name: "Visual Direction",
