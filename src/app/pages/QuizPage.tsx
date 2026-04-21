@@ -10,81 +10,81 @@ import { getImageUrl } from "@/utils/imageHelpers";
 const questions = [
   {
     id: 1,
-    question: "What's the main issue with your brand right now?",
+    question: "What feels most off about your brand right now?",
     options: [
-      { text: "It doesn't reflect my skill level at all", type: "system" },
-      { text: "I'm not sure how it's being perceived", type: "perception" },
-      { text: "It's inconsistent as I'm growing", type: "expansion" },
-      { text: "It needs a complete rebuild", type: "system" }
+      { text: "It doesn't reflect the level I'm actually at", type: "system" },
+      { text: "I'm not sure how people are seeing me", type: "perception" },
+      { text: "It's starting to fall apart as I grow", type: "expansion" },
+      { text: "It needs to be rebuilt from the ground up", type: "system" }
     ]
   },
   {
     id: 2,
-    question: "Where do you feel stuck?",
+    question: "Where do you feel the most stuck?",
     options: [
-      { text: "My visuals don't align with each other", type: "system" },
-      { text: "I don't know what's lowering my perceived value", type: "perception" },
-      { text: "I'm producing more content but losing consistency", type: "expansion" },
-      { text: "Everything feels unclear and scattered", type: "system" }
+      { text: "My visuals don't feel like they belong together", type: "system" },
+      { text: "Something is lowering my value but I can't figure out what", type: "perception" },
+      { text: "I'm posting more but losing consistency", type: "expansion" },
+      { text: "Everything feels scattered and unclear", type: "system" }
     ]
   },
   {
     id: 3,
-    question: "What do you need clarity on most?",
+    question: "What do you need the most clarity on?",
     options: [
-      { text: "What my brand is actually trying to say", type: "system" },
-      { text: "How my current content is being received", type: "perception" },
-      { text: "How to scale without losing my identity", type: "expansion" },
-      { text: "Where to even start fixing this", type: "system" }
+      { text: "What my brand is actually communicating", type: "system" },
+      { text: "How my content is coming across to people", type: "perception" },
+      { text: "How to grow without losing who I am", type: "expansion" },
+      { text: "Where to even begin", type: "system" }
     ]
   },
   {
     id: 4,
-    question: "How would you describe your current brand state?",
+    question: "How would you describe your brand right now?",
     options: [
-      { text: "All over the place, needs full alignment", type: "system" },
-      { text: "Okay, but something's off and I can't pinpoint it", type: "perception" },
-      { text: "Good foundation, but struggling to maintain it at scale", type: "expansion" },
-      { text: "Non-existent or completely outdated", type: "system" }
+      { text: "All over the place — it needs full alignment", type: "system" },
+      { text: "Something feels off but I can't pinpoint it", type: "perception" },
+      { text: "It's there, but hard to maintain as I scale", type: "expansion" },
+      { text: "Nonexistent or completely outdated", type: "system" }
     ]
   },
   {
     id: 5,
-    question: "What outcome do you need?",
+    question: "What do you actually need to walk away with?",
     options: [
-      { text: "A complete brand system that works", type: "system" },
-      { text: "Understanding what's not translating", type: "perception" },
-      { text: "A way to grow without drifting", type: "expansion" },
-      { text: "Clear direction and structure from scratch", type: "system" }
+      { text: "A brand system that works and holds", type: "system" },
+      { text: "A clear picture of what's not landing", type: "perception" },
+      { text: "A way to grow without losing my identity", type: "expansion" },
+      { text: "A clear direction to build from", type: "system" }
     ]
   },
   {
     id: 6,
-    question: "What's your business situation right now?",
+    question: "Where are you in your business right now?",
     options: [
-      { text: "Just starting or rebranding completely", type: "system" },
-      { text: "Established but unsure about perception", type: "perception" },
-      { text: "Scaling up and content is increasing", type: "expansion" },
-      { text: "Need full realignment across everything", type: "system" }
+      { text: "Just starting out or starting over", type: "system" },
+      { text: "Established but unsure how I'm being perceived", type: "perception" },
+      { text: "Growing and putting out more content than ever", type: "expansion" },
+      { text: "In need of a full realignment", type: "system" }
     ]
   },
   {
     id: 7,
-    question: "When you think about raising your prices, what holds you back?",
+    question: "What holds you back from raising your prices?",
     options: [
-      { text: "My brand doesn't look premium enough yet", type: "system" },
-      { text: "I'm not confident in how I'm being perceived", type: "perception" },
-      { text: "My content quality varies too much", type: "expansion" },
-      { text: "I need a complete visual overhaul first", type: "system" }
+      { text: "My brand doesn't look like it matches my skill yet", type: "system" },
+      { text: "I'm not confident in how I'm coming across", type: "perception" },
+      { text: "My content quality isn't consistent enough", type: "expansion" },
+      { text: "My visuals need a full overhaul before I can", type: "system" }
     ]
   },
   {
     id: 8,
-    question: "What happens when potential clients view your brand?",
+    question: "What do you think happens when someone lands on your page?",
     options: [
-      { text: "They don't see my true skill level", type: "system" },
-      { text: "I'm unsure what impression I'm making", type: "perception" },
-      { text: "They see inconsistency across my content", type: "expansion" },
+      { text: "They don't see the level I'm actually at", type: "system" },
+      { text: "I honestly have no idea what impression I'm making", type: "perception" },
+      { text: "They notice the inconsistency in my content", type: "expansion" },
       { text: "They see something that doesn't represent me", type: "system" }
     ]
   },
@@ -92,23 +92,23 @@ const questions = [
     id: 9,
     question: "What would change if your brand was fully aligned?",
     options: [
-      { text: "I could finally charge what I'm worth", type: "system" },
-      { text: "I'd understand exactly how I'm being seen", type: "perception" },
-      { text: "I could scale without losing quality", type: "expansion" },
-      { text: "Everything would finally make sense", type: "system" }
+      { text: "I could charge what I'm actually worth", type: "system" },
+      { text: "I'd finally know exactly how I'm being seen", type: "perception" },
+      { text: "I could scale without sacrificing quality", type: "expansion" },
+      { text: "Everything would finally feel like it makes sense", type: "system" }
     ]
   },
   {
     id: 10,
-    question: "What's your priority right now?",
+    question: "What's your biggest priority right now?",
     options: [
-      { text: "Building a brand that matches my expertise", type: "system" },
-      { text: "Understanding current perception gaps", type: "perception" },
-      { text: "Creating systems for sustainable growth", type: "expansion" },
-      { text: "Starting fresh with clear direction", type: "system" }
+      { text: "Building a brand that actually reflects my expertise", type: "system" },
+      { text: "Finding out where my brand is falling short", type: "perception" },
+      { text: "Creating a system I can maintain as I grow", type: "expansion" },
+      { text: "Starting fresh with a clear foundation", type: "system" }
     ]
-  },
-];
+  }
+]
 
 export function QuizPage() {
   const isMobile = useIsMobile();
@@ -209,7 +209,7 @@ export function QuizPage() {
             {
               title: "What You Need Right Now",
               subtitle: "The AVERRA Brand Alignment System",
-              content: "You need a complete system that addresses perception, translation, visual clarity, and consistency.\n\nThe AVERRA Brand Alignment System takes you through three critical stages:\n\nInterpretation: We define what your brand is actually trying to communicate, clarify the level you're operating at, and position your brand where it should be. This removes unclear direction and unaligned aesthetics.\n\nAlignment: We evaluate your visuals through lighting, color environment, composition, styling, texture, and client presence. Any inconsistencies are corrected so your visuals no longer conflict and your perceived value is elevated.\n\nStabilization: We create defined visual standards and a repeatable content direction so your brand no longer resets or drifts. This removes confusion and decision fatigue for long term consistency.\n\nYou walk away with a defined brand direction, an aligned visual framework, corrected perception and positioning, and a structured content system with clear standards for future content."
+              content: "You need a complete system that addresses perception, translation, visual clarity, and consistency.\n\nThe AVERRA Brand Alignment System takes you through three critical stages:\n\nInterpretation: We define what your brand is actually trying to communicate. \n\nAlignment: We evaluate your visuals through a our 6 step visual system. Any inconsistencies are corrected so your visuals no longer conflict and your perceived value is elevated.\n\nStabilization: We create defined visual direction custom to your brand so that it's no longer inconsistent. This removes confusion and burnout for long term consistency.\n\nYou walk away with a custom brand direction, aligned visual framework, corrected perception and brand positioning, and a structured content system with clear standards for future content."
             },
             {
               title: "What Happens If You Don't Fix This",
