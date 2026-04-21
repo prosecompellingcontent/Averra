@@ -1,10 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || process.env.Stripe_Secret_Key || '', {
-  apiVersion: '2026-02-25.clover',
-});
-
 export const config = {
   api: {
     bodyParser: false, // Disable body parsing, need raw body for signature verification
@@ -35,6 +31,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
+  // ✅ Don’t crash when someone opens the endpoint in a browser
+  if (req.method === 'GET') {
+    return res.status(200).send('OK');
+  }
+
   // Log everything for debugging
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("🔔 WEBHOOK RECEIVED FROM STRIPE!", new Date().toISOString());
@@ -48,15 +49,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: `Method ${req.method} not allowed. Expected POST.` });
   }
 
+  // ✅ Read env vars inside handler (prevents crash during module load)
+  const stripeSecretKey =
+    process.env.STRIPE_SECRET_KEY ||
+    process.env.Stripe_Secret_Key ||
+    '';
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!stripeSecretKey) {
+    console.error("❌ STRIPE_SECRET_KEY not configured!");
+    return res.status(500).json({ error: 'Stripe secret key not configured' });
+  }
+
+  if (!webhookSecret) {
+    console.error("❌ STRIPE_WEBHOOK_SECRET not configured!");
+    return res.status(500).json({ error: 'Webhook secret not configured' });
+  }
+
+  // ✅ Instantiate Stripe only after env is validated
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2026-02-25.clover',
+  });
+
   try {
     const rawBody = await getRawBody(req);
     const signature = req.headers['stripe-signature'] as string;
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    if (!webhookSecret) {
-      console.error("❌ STRIPE_WEBHOOK_SECRET not configured!");
-      return res.status(500).json({ error: 'Webhook secret not configured' });
-    }
 
     if (!signature) {
       console.error("❌ No Stripe signature found");
@@ -66,11 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Verify webhook signature
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(
-        rawBody,
-        signature,
-        webhookSecret
-      );
+      event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
     } catch (err) {
       console.error("❌ Webhook signature verification failed:", err);
       return res.status(400).json({ error: 'Invalid signature' });
@@ -81,15 +95,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Handle checkout.session.completed
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      
+
       console.log("🛒 Checkout completed:", session.id);
       console.log("📧 Customer email:", session.customer_details?.email);
-      
+
       // Forward to Supabase backend for processing
       const supabaseUrl = `https://zfzwknmljpotidwyoefk.supabase.co/functions/v1/make-server-61755bec/send-purchase-email`;
+
       // Use the anon key from the info file
-      const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmendrbm1sanBvdGlkd3lvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3ODQxNTMsImV4cCI6MjA4NTM2MDE1M30.zz_eMP7Xg04HI69y0sgpQzs4osujmMJ1Dt6fkDwLvPI";
-      
+      const supabaseAnonKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmendrbm1sanBvdGlkd3lvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3ODQxNTMsImV4cCI6MjA4NTM2MDE1M30.zz_eMP7Xg04HI69y0sgpQzs4osujmMJ1Dt6fkDwLvPI";
+
       console.log("📤 Forwarding to Supabase backend for email processing...");
 
       // Get line items
@@ -101,14 +117,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.log(`📦 Found ${lineItems.data.length} line items from Stripe`);
 
       const items = lineItems.data.map((lineItem: any) => {
-        const productId = typeof lineItem.price?.product === 'object' 
-          ? lineItem.price.product.id 
+        const productId = typeof lineItem.price?.product === 'object'
+          ? lineItem.price.product.id
           : lineItem.price?.product;
-        
+
         const name = lineItem.description ||
           (typeof lineItem.price?.product === 'object' ? lineItem.price.product.name : undefined) ||
           'Unknown Product';
-        
+
         const item = {
           productId,
           priceId: lineItem.price?.id ?? null,
@@ -116,11 +132,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           quantity: lineItem.quantity ?? 1,
           price: ((lineItem.amount_total ?? lineItem.amount_subtotal ?? 0) / 100),
         };
-        
+
         console.log(`  - Item: ${name} (productId: ${productId}, quantity: ${item.quantity})`);
         return item;
       });
-      
+
       console.log("✅ ITEMS WITH PRODUCT IDS:", JSON.stringify(items, null, 2));
 
       // Call Supabase backend
@@ -145,14 +161,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } else {
         const errorData = await backendResponse.text();
         console.error("❌ Backend processing failed:", errorData);
+        // Optional: return 500 so Stripe retries delivery
+        // return res.status(500).json({ error: 'Supabase processing failed' });
       }
     }
 
     return res.status(200).json({ received: true });
   } catch (error) {
     console.error("❌ Webhook handler error:", error);
-    return res.status(500).json({ 
-      error: error instanceof Error ? error.message : 'Webhook processing failed' 
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : 'Webhook processing failed'
     });
   }
 }
