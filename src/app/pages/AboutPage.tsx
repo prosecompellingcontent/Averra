@@ -289,7 +289,7 @@ export function AboutPage() {
               heroAnimationState === 'shining' || heroAnimationState === 'subtitle-entering' || heroAnimationState === 'complete' ? 'shining' : ''
             }`}
             style={{
-              fontFamily: "Alta, serif",
+              fontFamily: "Cormorant Garamond, serif",
               fontWeight: 600,
               letterSpacing: "0.05em"
             }}
@@ -303,7 +303,7 @@ export function AboutPage() {
               heroAnimationState === 'subtitle-entering' || heroAnimationState === 'complete' ? 'subtitle-enter' : 'opacity-0'
             }`}
             style={{
-              fontFamily: "Alta, serif",
+              fontFamily: "Cormorant Garamond, serif",
               fontWeight: 400
             }}
           >
