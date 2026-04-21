@@ -42,7 +42,7 @@ const questions = [
     id: 4,
     question: "How would you describe your brand right now?",
     options: [
-      { text: "All over the place — it needs full alignment", type: "system" },
+      { text: "All over the place, it needs full alignment", type: "system" },
       { text: "Something feels off but I can't pinpoint it", type: "perception" },
       { text: "It's there, but hard to maintain as I scale", type: "expansion" },
       { text: "Nonexistent or completely outdated", type: "system" }
