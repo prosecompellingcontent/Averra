@@ -72,14 +72,14 @@ export function DownloadsPage() {
   // Missing session ID
   if (!sessionId) {
     return (
-      <div className="min-h-screen bg-[#F7F3EF] pb-32 md:pb-0">
+      <div className="min-h-screen bg-[#fdf5f7] pb-32 md:pb-0">
         <Navigation />
         
         <div className="max-w-2xl mx-auto px-6 pt-32 pb-20">
-          <div className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-12 shadow-lg text-center">
+          <div className="bg-white/60 backdrop-blur-sm border border-[#c9969e]/20 p-12 shadow-lg text-center">
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 rounded-full bg-[#301710]/10 flex items-center justify-center">
-                <AlertCircle className="w-10 h-10 text-[#b76e79]" />
+                <AlertCircle className="w-10 h-10 text-[#c9969e]" />
               </div>
             </div>
             
@@ -101,7 +101,7 @@ export function DownloadsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F3EF] pb-32 md:pb-0">
+    <div className="min-h-screen bg-[#fdf5f7] pb-32 md:pb-0">
       <Navigation />
       
       <div className="max-w-5xl mx-auto px-6 pt-32 pb-20">
@@ -109,12 +109,12 @@ export function DownloadsPage() {
         <div className="text-center mb-12">
           <div className="flex justify-center mb-8">
             <div className="relative">
-              <div className="absolute inset-0 bg-[#b76e79]/20 blur-2xl animate-pulse"></div>
-              <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-[#b76e79]/20 to-[#301710]/10 border-2 border-[#b76e79]/30 flex items-center justify-center backdrop-blur-sm">
+              <div className="absolute inset-0 bg-[#c9969e]/20 blur-2xl animate-pulse"></div>
+              <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-[#b76e79]/20 to-[#301710]/10 border-2 border-[#c9969e]/30 flex items-center justify-center backdrop-blur-sm">
                 {isUnlocked ? (
-                  <Unlock className="w-16 h-16 text-[#b76e79]" strokeWidth={1.5} />
+                  <Unlock className="w-16 h-16 text-[#c9969e]" strokeWidth={1.5} />
                 ) : (
-                  <Lock className="w-16 h-16 text-[#b76e79]" strokeWidth={1.5} />
+                  <Lock className="w-16 h-16 text-[#c9969e]" strokeWidth={1.5} />
                 )}
               </div>
             </div>
@@ -138,7 +138,7 @@ export function DownloadsPage() {
         {/* Unlock Form */}
         {!isUnlocked && (
           <div className="max-w-xl mx-auto mb-12">
-            <form onSubmit={handleUnlock} className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-8 shadow-lg">
+            <form onSubmit={handleUnlock} className="bg-white/60 backdrop-blur-sm border border-[#c9969e]/20 p-8 shadow-lg">
               <label className="block text-[#301710] mb-3 font-semibold" style={{ fontFamily: 'Lora, serif' }}>
                 Your Email Address
               </label>
@@ -149,7 +149,7 @@ export function DownloadsPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="customer@email.com"
                 required
-                className="mb-4 bg-white/80 border-[#301710]/20 focus:border-[#b76e79] text-[#301710]"
+                className="mb-4 bg-white/80 border-[#301710]/20 focus:border-[#c9969e] text-[#301710]"
                 style={{ fontFamily: 'Inter, sans-serif' }}
               />
 
@@ -187,9 +187,9 @@ export function DownloadsPage() {
                 {downloadData.downloads.map((item, index) => (
                   <div 
                     key={index}
-                    className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-8 shadow-lg relative overflow-hidden group hover:shadow-xl transition-all duration-300"
+                    className="bg-white/60 backdrop-blur-sm border border-[#c9969e]/20 p-8 shadow-lg relative overflow-hidden group hover:shadow-xl transition-all duration-300"
                   >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#b76e79]/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9969e]/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500"></div>
                     
                     <div className="relative">
                       <div className="flex items-center gap-3 mb-4">
@@ -221,10 +221,10 @@ export function DownloadsPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-12 shadow-lg text-center mb-12">
+              <div className="bg-white/60 backdrop-blur-sm border border-[#c9969e]/20 p-12 shadow-lg text-center mb-12">
                 <div className="flex justify-center mb-6">
                   <div className="w-20 h-20 rounded-full bg-[#301710]/10 flex items-center justify-center">
-                    <AlertCircle className="w-10 h-10 text-[#b76e79]" />
+                    <AlertCircle className="w-10 h-10 text-[#c9969e]" />
                   </div>
                 </div>
                 
@@ -243,7 +243,7 @@ export function DownloadsPage() {
             )}
 
             {/* Instructions */}
-            <div className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-8 shadow-lg mb-12">
+            <div className="bg-white/60 backdrop-blur-sm border border-[#c9969e]/20 p-8 shadow-lg mb-12">
               <h2 className="text-2xl text-[#301710] mb-6" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
                 How to Unzip Your Files
               </h2>
@@ -251,7 +251,7 @@ export function DownloadsPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex gap-3">
-                    <Smartphone className="w-5 h-5 text-[#b76e79] flex-shrink-0 mt-1" />
+                    <Smartphone className="w-5 h-5 text-[#c9969e] flex-shrink-0 mt-1" />
                     <div>
                       <p className="text-[#301710] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
                         iPhone / iPad
@@ -263,7 +263,7 @@ export function DownloadsPage() {
                   </div>
 
                   <div className="flex gap-3">
-                    <Smartphone className="w-5 h-5 text-[#b76e79] flex-shrink-0 mt-1" />
+                    <Smartphone className="w-5 h-5 text-[#c9969e] flex-shrink-0 mt-1" />
                     <div>
                       <p className="text-[#301710] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
                         Android
@@ -277,7 +277,7 @@ export function DownloadsPage() {
 
                 <div className="space-y-4">
                   <div className="flex gap-3">
-                    <Monitor className="w-5 h-5 text-[#b76e79] flex-shrink-0 mt-1" />
+                    <Monitor className="w-5 h-5 text-[#c9969e] flex-shrink-0 mt-1" />
                     <div>
                       <p className="text-[#301710] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
                         Mac
@@ -289,7 +289,7 @@ export function DownloadsPage() {
                   </div>
 
                   <div className="flex gap-3">
-                    <Monitor className="w-5 h-5 text-[#b76e79] flex-shrink-0 mt-1" />
+                    <Monitor className="w-5 h-5 text-[#c9969e] flex-shrink-0 mt-1" />
                     <div>
                       <p className="text-[#301710] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
                         Windows
@@ -305,7 +305,7 @@ export function DownloadsPage() {
 
             {/* Service Tier Next Steps */}
             {downloadData.has_service && (
-              <div className="bg-white/60 backdrop-blur-sm border border-[#b76e79]/20 p-8 shadow-lg mb-12">
+              <div className="bg-white/60 backdrop-blur-sm border border-[#c9969e]/20 p-8 shadow-lg mb-12">
                 <h2 className="text-2xl text-[#301710] mb-4" style={{ fontFamily: 'Cormorant, serif', fontWeight: 400 }}>
                   📅 Next Steps: Your Branding Service
                 </h2>
@@ -315,8 +315,8 @@ export function DownloadsPage() {
                 </p>
 
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 border-[#b76e79] flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-[#b76e79]" />
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 border-[#c9969e] flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-[#c9969e]" />
                   </div>
                   <p className="text-[#654331]/70 text-sm">
                     Your Calendly link was sent to <strong>{email}</strong>

@@ -1,0 +1,1092 @@
+import { Navigation } from "@/app/components/Navigation";
+import { Link, useNavigate } from "react-router";
+import { Check } from "lucide-react";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { useCart } from "@/app/context/CartContext";
+import { CTAFooter } from "@/app/components/CTAFooter";
+import { MarqueeScroll } from "@/app/components/MarqueeScroll";
+import { trackAction } from "@/utils/analytics";
+import { getImageUrl } from "@/utils/imageHelpers";
+import { useState, useCallback } from "react";
+
+// Single AVERRA Brand Alignment System Service
+const brandAlignmentService = {
+  id: "brand-alignment",
+  name: "AVERRA Brand Alignment System",
+  subtitle: "Industry Standard Alignment",
+  price: "$250",
+  salePrice: "$100",
+  priceNum: 100,
+  originalPriceNum: 250,
+  description: "A complete brand alignment system designed to position your brand for success based on its specific identity, not by blending into an oversaturated market.",
+  industryStandard: {
+    title: "The Industry Standard",
+    intro: "Markets become oversaturated when brands start to look, move, and communicate the same. When that happens, content becomes scattered, clients lose consistency, and loyalty drops, regardless of the quality of the work.",
+    standards: [
+      { name: "Perception", description: "How your brand is seen at first glance" },
+      { name: "Translation", description: "How clearly your message is communicated" },
+      { name: "Visual Clarity", description: "How cohesive your visuals appear" },
+      { name: "Consistency", description: "How reliable your brand identity remains" },
+    ],
+    conclusion: "If any of these are off, your perceived value decreases. Our system corrects that."
+  },
+  stages: [
+    {
+      name: "Interpretation",
+      subtitle: "Defines what your brand is actually trying to communicate",
+      detail: "This stage establishes your brand identity, clarifies the level you are currently operating at, and positions your brand where it should be. It removes unclear direction, unaligned aesthetics, and unnecessary content so your brand is no longer open to interpretation.",
+    },
+    {
+      name: "Alignment",
+      subtitle: "Ensures every element of your brand communicates the same message",
+      detail: "This stage evaluates your visuals through lighting, color environment, composition, styling, texture, and client presence. Any inconsistencies are corrected so your visuals no longer conflict, your communication becomes clear, and your perceived value is no longer lowered.",
+    },
+    {
+      name: "Stabilization",
+      subtitle: "Builds structure so your brand remains consistent over time",
+      detail: "This stage creates defined visual standards and a repeatable content direction so your brand no longer resets or drifts. It removes confusion and decision fatigue by establishing clear boundaries for how your brand is maintained moving forward.",
+    },
+  ],
+  deliverables: [
+    "Defined brand direction",
+    "Aligned visual framework",
+    "Corrected perception and positioning",
+    "Structured content system with clear standards for future content",
+  ],
+};
+
+// Add-on Audit Services
+const auditAddOns = [
+  {
+    id: "brand-perception-audit",
+    name: "Brand Perception Audit",
+    price: "$100",
+    salePrice: "$75",
+    priceNum: 75,
+    originalPriceNum: 100,
+    subtitle: "A focused evaluation of how your brand is currently being seen",
+    whatThisCovers: "Message clarity, visual consistency, perceived value, and content performance.",
+    whatIsIdentified: "Where your brand loses its message, where visuals conflict, and what is lowering how your work is perceived.",
+    outcome: "A clear understanding of what is not translating and what needs to change.",
+  },
+  {
+    id: "brand-expansion-audit",
+    name: "Brand Expansion Audit",
+    price: "$100",
+    salePrice: "$75",
+    priceNum: 75,
+    originalPriceNum: 100,
+    subtitle: "An extension of your brand system to support growth without losing consistency",
+    whatThisCovers: "Scaling content, maintaining visual alignment, and reinforcing brand standards at a higher level.",
+    whatIsIdentified: "Where your brand begins to drift as output increases and what is needed to maintain control.",
+    outcome: "Your brand remains consistent, aligned, and recognizable as it grows.",
+  },
+];
+
+const digitalProducts = [
+  {
+    id: "lash-extension-look",
+    name: "The Lash Collection",
+    price: "$30",
+    priceNum: 30,
+    originalPrice: "$50",
+    originalPriceNum: 50,
+    description:
+      "Three individual lash-focused visuals featuring clean isolation, full lash lines, soft volume, and a polished finish, this pack highlights the detail and precision behind expert lash work. Ideal for set promos, fill reminders, new announcements, retention or education posts. Built to use immediately across socials, booking platforms, and promotional graphics.",
+    scenes: [
+      {
+        title: "Scene 1 — The Service Moment",
+        detail:
+          "A relaxed in-service lash appointment capturing focused application, clean placement, and steady hands at work. A professional behind-the-bed moment that shows care and control.",
+      },
+      {
+        title: "Scene 2 — The Finished Set",
+        detail:
+          "A close beauty shot highlighting fullness, symmetry, and a flawless lash line. Soft, defined, and made to stand out on the feed.",
+      },
+      {
+        title: "Scene 3 — The Detail Finish",
+        detail:
+          "A refined close-up showcasing clean isolation, consistent mapping, and smooth density. Designed to spotlight the quality of the set & the professionalism that comes with it.",
+      },
+    ],
+    includes: [
+      "3 high-resolution AI-generated scenes",
+      "Commercial use license",
+      "Instant download",
+      "No edits or customization",
+    ],
+    positioning:
+      "All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
+  },
+  {
+    id: "brow-services-look",
+    name: "The Map Pack",
+    price: "$30",
+    priceNum: 30,
+    originalPrice: "$50",
+    originalPriceNum: 50,
+    description:
+      "Three brow visuals perfected for precision. Including clean mapping, crisp shaping, defined arches, and structured finishes, this pack highlights the level of control and detail behind expert brow work. Ideal for brow promos, tint and shape specials, new service launches, or collaborations. Built to use immediately across socials, booking platforms, and promotional graphics.",
+    scenes: [
+      {
+        title: "Scene 1 — The Precision Moment",
+        detail:
+          "A focused in-service shot capturing mapping, shaping, and hands-on detail. Clean lines and steady technique that show real expertise.",
+      },
+      {
+        title: "Scene 2 — The Sculpted Result",
+        detail:
+          "A polished brow finish with defined structure, balanced symmetry, and a sharp, refined outline. The kind of result that instantly looks high-level.",
+      },
+      {
+        title: "Scene 3 — The Detail Close-Up",
+        detail:
+          "A refined beauty shot highlighting clean edges, smooth tint, and precise definition. Designed to spotlight the quality of the work without overstatement.",
+      },
+    ],
+    includes: [
+      "3 high-resolution AI-generated scenes",
+      "Commercial use license",
+      "Instant download",
+      "No edits or customization",
+    ],
+    positioning:
+      "All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
+  },
+  {
+    id: "makeup-artistry-look",
+    name: "The Base Bundle",
+    price: "$30",
+    priceNum: 30,
+    originalPrice: "$50",
+    originalPriceNum: 50,
+    description:
+      "Three elevated visuals designed to make artistry feel visible, polished, and undeniable. Featuring seamless blend, flawless base, clean liner work, soft highlight, and camera-ready finish, this pack captures the level of detail clients expect from a serious MUA. Ideal for brand announcements, glam promos, launches, sales, or showcasing signature looks. Built to use immediately across socials, booking platforms, and promotional graphics.",
+    scenes: [
+      {
+        title: "Scene 1 — The Application Moment",
+        detail:
+          "A mid-service beauty shot capturing blending, brushwork, and focused technique in progress. A clean, professional image that shows real artistry at work.",
+      },
+      {
+        title: "Scene 2 — The Finished Glam Close-Up",
+        detail:
+          "A striking final look with smooth skin, defined features, and balanced highlight. Polished, confident, and ready for the camera.",
+      },
+      {
+        title: "Scene 3 — The Beauty Detail",
+        detail:
+          "A refined close-up highlighting texture, blend, and precision. Designed to spotlight the quality of the work without overstatement.",
+      },
+    ],
+    includes: [
+      "3 high-resolution AI-generated scenes",
+      "Commercial use license",
+      "Instant download",
+      "No edits or customization",
+    ],
+    positioning:
+      "All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
+  },
+  {
+    id: "hair-styling-look",
+    name: "Fresh Out The Chair",
+    price: "$30",
+    priceNum: 30,
+    originalPrice: "$50",
+    originalPriceNum: 50,
+    description:
+      "Three hair-focused visuals created to showcase precision, shine, and that polished finish clients book for. Ideal for launches, specials, promos, seasonal hair campaigns, or transformations. Built to use immediately across socials, booking platforms, and promotional graphics.",
+    scenes: [
+      {
+        title: "Scene 1 — The Work Behind the Result",
+        detail:
+          "A hands-on, behind-the-chair moment capturing clean sectioning, controlled tension, and focused technique in action. The foundation of every seamless blend, sharp cut, and high-gloss finish clients book for.",
+      },
+      {
+        title: "Scene 2 — The Finished Transformation",
+        detail:
+          "A polished final look with visible shine, smooth movement, and a flawless finish. The kind of hair that photographs beautifully, feels healthy, and makes clients run to the mirror.",
+      },
+      {
+        title: "Scene 3 — The Detail Finish",
+        detail:
+          "A close-up highlighting technique, clarity, and precision. Designed to spotlight the quality of the work without needing a before-and-after.",
+      },
+    ],
+    includes: [
+      "3 high-resolution AI-generated scenes",
+      "Commercial use license",
+      "Instant download",
+      "No edits or customization",
+    ],
+    positioning:
+      "All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
+  },
+  {
+    id: "nail-services-look",
+    name: "The Cuticle Collection",
+    price: "$30",
+    priceNum: 30,
+    originalPrice: "$50",
+    originalPriceNum: 50,
+    description:
+      "Three manicure visuals designed to highlight structure, precision, and that flawless finished set clients zoom in on. Featuring clean cuticle work, sharp shaping, smooth structure, and high-gloss shine, this pack makes detail visible at first glance. Ideal for new set promos, seasonal design launches, retention education posts, price increases, or showcasing signature shapes and finishes. Built to use immediately across socials, booking platforms, and promotional graphics.",
+    scenes: [
+      {
+        title: "Scene 1 — The Precision Process",
+        detail:
+          "A close manicure moment capturing clean cuticle work, shaping, and hands-on detail. The kind of angle that shows skill, not just polish.",
+      },
+      {
+        title: "Scene 2 — The Elevated Finish",
+        detail:
+          "A perfectly structured set shown up close with sharp shape, smooth application, and high-gloss shine. Bold enough to stop scrolling and strong enough to support pricing.",
+      },
+      {
+        title: "Scene 3 — The Detail Standard",
+        detail:
+          "A set shot highlighting symmetry, structure, and consistency. Designed to visually emphasize the level of care behind every appointment.",
+      },
+    ],
+    includes: [
+      "3 high-resolution AI-generated scenes",
+      "Commercial use license",
+      "Instant download",
+      "No edits or customization",
+    ],
+    positioning:
+      "All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
+  },
+  {
+    id: "esthetics-skincare-look",
+    name: "You Glow Girl Bundle",
+    price: "$30",
+    priceNum: 30,
+    originalPrice: "$50",
+    originalPriceNum: 50,
+    description:
+      "Three esthetic visuals designed to make promotions look polished and professional from the first glance. Ideal for facial specials, new treatment launches, membership promotions, or skincare product features. Built to use immediately across socials, booking platforms, and promotional graphics.",
+    scenes: [
+      {
+        title: "Scene 1 — The Treatment Moment",
+        detail:
+          "A calm facial appointment scene that captures the treatment table setup, clean linens, and hands-on care clients expect. Soft lighting and a relaxed client position create the kind of environment that feels professional and safe.",
+      },
+      {
+        title: "Scene 2 — The Healthy Glow",
+        detail:
+          "A close-up of fresh, glowing skin with natural texture and hydration visible. Perfect for promoting results-focused services like custom facials, acne treatments, brightening services, or skin barrier repair.",
+      },
+      {
+        title: "Scene 3 — The Skin Detail",
+        detail:
+          "A polished detail shot highlighting smooth texture, even tone, and post-treatment radiance. Ideal for showcasing expertise, precision, and high-standard skincare work.",
+      },
+    ],
+    includes: [
+      "3 AI-generated brand scenes",
+      "Commercial use license for marketing and promotional materials",
+      "Instant download",
+      "No edits or customization",
+    ],
+    positioning:
+      "All visuals are AI-generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
+  },
+];
+
+export function ServicesPage() {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+
+  const handleAddToCart = (item: {
+    id: string;
+    name: string;
+    priceNum: number;
+    originalPriceNum?: number;
+    subtitle?: string;
+    type: "service" | "digital";
+    description?: string;
+  }) => {
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.priceNum,
+      originalPrice: item.originalPriceNum,
+      type: item.type,
+      description: item.subtitle || item.description,
+    });
+    trackAction("Add to Cart", { item: item.name, type: item.type });
+  };
+
+  return (
+    <>
+      <div className="min-h-screen bg-[#DCDACC] text-[#301710]">
+        <Navigation />
+
+        {/* Hero Section - Using proper pattern */}
+        <section
+          className={`relative w-full overflow-hidden ${
+            isMobile ? "min-h-[600px] mb-0" : "min-h-svh"
+          }`}
+        >
+          {/* Background image as a pinned rectangle */}
+          <div
+            className={`${
+              isMobile
+                ? "relative w-full min-h-[600px]"
+                : "absolute inset-0 w-full h-full"
+            }`}
+            style={{
+              backgroundImage: `url(${getImageUrl("/services-hero.png")})`,
+              backgroundSize: "cover",
+              backgroundPosition: isMobile ? "center" : "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <div className="absolute inset-0 bg-[#DCDACC]/40" />
+
+            {/* Text Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center px-8">
+              <div className="max-w-7xl mx-auto text-center">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#301710]/60 font-light mb-6">
+                  The Process
+                </p>
+                <h1
+                  className="text-[clamp(2.5rem,8vw,6rem)] text-[#301710] mb-8"
+                  style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                >
+                  AVERRA Alignment System
+                </h1>
+                <p className="text-lg text-[#301710]/70 font-light max-w-2xl mx-auto">
+                  Clarify. Align. Standardize.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="relative overflow-hidden -mt-35">
+          <div className="absolute inset-0 bg-[#301710]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#301710]/50 via-85% to-[#f4e4e6] to-100%"></div>
+
+          <div className="relative py-16 text-center">
+            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#BFBBA7]/30"></div>
+            <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#BFBBA7]/30"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-[#BFBBA7]/20"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#BFBBA7]/20"></div>
+
+            {/* Moving Marquee Banner - Desktop Only */}
+            <div className="mb-8 border-y border-[#C9A961]/30 py-4 hidden md:block">
+              <MarqueeScroll disableOnMobile={false} duration={30}>
+                <div className="flex items-center gap-8 text-[#DCDACC] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap">
+                  <span>LAUNCH PRICING · April 1st–August 31st</span>
+                  <span>•</span>
+                  <span>FOUNDING MEMBERS ONLY</span>
+                  <span>•</span>
+                  <span>UP TO 50% OFF</span>
+                  <span>•</span>
+                  <span>LAUNCH PRICING · April 1st–August 31st</span>
+                  <span>•</span>
+                  <span>FOUNDING MEMBERS ONLY</span>
+                  <span>•</span>
+                  <span>UP TO 50% OFF</span>
+                  <span>•</span>
+                </div>
+              </MarqueeScroll>
+            </div>
+
+            <div className="relative z-10 max-w-4xl mx-auto px-8">
+              <div
+                className="inline-block px-28 py-3 border-2 mb-6 relative overflow-hidden animate-pulse-subtle"
+                style={{
+                  borderImage:
+                    "linear-gradient(135deg, #C9A961 0%, #F4E4BE 25%, #E6D299 50%, #C9A961 75%, #B8974F 100%) 1",
+                  background: "transparent",
+                }}
+              >
+                <span
+                  className="text-sm md:text-base uppercase tracking-[0.4em] font-light"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(135deg, #C9A961 0%, #F4E4BE 50%, #C9A961 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  Exclusive Offer
+                </span>
+              </div>
+
+              <h3
+                className="text-4xl md:text-5xl text-[#DCDACC] mb-4"
+                style={{
+                  fontFamily: "Cormorant, serif",
+                  fontWeight: 300,
+                  letterSpacing: "0.02em",
+                }}
+              >
+                Founding Members
+              </h3>
+
+              <div className="inline-block px-8 py-2 bg-[#DCDACC] mb-6">
+                <span className="text-sm md:text-base text-[#301710] font-medium uppercase tracking-[0.2em]">
+                  Limited Time Only
+                </span>
+              </div>
+
+              <p className="text-base md:text-lg text-[#DCDACC] font-light leading-relaxed max-w-2xl mx-auto">
+                Early access never looked this good.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Service Section with Pastel Pink Background */}
+        <div className="bg-[#f4e4e6] relative overflow-hidden">
+          {/* Subtle decorative elements */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#b76e79]/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#301710]/5 rounded-full blur-3xl"></div>
+
+          <div className="relative py-32">
+            <div className="max-w-6xl mx-auto px-8">
+
+              {/* INTRO TO THE STANDARD */}
+              <div className="text-center mb-32 max-w-5xl mx-auto relative">
+                {/* Decorative corner accents */}
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-[#b76e79]/30 to-transparent"></div>
+
+                <h2
+                  className="text-[clamp(3rem,8vw,5.5rem)] text-[#301710] mb-6 leading-[0.95]"
+                  style={{ fontFamily: "Cormorant, serif", fontWeight: 300, letterSpacing: "-0.02em" }}
+                >
+                  {brandAlignmentService.name}
+                </h2>
+
+                <div className="inline-block px-6 py-2 mb-8 border border-[#b76e79]/20 bg-white/40">
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-[#b76e79] font-light">
+                    {brandAlignmentService.subtitle}
+                  </p>
+                </div>
+
+                <p
+                  className="text-2xl text-[#301710]/80 font-light leading-relaxed max-w-3xl mx-auto"
+                  style={{ fontFamily: "Cormorant, serif", fontStyle: "italic" }}
+                >
+                  {brandAlignmentService.description}
+                </p>
+
+                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-[#b76e79]/30 to-transparent"></div>
+              </div>
+
+            {/* THE ACTUAL STANDARD */}
+            <div className="mb-32 max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h3
+                  className="text-5xl text-[#301710] mb-8"
+                  style={{ fontFamily: "Cormorant, serif", fontWeight: 300, letterSpacing: "-0.01em" }}
+                >
+                  {brandAlignmentService.industryStandard.title}
+                </h3>
+                <p
+                  className="text-xl text-[#301710]/80 font-light leading-relaxed mb-12 max-w-3xl mx-auto"
+                  style={{ fontFamily: "Cormorant, serif" }}
+                >
+                  {brandAlignmentService.industryStandard.intro}
+                </p>
+              </div>
+
+              {/* Four Standards - Editorial Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
+                {brandAlignmentService.industryStandard.standards.map((standard, index) => (
+                  <div key={standard.name} className="relative group">
+                    {/* Decorative number */}
+                    <div className="absolute -left-4 -top-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <span
+                        className="text-8xl text-[#b76e79]"
+                        style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                      >
+                        {index + 1}
+                      </span>
+                    </div>
+
+                    <div className="relative bg-white/30 p-8 border-l-2 border-[#b76e79]/30 hover:border-[#b76e79]/60 transition-all">
+                      <div
+                        className="text-3xl text-[#301710] mb-3"
+                        style={{ fontFamily: "Cormorant, serif", fontWeight: 400 }}
+                      >
+                        {standard.name}
+                      </div>
+                      <p className="text-base text-[#654331]/80 font-light leading-relaxed">
+                        {standard.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center max-w-3xl mx-auto">
+                <div className="inline-block px-12 py-6 bg-[#301710] relative overflow-hidden">
+                  {/* Subtle shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                  <p
+                    className="text-xl text-[#f4e4e6] font-light relative z-10"
+                    style={{ fontFamily: "Cormorant, serif", fontStyle: "italic" }}
+                  >
+                    {brandAlignmentService.industryStandard.conclusion}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* THE SYSTEM */}
+            <div className="mb-32">
+              <div className="text-center mb-20">
+                <h3
+                  className="text-5xl text-[#301710] mb-6"
+                  style={{ fontFamily: "Cormorant, serif", fontWeight: 300, letterSpacing: "-0.01em" }}
+                >
+                  The System
+                </h3>
+                <div className="inline-block px-6 py-2 border border-[#b76e79]/20 bg-white/40">
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-[#b76e79] font-light">
+                    Three-Stage Brand Alignment Process
+                  </p>
+                </div>
+              </div>
+
+              {/* Three Stages - Editorial Magazine Layout */}
+              <div className="space-y-20 max-w-5xl mx-auto">
+                {brandAlignmentService.stages.map((stage, index) => (
+                  <div key={stage.name} className="relative">
+                    {/* Large Editorial Number */}
+                    <div className="absolute -left-8 md:-left-16 top-0 opacity-5">
+                      <span
+                        className="text-[180px] text-[#b76e79] leading-none"
+                        style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                      >
+                        {index + 1}
+                      </span>
+                    </div>
+
+                    <div className="group/stage relative bg-white/40 backdrop-blur-sm p-10 md:p-12 border-l-4 border-[#b76e79] hover:bg-white/60 hover:shadow-xl transition-all duration-700">
+                      <div className="flex items-baseline gap-6 mb-6">
+                        {/* Small number badge */}
+                        <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center bg-[#301710] text-[#f4e4e6]">
+                          <span
+                            className="text-3xl"
+                            style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                          >
+                            {index + 1}
+                          </span>
+                        </div>
+
+                        <div className="flex-1">
+                          <h4
+                            className="text-4xl md:text-5xl text-[#301710] mb-3"
+                            style={{
+                              fontFamily: "Cormorant, serif",
+                              fontWeight: 300,
+                              letterSpacing: "-0.01em"
+                            }}
+                          >
+                            {stage.name}
+                          </h4>
+                          <p
+                            className="text-lg text-[#b76e79] font-light italic"
+                            style={{ fontFamily: "Cormorant, serif" }}
+                          >
+                            {stage.subtitle}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="pl-0 md:pl-22">
+                        <p className="text-lg text-[#301710]/80 font-light leading-relaxed">
+                          {stage.detail}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* What You Walk Away With - Editorial Style */}
+              <div className="mt-24 max-w-4xl mx-auto">
+                <div className="text-center mb-12">
+                  <div className="inline-block px-8 py-3 bg-white/50 border-t border-b border-[#b76e79]/20">
+                    <p className="text-xs uppercase tracking-[0.4em] text-[#b76e79]">
+                      What You Walk Away With
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {brandAlignmentService.deliverables.map((item, index) => (
+                    <div key={index} className="flex items-start gap-4 bg-white/30 p-6 border-l-2 border-[#b76e79]/40">
+                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-[#b76e79]/10">
+                        <Check
+                          className="w-5 h-5 text-[#b76e79]"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <span className="text-base text-[#301710] font-light leading-relaxed">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* PRICING AT THE BOTTOM - Luxury Editorial */}
+            <div className="relative max-w-5xl mx-auto">
+              <div className="relative bg-white/50 p-12 md:p-16 overflow-hidden">
+                {/* Decorative corner elements */}
+                <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-[#b76e79]/20"></div>
+                <div className="absolute top-0 right-0 w-20 h-20 border-t-2 border-r-2 border-[#b76e79]/20"></div>
+                <div className="absolute bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-[#b76e79]/20"></div>
+                <div className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-[#b76e79]/20"></div>
+
+                {/* Content */}
+                <div className="relative z-10 text-center">
+                  <div className="mb-8">
+                    <div className="inline-block px-8 py-2 bg-[#b76e79]/10 border border-[#b76e79]/30 mb-6">
+                      <p className="text-xs uppercase tracking-[0.4em] text-[#b76e79]">
+                        Founding Member Pricing
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-6 mb-2">
+                      <span
+                        className="text-4xl text-[#301710]/30 line-through"
+                        style={{
+                          fontFamily: "Cormorant, serif",
+                          fontWeight: 300,
+                        }}
+                      >
+                        {brandAlignmentService.price}
+                      </span>
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-[#b76e79]/5 blur-xl"></div>
+                        <span
+                          className="relative text-7xl md:text-8xl text-[#301710]"
+                          style={{
+                            fontFamily: "Cormorant, serif",
+                            fontWeight: 300,
+                          }}
+                        >
+                          {brandAlignmentService.salePrice}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-[#654331]/60 uppercase tracking-[0.2em] mb-10">
+                      Limited Time Offer
+                    </p>
+                  </div>
+
+                  {/* CTA Button with luxury styling */}
+                  <button
+                    onClick={() => {
+                      sessionStorage.setItem(
+                        "selectedServiceTier",
+                        JSON.stringify({
+                          id: brandAlignmentService.id,
+                          name: brandAlignmentService.name,
+                          priceNum: brandAlignmentService.priceNum,
+                          originalPriceNum: brandAlignmentService.originalPriceNum,
+                          subtitle: brandAlignmentService.subtitle,
+                          type: "service",
+                          description: brandAlignmentService.description,
+                        })
+                      );
+                      navigate("/brand-intake");
+                    }}
+                    className={`group relative inline-block px-20 py-6 bg-[#301710] text-[#f4e4e6] text-center text-sm uppercase tracking-[0.4em] font-light overflow-hidden ${
+                      !isMobile ? "hover:bg-[#b76e79] hover:scale-105 hover:shadow-2xl" : ""
+                    } transition-all duration-500 cursor-pointer mb-8`}
+                  >
+                    <span className="relative z-10">Begin Alignment</span>
+                    {/* Hover shine effect */}
+                    <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full ${!isMobile ? "group-hover:translate-x-full" : ""} transition-transform duration-1000`}></div>
+                  </button>
+
+                  <div className="max-w-2xl mx-auto">
+                    <div className="h-px bg-gradient-to-r from-transparent via-[#b76e79]/30 to-transparent mb-6"></div>
+                    <p
+                      className="text-lg text-[#301710]/70 font-light italic"
+                      style={{ fontFamily: "Cormorant, serif" }}
+                    >
+                      Your brand becomes clear, consistent, and recognizable — aligned with its intended level and no longer creating confusion or resetting over time.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Audit Add-Ons Section */}
+        <div className="bg-[#f4e4e6] py-32 relative overflow-hidden">
+          {/* Decorative blur elements */}
+          <div className="absolute top-20 left-0 w-[500px] h-[500px] bg-[#b76e79]/10 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-20 right-0 w-[600px] h-[600px] bg-[#301710]/5 rounded-full blur-[140px]"></div>
+
+          <div className="max-w-6xl mx-auto px-8 relative">
+            <div className="text-center mb-20">
+              <div className="inline-block mb-8">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-16 h-px bg-gradient-to-r from-transparent to-[#b76e79]/40"></div>
+                  <p className="text-[9px] uppercase tracking-[0.5em] text-[#b76e79]">
+                    Add-On Services
+                  </p>
+                  <div className="w-16 h-px bg-gradient-to-l from-transparent to-[#b76e79]/40"></div>
+                </div>
+              </div>
+
+              <h2
+                className="text-[clamp(2.5rem,7vw,4.5rem)] text-[#301710] mb-6 leading-tight"
+                style={{ fontFamily: "Cormorant, serif", fontWeight: 300, letterSpacing: "-0.01em" }}
+              >
+                Focused Brand Audits
+              </h2>
+
+              <p className="text-base text-[#301710]/70 font-light max-w-2xl mx-auto leading-relaxed">
+                Targeted evaluations for brands that need clarity in specific areas
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+              {auditAddOns.map((audit, index) => (
+                <div
+                  key={audit.id}
+                  className="group relative bg-white/60 backdrop-blur-sm p-12 hover:bg-white/80 transition-all duration-700"
+                >
+                  {/* Decorative corner accents */}
+                  <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-[#b76e79]/20 group-hover:border-[#b76e79]/40 transition-colors"></div>
+                  <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-[#b76e79]/20 group-hover:border-[#b76e79]/40 transition-colors"></div>
+                  <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l border-[#b76e79]/20 group-hover:border-[#b76e79]/40 transition-colors"></div>
+                  <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-[#b76e79]/20 group-hover:border-[#b76e79]/40 transition-colors"></div>
+
+                  {/* Floating number badge */}
+                  <div className="absolute -top-6 -right-6 w-14 h-14 bg-[#301710] flex items-center justify-center group-hover:scale-110 group-hover:bg-[#b76e79] transition-all duration-500">
+                    <span
+                      className="text-3xl text-[#f4e4e6]"
+                      style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+
+                  <div className="relative z-10">
+                    <h3
+                      className="text-3xl text-[#301710] mb-3 leading-tight"
+                      style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                    >
+                      {audit.name}
+                    </h3>
+
+                    <p className="text-sm text-[#301710]/70 font-light mb-8 leading-relaxed italic">
+                      {audit.subtitle}
+                    </p>
+
+                    <div className="flex items-center gap-4 mb-10">
+                      <span
+                        className="text-2xl text-[#301710]/30 line-through"
+                        style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                      >
+                        {audit.price}
+                      </span>
+                      <span
+                        className="text-5xl text-[#301710]"
+                        style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                      >
+                        {audit.salePrice}
+                      </span>
+                    </div>
+
+                    <div className="space-y-6 mb-10">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-[#b76e79] mb-2">
+                          What This Covers
+                        </p>
+                        <p className="text-sm text-[#301710]/80 font-light leading-relaxed">
+                          {audit.whatThisCovers}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-[#b76e79] mb-2">
+                          What Is Identified
+                        </p>
+                        <p className="text-sm text-[#301710]/80 font-light leading-relaxed">
+                          {audit.whatIsIdentified}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-[#b76e79] mb-2">
+                          Outcome
+                        </p>
+                        <p className="text-sm text-[#301710]/80 font-light leading-relaxed">
+                          {audit.outcome}
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        handleAddToCart({
+                          id: audit.id,
+                          name: audit.name,
+                          priceNum: audit.priceNum,
+                          originalPriceNum: audit.originalPriceNum,
+                          subtitle: audit.subtitle,
+                          type: "service",
+                        })
+                      }
+                      className={`w-full py-4 bg-[#301710] text-[#f4e4e6] text-center text-xs uppercase tracking-[0.4em] font-light ${
+                        !isMobile ? "hover:bg-[#b76e79] hover:shadow-xl" : ""
+                      } transition-all duration-500`}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Digital Products Section - Extended pastel pink background */}
+        <div className="bg-[#f4e4e6] py-32 relative overflow-hidden">
+          {/* Animated gradient orbs */}
+          <div className="absolute top-40 right-20 w-[400px] h-[400px] bg-gradient-to-br from-[#b76e79]/15 to-transparent rounded-full blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-40 left-20 w-[450px] h-[450px] bg-gradient-to-tr from-[#301710]/10 to-transparent rounded-full blur-[120px]"></div>
+          <div className="max-w-7xl mx-auto px-8 relative">
+            <div className="mb-32">
+              <div className="text-center mb-16">
+                <div className="inline-block mb-8">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-20 h-px bg-gradient-to-r from-transparent to-[#b76e79]/40"></div>
+                    <p className="text-[9px] uppercase tracking-[0.5em] text-[#b76e79]">
+                      AVERRA Digital Products
+                    </p>
+                    <div className="w-20 h-px bg-gradient-to-l from-transparent to-[#b76e79]/40"></div>
+                  </div>
+                </div>
+
+                <h2
+                  className="text-[clamp(3rem,8vw,5rem)] text-[#301710] mb-8 leading-tight"
+                  style={{ fontFamily: "Cormorant, serif", fontWeight: 300, letterSpacing: "-0.02em" }}
+                >
+                  Brand-Ready Visuals
+                </h2>
+                <p className="text-lg text-[#301710]/70 font-light max-w-2xl mx-auto mb-2 leading-relaxed">
+                  Instant access. No revisions. Ready to use.
+                </p>
+
+                <div className="mt-10 mb-12 max-w-3xl mx-auto relative">
+                  <div className="relative bg-white/50 backdrop-blur-sm px-10 py-6 border border-[#b76e79]/10">
+                    {/* Corner decorations */}
+                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#b76e79]/30"></div>
+                    <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#b76e79]/30"></div>
+                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#b76e79]/30"></div>
+                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#b76e79]/30"></div>
+
+                    <p
+                      className="text-xs text-[#301710]/70 font-light leading-relaxed italic text-center"
+                      style={{ fontFamily: "Cormorant, serif" }}
+                    >
+                      All visuals are AI-generated brand imagery created for marketing
+                      and promotional use. These images are intended to elevate brand
+                      presentation and should not be used to misrepresent real client
+                      results or services not legally provided.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {digitalProducts.map((product, index) => (
+                  <div
+                    key={product.name}
+                    className="group relative bg-white/60 backdrop-blur-sm p-10 hover:bg-white/90 hover:shadow-2xl transition-all duration-700"
+                  >
+                    {/* Subtle corner accents */}
+                    <div className="absolute top-0 left-0 w-10 h-10 border-t border-l border-[#b76e79]/15 group-hover:border-[#b76e79]/40 transition-colors"></div>
+                    <div className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-[#b76e79]/15 group-hover:border-[#b76e79]/40 transition-colors"></div>
+
+                    {/* Product number badge */}
+                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-[#301710] group-hover:bg-[#b76e79] flex items-center justify-center transition-all duration-500 group-hover:scale-110">
+                      <span
+                        className="text-xl text-[#f4e4e6]"
+                        style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                  <h3
+                    className="text-xl text-[#301710] mb-3"
+                    style={{
+                      fontFamily: "Cormorant, serif",
+                      fontWeight: 300,
+                    }}
+                  >
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span
+                      className="text-lg text-[#301710]/40 line-through"
+                      style={{
+                        fontFamily: "Cormorant, serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {product.originalPrice}
+                    </span>
+                    <span
+                      className="text-3xl text-[#301710]"
+                      style={{
+                        fontFamily: "Cormorant, serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {product.price}
+                    </span>
+                  </div>
+
+                  {product.description && (
+                    <p className="text-sm text-[#301710]/70 font-light mb-4 leading-relaxed">
+                      {product.description}
+                    </p>
+                  )}
+
+                  <div className="mb-4 space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#301710]/60 mb-3">
+                      Inside This Pack:
+                    </p>
+                    {product.scenes?.map((scene, idx) => (
+                      <div key={idx} className="mb-3">
+                        <p className="text-xs text-[#301710] font-medium mb-1">
+                          {scene.title}
+                        </p>
+                        <p className="text-xs text-[#301710]/70 font-light leading-relaxed">
+                          {scene.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mb-4 space-y-1">
+                    {product.includes?.map((item, idx) => (
+                      <p key={idx} className="text-xs text-[#301710]/70 font-light">
+                        • {item}
+                      </p>
+                    ))}
+                  </div>
+
+                  <p
+                    className="text-xs text-[#301710]/70 italic mb-6 leading-relaxed"
+                    style={{ fontFamily: "Cormorant, serif" }}
+                  >
+                    {product.positioning}
+                  </p>
+
+                  <button
+                    onClick={() =>
+                      handleAddToCart({
+                        id: product.id,
+                        name: product.name,
+                        priceNum: product.priceNum,
+                        originalPriceNum: product.originalPriceNum,
+                        type: "digital",
+                      })
+                    }
+                    className={`group/btn relative inline-block w-full py-4 bg-[#301710] text-[#f4e4e6] text-center text-xs uppercase tracking-[0.4em] font-light overflow-hidden ${
+                      !isMobile ? "hover:bg-[#b76e79] hover:shadow-xl" : ""
+                    } transition-all duration-500`}
+                  >
+                    <span className="relative z-10">Add to Cart</span>
+                    {/* Shine effect */}
+                    <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full ${!isMobile ? "group-hover/btn:translate-x-full" : ""} transition-transform duration-1000`}></div>
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-16 text-center mx-auto max-w-4xl px-8 hidden md:block">
+              <div className="h-px bg-gradient-to-r from-transparent via-[#b76e79]/20 to-transparent mb-8"></div>
+              <p className="text-sm text-[#301710]/70 font-light leading-relaxed">
+                All digital products include commercial use rights • Files
+                delivered instantly after purchase • No edits, swaps, or
+                personalization included
+              </p>
+              <div className="h-px bg-gradient-to-r from-transparent via-[#b76e79]/20 to-transparent mt-8"></div>
+            </div>
+
+            <div className="mt-16 mb-32 hidden md:block text-center">
+              <div className="relative mx-auto max-w-6xl">
+                {/* Enhanced corner accents */}
+                <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-[#b76e79]/30"></div>
+                <div className="absolute -top-4 -right-4 w-12 h-12 border-t-2 border-r-2 border-[#b76e79]/30"></div>
+                <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-2 border-l-2 border-[#b76e79]/30"></div>
+                <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-[#b76e79]/30"></div>
+
+                <div className="bg-gradient-to-br from-[#301710] to-[#654331] px-24 py-12 relative overflow-hidden">
+                  {/* Animated shimmer overlay */}
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage:
+                        "repeating-linear-gradient(45deg, transparent, transparent 12px, rgba(255,255,255,.15) 12px, rgba(255,255,255,.15) 24px)",
+                    }}
+                  ></div>
+
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#b76e79]/10 to-transparent"></div>
+
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <div className="w-16 h-px bg-[#f4e4e6]/40"></div>
+                      <span
+                        className="text-[9px] uppercase tracking-[0.6em] text-[#f4e4e6]/70"
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontWeight: 300,
+                        }}
+                      >
+                        Exclusive Offer
+                      </span>
+                      <div className="w-16 h-px bg-[#f4e4e6]/40"></div>
+                    </div>
+
+                    <p
+                      className="text-5xl text-[#f4e4e6] mb-2"
+                      style={{
+                        fontFamily: "Cormorant, serif",
+                        fontWeight: 300,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Limited Time Only
+                    </p>
+
+                    <p className="text-sm text-[#f4e4e6]/60 uppercase tracking-[0.3em]">
+                      Founding Member Pricing
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+        <CTAFooter />
+      </div>
+    </>
+  );
+}

@@ -9,6 +9,8 @@ import { ArrowLeft } from "lucide-react";
 // Product descriptions for checkout
 const productDescriptions: Record<string, string> = {
   "The Lash Collection": "Digital brand visuals designed for lash artists ready to present their work with an established brand presence.",
+  "AVERRA Brand Alignment System": "A complete brand alignment system designed to position your brand for success based on its specific identity through Interpretation, Alignment, and Stabilization.",
+  // Legacy tier descriptions for historical orders
   "AVERRA Essentials": "The foundation package for entrepreneurs who deserve elevated branding with 10 custom AI brand models and strategic guidance.",
   "AVERRA Signature": "For brands ready to raise pricing and presence with 15 custom AI brand models and advanced strategy.",
   "AVERRA Muse": "The executive transformation package with 20 custom AI company models and comprehensive brand strategy.",

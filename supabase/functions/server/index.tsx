@@ -35,7 +35,7 @@ app.use(
 
 // Health check endpoint
 app.get("/make-server-61755bec/health", (c) => {
-  return c.json({ status: "ok" });
+  return c.json({ status: "healthy", timestamp: new Date().toISOString() });
 });
 
 // ============================================
@@ -1382,9 +1382,12 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
           };
 
           // Separate items into categories
-          const serviceTiers = items.filter((item: any) => 
-            item.name.includes('Essentials') || 
-            item.name.includes('Signature') || 
+          const serviceTiers = items.filter((item: any) =>
+            item.name.includes('Alignment System') ||
+            item.name.includes('Brand Alignment') ||
+            // Legacy support for old tier names
+            item.name.includes('Essentials') ||
+            item.name.includes('Signature') ||
             item.name.includes('Muse')
           );
           

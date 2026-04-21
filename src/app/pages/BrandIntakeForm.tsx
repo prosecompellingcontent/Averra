@@ -8,6 +8,8 @@ import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 // Service tier descriptions
 const tierDescriptions: Record<string, string> = {
+  "AVERRA Brand Alignment System": "A complete brand alignment system designed to position your brand for success based on its specific identity through Interpretation, Alignment, and Stabilization.",
+  // Legacy tier descriptions for historical orders
   "AVERRA Essentials": "The foundation package for entrepreneurs who deserve elevated branding with 10 custom AI brand models and strategic guidance.",
   "AVERRA Signature": "For brands ready to raise pricing and presence with 15 custom AI brand models and advanced strategy.",
   "AVERRA Muse": "The executive transformation package with 20 custom AI company models and comprehensive brand strategy.",
@@ -194,7 +196,7 @@ export function BrandIntakeForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3EF]">
+    <div className="min-h-screen bg-[#fdf5f7]">
       <Navigation />
       
       <div className="max-w-4xl mx-auto px-6 pt-32 pb-20">
@@ -333,7 +335,7 @@ export function BrandIntakeForm() {
                       type="checkbox"
                       checked={formData.businessStage.includes(option)}
                       onChange={() => handleCheckboxChange('businessStage', option)}
-                      className="mt-1 w-5 h-5 border-2 border-[#301710]/40 bg-white/40 checked:bg-[#301710] checked:border-[#301710] focus:outline-none focus:ring-2 focus:ring-[#301710]/50 transition-all cursor-pointer appearance-none checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-center checked:after:text-sm checked:after:leading-5"
+                      className="mt-1 w-5 h-5 border-2 border-[#251218]/40 bg-white/40 checked:bg-[#251218] checked:border-[#251218] focus:outline-none focus:ring-2 focus:ring-[#251218]/50 transition-all cursor-pointer appearance-none checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-center checked:after:text-sm checked:after:leading-5"
                     />
                     <span className="text-[#301710] text-base leading-relaxed flex-1">
                       {option}
@@ -372,7 +374,7 @@ export function BrandIntakeForm() {
                       type="checkbox"
                       checked={formData.misalignedAspects.includes(option)}
                       onChange={() => handleCheckboxChange('misalignedAspects', option)}
-                      className="mt-1 w-5 h-5 border-2 border-[#301710]/40 bg-white/40 checked:bg-[#301710] checked:border-[#301710] focus:outline-none focus:ring-2 focus:ring-[#301710]/50 transition-all cursor-pointer appearance-none checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-center checked:after:text-sm checked:after:leading-5"
+                      className="mt-1 w-5 h-5 border-2 border-[#251218]/40 bg-white/40 checked:bg-[#251218] checked:border-[#251218] focus:outline-none focus:ring-2 focus:ring-[#251218]/50 transition-all cursor-pointer appearance-none checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-center checked:after:text-sm checked:after:leading-5"
                     />
                     <span className="text-[#301710] text-base leading-relaxed flex-1">
                       {option}
@@ -451,7 +453,7 @@ export function BrandIntakeForm() {
                       type="checkbox"
                       checked={formData.futureGoals.includes(option)}
                       onChange={() => handleCheckboxChange('futureGoals', option)}
-                      className="mt-1 w-5 h-5 border-2 border-[#301710]/40 bg-white/40 checked:bg-[#301710] checked:border-[#301710] focus:outline-none focus:ring-2 focus:ring-[#301710]/50 transition-all cursor-pointer appearance-none checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-center checked:after:text-sm checked:after:leading-5"
+                      className="mt-1 w-5 h-5 border-2 border-[#251218]/40 bg-white/40 checked:bg-[#251218] checked:border-[#251218] focus:outline-none focus:ring-2 focus:ring-[#251218]/50 transition-all cursor-pointer appearance-none checked:after:content-['✓'] checked:after:block checked:after:text-white checked:after:text-center checked:after:text-sm checked:after:leading-5"
                     />
                     <span className="text-[#301710] text-base leading-relaxed flex-1">
                       {option}
@@ -491,7 +493,7 @@ export function BrandIntakeForm() {
                     value={option}
                     checked={formData.aiStance === option}
                     onChange={(e) => setFormData({ ...formData, aiStance: e.target.value })}
-                    className="mt-1 w-5 h-5 border-2 border-[#301710]/40 bg-white/40 checked:bg-[#301710] checked:border-[#301710] focus:outline-none focus:ring-2 focus:ring-[#301710]/50 transition-all cursor-pointer"
+                    className="mt-1 w-5 h-5 border-2 border-[#251218]/40 bg-white/40 checked:bg-[#251218] checked:border-[#251218] focus:outline-none focus:ring-2 focus:ring-[#251218]/50 transition-all cursor-pointer"
                   />
                   <span className="text-[#301710] text-base leading-relaxed flex-1">
                     {option}
@@ -525,7 +527,7 @@ export function BrandIntakeForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              className={`w-full px-12 py-4 bg-[#301710] text-white uppercase tracking-[0.3em] hover:bg-[#301710]/90 transition-all shadow-lg ${isMobile ? 'text-xs' : 'text-sm'}`}
+              className={`w-full px-12 py-4 bg-[#251218] text-white uppercase tracking-[0.3em] hover:bg-[#251218]/90 transition-all shadow-lg ${isMobile ? 'text-xs' : 'text-sm'}`}
               style={{ fontFamily: 'Lora, serif', fontWeight: 600 }}
             >
               Continue to Checkout →
