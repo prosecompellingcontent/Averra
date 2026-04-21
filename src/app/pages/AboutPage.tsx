@@ -328,7 +328,7 @@ export function AboutPage() {
             <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-32 h-32 bg-[#c9969e]/10 rounded-full blur-2xl scroll-animate"></div>
             <h2
               className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
+              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
             >
               Who We Are
             </h2>
@@ -343,7 +343,7 @@ export function AboutPage() {
                  }}></div>
 
             <div className="relative bg-white/40 backdrop-blur-sm rounded-2xl p-12 border border-[#c9969e]/20 scroll-animate shadow-lg" style={{ transitionDelay: "0.5s" }}>
-              <p className="text-xl text-[#251218] leading-relaxed text-center max-w-4xl mx-auto" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+              <p className="text-xl text-[#251218] leading-relaxed text-center max-w-4xl mx-auto" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                 AVERRA is a Creative Direction and Brand Alignment company focused within the beauty industry. We operate on one core function:{" "}
                 <span
                   data-text="translating a brand's intended identity into a clear, consistent, and accurate visual expression."
@@ -373,7 +373,7 @@ export function AboutPage() {
             </div>
             <h2
               className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
+              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
             >
               The Problem
             </h2>
@@ -396,7 +396,7 @@ export function AboutPage() {
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-br from-[#c9969e]/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative bg-white/40 backdrop-blur-sm p-8 rounded-xl border-l-4 border-[#c9969e] scroll-animate shadow-md hover:shadow-xl transition-shadow duration-500" style={{ transitionDelay: "0.5s" }}>
-                  <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                     Professionals are skilled and actively building, but there is a consistent breakdown between what they intend to communicate, what they actually produce, and how it is perceived.
                   </p>
                 </div>
@@ -405,7 +405,7 @@ export function AboutPage() {
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-br from-[#c9969e]/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative bg-white/40 backdrop-blur-sm p-8 rounded-xl border-l-4 border-[#c9969e] scroll-animate shadow-md hover:shadow-xl transition-shadow duration-500" style={{ transitionDelay: "0.6s" }}>
-                  <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                     That gap is where brands lose clarity, consistency, and perceived value.
                   </p>
                 </div>
@@ -415,7 +415,7 @@ export function AboutPage() {
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-[#c9969e]/20 to-transparent blur-xl opacity-0 scroll-animate" style={{ transitionDelay: "0.7s" }}></div>
               <div className="relative bg-white/50 backdrop-blur-sm p-10 rounded-xl scroll-animate border border-[#c9969e]/30 shadow-lg" style={{ transitionDelay: "0.8s" }}>
-                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                   Most brands build based on what they see. They follow existing aesthetics, replicate what appears to be working, and create without a defined structure. Over time this leads to unaligned visuals, inconsistent content, and a scattered identity.
                 </p>
               </div>
@@ -424,11 +424,11 @@ export function AboutPage() {
             <div className="relative">
               <div className="absolute -inset-6 bg-gradient-to-br from-[#c9969e]/20 via-transparent to-[#c9969e]/20 rounded-3xl opacity-0 scroll-animate blur-2xl" style={{ transitionDelay: "0.9s" }}></div>
               <div className="relative bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-md p-12 border-l-4 border-[#c9969e] scroll-animate shadow-2xl rounded-2xl hover:scale-105 transition-transform duration-700" style={{ transitionDelay: "1s" }}>
-                <div className="absolute top-4 right-4 text-8xl text-[#c9969e]/10 select-none" style={{ fontFamily: "Playfair Display, serif" }}>"</div>
-                <p className="text-xl text-[#251218] leading-relaxed italic font-medium relative z-10" style={{ fontFamily: "Lora, serif" }}>
+                <div className="absolute top-4 right-4 text-8xl text-[#c9969e]/10 select-none" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
+                <p className="text-xl text-[#251218] leading-relaxed italic font-medium relative z-10" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                   This is how markets become oversaturated. Not from too many people, but from too many brands looking and communicating the same.
                 </p>
-                <div className="absolute bottom-4 left-4 text-8xl text-[#c9969e]/10 select-none rotate-180" style={{ fontFamily: "Playfair Display, serif" }}>"</div>
+                <div className="absolute bottom-4 left-4 text-8xl text-[#c9969e]/10 select-none rotate-180" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
               </div>
             </div>
           </div>
@@ -447,7 +447,7 @@ export function AboutPage() {
             <div className="absolute left-1/2 -translate-x-1/2 top-0 w-64 h-64 bg-[#c9969e]/10 rounded-full blur-3xl opacity-0 scroll-animate" style={{ transitionDelay: "0.2s" }}></div>
             <h2
               className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
+              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
             >
               The Standard
             </h2>
@@ -469,10 +469,10 @@ export function AboutPage() {
                   <div className="absolute -inset-2 bg-gradient-to-br from-[#c9969e]/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700"></div>
                   <div className="relative p-8 bg-white/50 backdrop-blur-sm rounded-xl border-t-4 border-[#c9969e] shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-700">
                     <div className="absolute -top-4 -right-4 w-12 h-12 bg-[#c9969e]/20 rounded-full blur-lg"></div>
-                    <div className="absolute top-2 right-2 text-6xl font-bold text-[#c9969e]/5 select-none" style={{ fontFamily: "Playfair Display, serif" }}>
+                    <div className="absolute top-2 right-2 text-6xl font-bold text-[#c9969e]/5 select-none" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                       {String(i + 1).padStart(2, '0')}
                     </div>
-                    <p className="text-xl font-semibold text-[#251218] relative z-10" style={{ fontFamily: "Playfair Display, serif" }}>
+                    <p className="text-xl font-semibold text-[#251218] relative z-10" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                       {factor}
                     </p>
                     <div className="mt-4 w-12 h-1 bg-[#c9969e] opacity-0 group-hover:opacity-100 group-hover:w-full transition-all duration-700"></div>
@@ -484,7 +484,7 @@ export function AboutPage() {
             <div className="relative">
               <div className="absolute -inset-8 bg-gradient-to-r from-transparent via-[#c9969e]/10 to-transparent rounded-3xl opacity-0 scroll-animate blur-2xl" style={{ transitionDelay: "0.8s" }}></div>
               <div className="relative bg-white/60 backdrop-blur-md p-12 rounded-2xl scroll-animate border border-[#c9969e]/30 shadow-xl text-center" style={{ transitionDelay: "0.9s" }}>
-                <p className="text-xl text-[#251218] leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                <p className="text-xl text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                   Every brand in this industry is measured against four factors: Perception, Translation, Visual Clarity, and Consistency. When any one of these is off, your value drops and your brand starts to blend in instead of stand out.
                 </p>
               </div>
@@ -516,7 +516,7 @@ export function AboutPage() {
           <div className="text-center mb-20">
             <h2
               className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate"
-              style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
+              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
             >
               Meet The CEO
             </h2>
@@ -543,11 +543,11 @@ export function AboutPage() {
               <div className="mt-10 text-center relative">
                 <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-32 h-32 bg-[#c9969e]/10 rounded-full blur-2xl"></div>
                 <div className="relative bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-[#c9969e]/30 shadow-lg inline-block">
-                  <p className="text-3xl text-[#251218] mb-3" style={{ fontFamily: "Playfair Display, serif", fontWeight: 500 }}>
+                  <p className="text-3xl text-[#251218] mb-3" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 500 }}>
                     Jayla Smith
                   </p>
                   <div className="w-24 h-px bg-[#c9969e] mx-auto mb-3"></div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#c9969e]" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 400 }}>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#c9969e]" style={{ fontFamily: "Cormorant Garamond, sans-serif", fontWeight: 400 }}>
                     Founder, CEO & Creative Director
                   </p>
                 </div>
@@ -559,7 +559,7 @@ export function AboutPage() {
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                     Growing up in a salon has its perks, besides the free styles. From a young age, Jayla Smith, Founder, CEO, and Creative Director of AVERRA, was already embedded in the industry. Not as just a client, but as someone who was always present, observing, assisting, and developing a real understanding of how businesses functioned beyond what they chose to show. That environment shaped her perception long before she formally entered the space.
                   </p>
                 </div>
@@ -568,18 +568,18 @@ export function AboutPage() {
               <div className="relative">
                 <div className="absolute -inset-6 bg-gradient-to-br from-[#c9969e]/20 to-transparent rounded-2xl blur-2xl opacity-70"></div>
                 <div className="relative bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-md p-8 rounded-2xl border border-[#c9969e]/40 shadow-xl">
-                  <div className="absolute top-4 left-4 text-6xl text-[#c9969e]/10 select-none" style={{ fontFamily: "Playfair Display, serif" }}>"</div>
-                  <p className="text-xl text-[#251218] leading-relaxed italic font-medium relative z-10 text-center" style={{ fontFamily: "Lora, serif" }}>
+                  <div className="absolute top-4 left-4 text-6xl text-[#c9969e]/10 select-none" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
+                  <p className="text-xl text-[#251218] leading-relaxed italic font-medium relative z-10 text-center" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                     Beauty was never something Jayla approached from the outside. It was something she developed from within.
                   </p>
-                  <div className="absolute bottom-4 right-4 text-6xl text-[#c9969e]/10 select-none rotate-180" style={{ fontFamily: "Playfair Display, serif" }}>"</div>
+                  <div className="absolute bottom-4 right-4 text-6xl text-[#c9969e]/10 select-none rotate-180" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
                 </div>
               </div>
 
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                     As she moved further into the beauty industry, Jayla began working directly with individuals entering the space and encountered the same pattern without exception. The talent was undeniable. The creativity was there. What was consistently missing was structure. The kind that transforms raw creative ability into something controlled, recognizable, and built to last. Talent was entering the industry full of potential and slowly losing direction within it. Not because of what they lacked, but because nothing had been built to hold what they already had.
                   </p>
                 </div>
@@ -588,7 +588,7 @@ export function AboutPage() {
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                     That experience pushed her to look deeper. Her background in digital marketing and media advertising, supported by formal education and multiple certifications in brand development, perception, and positioning, gave her a lens that bridged both worlds. It refined how she understood the relationship between identity, visuals, and the way a brand is received. And the more she understood that relationship, the more one thing became clear.
                   </p>
                 </div>
@@ -599,7 +599,7 @@ export function AboutPage() {
                 <div className="relative bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg p-10 border-l-4 border-[#c9969e] rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-700">
                   <div className="absolute -top-3 -left-3 w-6 h-6 bg-[#c9969e] rounded-full"></div>
                   <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-[#c9969e] rounded-full"></div>
-                  <p className="text-2xl text-[#251218] leading-relaxed italic font-semibold" style={{ fontFamily: "Lora, serif" }}>
+                  <p className="text-2xl text-[#251218] leading-relaxed italic font-semibold" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                     The work was never the problem. The translation of it was.
                   </p>
                 </div>
@@ -608,7 +608,7 @@ export function AboutPage() {
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                     AVERRA was built from that recognition. It exists to bring precision and structure to what already exists, aligning identity, visuals, and communication into something deliberate, consistent, and understood at the level it is intended to occupy. Because in this industry, success is not defined by talent alone. It is defined by how that talent is perceived, positioned, and sustained over time.
                   </p>
                 </div>
@@ -630,7 +630,7 @@ export function AboutPage() {
             <div className="absolute left-1/2 -translate-x-1/2 top-0 w-72 h-72 bg-gradient-to-br from-[#c9969e]/10 to-transparent rounded-full blur-3xl opacity-0 scroll-animate" style={{ transitionDelay: "0.2s" }}></div>
             <h2
               className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
+              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
             >
               The System
             </h2>
@@ -659,16 +659,16 @@ export function AboutPage() {
                 <div className={`absolute -inset-6 bg-gradient-to-br ${item.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000`}></div>
                 <div className="relative">
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-[#c9969e] to-[#251218] rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
-                    <span className="text-white font-bold text-2xl" style={{ fontFamily: "Playfair Display, serif" }}>
+                    <span className="text-white font-bold text-2xl" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                       {i + 1}
                     </span>
                   </div>
                   <div className="pt-12 pb-8 px-8 bg-white/60 backdrop-blur-md rounded-2xl border-t-4 border-[#c9969e] shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-700">
-                    <h3 className="text-2xl text-[#251218] mb-4 text-center" style={{ fontFamily: "Playfair Display, serif", fontWeight: 600 }}>
+                    <h3 className="text-2xl text-[#251218] mb-4 text-center" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 600 }}>
                       {item.stage}
                     </h3>
                     <div className="w-16 h-1 bg-[#c9969e] mx-auto mb-4 opacity-0 group-hover:opacity-100 group-hover:w-full transition-all duration-700"></div>
-                    <p className="text-base text-[#251218]/70 text-center leading-relaxed" style={{ fontFamily: "Lora, serif" }}>
+                    <p className="text-base text-[#251218]/70 text-center leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif" }}>
                       {item.desc}
                     </p>
                   </div>
@@ -685,7 +685,7 @@ export function AboutPage() {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-[#c9969e] to-[#251218] rounded-full">
                   <span className="text-white text-xs uppercase tracking-wider font-semibold" style={{ fontFamily: "Montserrat, sans-serif" }}>Three-Stage Process</span>
                 </div>
-                <p className="text-xl text-[#251218] leading-relaxed mt-4" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                <p className="text-xl text-[#251218] leading-relaxed mt-4" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
                   AVERRA operates through a structured three-stage alignment system: Interpretation, Alignment, and Stabilization. Its design is to define, correct, and maintain your brand at the level it is intended to occupy.
                 </p>
               </div>
@@ -695,7 +695,7 @@ export function AboutPage() {
               <a
                 href="/services"
                 className="group relative inline-block px-16 py-6 bg-gradient-to-r from-[#c9969e] to-[#251218] text-[#fdf5f7] text-sm uppercase tracking-[0.3em] overflow-hidden hover:scale-110 transition-all duration-700 shadow-2xl rounded-lg"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
+                style={{ fontFamily: "Cormorant Garamond, sans-serif", fontWeight: 600 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-[#fdf5f7]/0 via-white/30 to-[#fdf5f7]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 <span className="relative z-10 flex items-center gap-3">
@@ -728,7 +728,7 @@ export function AboutPage() {
               <h2
                 className="text-[clamp(3rem,8vw,6rem)] text-[#fdf5f7] leading-[0.95] italic relative mb-6"
                 style={{
-                  fontFamily: "Playfair Display, serif",
+                  fontFamily: "Cormorant Garamond, serif",
                   fontWeight: 400,
                   letterSpacing: "-0.01em",
                   textShadow: "0 4px 20px rgba(201, 150, 158, 0.4)"
@@ -754,7 +754,7 @@ export function AboutPage() {
                   !isMobile ? "hover:bg-pos-100 hover:scale-110 hover:shadow-[0_30px_80px_rgba(253,245,247,0.6)]" : ""
                 } transition-all duration-1000`}
                 style={{
-                  fontFamily: "Montserrat, sans-serif",
+                  fontFamily: "Cormorant Garamond, sans-serif",
                   fontWeight: 700,
                   backgroundSize: "200% auto"
                 }}
