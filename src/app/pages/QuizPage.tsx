@@ -10,102 +10,102 @@ import { getImageUrl } from "@/utils/imageHelpers";
 const questions = [
   {
     id: 1,
-    question: "What feels most off about your brand right now?",
+    question: "What's actually going on with your brand right now?",
     options: [
-      { text: "It doesn't reflect the level I'm actually at", type: "system" },
-      { text: "I'm not sure how people are seeing me", type: "perception" },
-      { text: "It's starting to fall apart as I grow", type: "expansion" },
-      { text: "It needs to be rebuilt from the ground up", type: "system" }
+      { text: "My brand doesn't match the work I'm putting out", type: "system" },
+      { text: "I don't know how my clients view me", type: "perception" },
+      { text: "It's fine but I'm ready to grow", type: "expansion" },
+      { text: "There's no real brand, I'm starting from zero", type: "system" }
     ]
   },
   {
     id: 2,
-    question: "Where do you feel the most stuck?",
+    question: "Be honest, what do think is affecting you most?",
     options: [
-      { text: "My visuals don't feel like they belong together", type: "system" },
-      { text: "Something is lowering my value but I can't figure out what", type: "perception" },
-      { text: "I'm posting more but losing consistency", type: "expansion" },
-      { text: "Everything feels scattered and unclear", type: "system" }
+      { text: "My content is all over the place", type: "system" },
+      { text: "Clients aren't loyal to me and I don't know why", type: "perception" },
+      { text: "The more I post the less engagement I get", type: "expansion" },
+      { text: "Nothing feels intentional or put together", type: "system" }
     ]
   },
   {
     id: 3,
-    question: "What do you need the most clarity on?",
+    question: "Which part do you keep avoiding?",
     options: [
-      { text: "What my brand is actually communicating", type: "system" },
-      { text: "How my content is coming across to people", type: "perception" },
-      { text: "How to grow without losing who I am", type: "expansion" },
-      { text: "Where to even begin", type: "system" }
+      { text: "Figuring out my brand identity", type: "system" },
+      { text: "Actual structure behind my content", type: "perception" },
+      { text: "Building something worth maintaining long term", type: "expansion" },
+      { text: "Admitting I don't know where to start", type: "system" }
     ]
   },
   {
     id: 4,
-    question: "How would you describe your brand right now?",
+    question: "If a potential client landed on your page today, what would they see?",
     options: [
-      { text: "All over the place, it needs full alignment", type: "system" },
-      { text: "Something feels off but I can't pinpoint it", type: "perception" },
-      { text: "It's there, but hard to maintain as I scale", type: "expansion" },
-      { text: "Nonexistent or completely outdated", type: "system" }
+      { text: "Outdated content that doesn't reflect my current skill", type: "system" },
+      { text: "Something decent but I'm not sure what impression it leaves", type: "perception" },
+      { text: "Good work but it looks different every time", type: "expansion" },
+      { text: "Something that doesn't represent me at all", type: "system" }
     ]
   },
   {
     id: 5,
-    question: "What do you actually need to walk away with?",
+    question: "What's actually stopping you from charging more?",
     options: [
-      { text: "A brand system that works and holds", type: "system" },
-      { text: "A clear picture of what's not landing", type: "perception" },
-      { text: "A way to grow without losing my identity", type: "expansion" },
-      { text: "A clear direction to build from", type: "system" }
+      { text: "My brand doesn't look like it's worth more yet", type: "system" },
+      { text: "I'm not confident in how I'm coming across", type: "perception" },
+      { text: "My content is too inconsistent to justify it", type: "expansion" },
+      { text: "Everything needs to be rebuilt before I can", type: "system" }
     ]
   },
   {
     id: 6,
-    question: "Where are you in your business right now?",
+    question: "How long has this been an issue?",
     options: [
-      { text: "Just starting out or starting over", type: "system" },
-      { text: "Established but unsure how I'm being perceived", type: "perception" },
-      { text: "Growing and putting out more content than ever", type: "expansion" },
-      { text: "In need of a full realignment", type: "system" }
+      { text: "I never had a real foundation", type: "system" },
+      { text: "Something has always felt slightly off", type: "perception" },
+      { text: "It started when I began growing", type: "expansion" },
+      { text: "It got to a point where I had to stop and reset", type: "system" }
     ]
   },
   {
     id: 7,
-    question: "What holds you back from raising your prices?",
+    question: "How do you feel about your content currently?",
     options: [
-      { text: "My brand doesn't look like it matches my skill yet", type: "system" },
-      { text: "I'm not confident in how I'm coming across", type: "perception" },
-      { text: "My content quality isn't consistent enough", type: "expansion" },
-      { text: "My visuals need a full overhaul before I can", type: "system" }
+      { text: "Nothing feels consistent", type: "system" },
+      { text: "Fine but I'm not sure it's working", type: "perception" },
+      { text: "Like it's hard to keep up with", type: "expansion" },
+      { text: "Like I'm guessing every single time", type: "system" }
     ]
   },
   {
     id: 8,
-    question: "What do you think happens when someone lands on your page?",
+    question: "What do you actually need right now?",
     options: [
-      { text: "They don't see the level I'm actually at", type: "system" },
-      { text: "I honestly have no idea what impression I'm making", type: "perception" },
-      { text: "They notice the inconsistency in my content", type: "expansion" },
-      { text: "They see something that doesn't represent me", type: "system" }
+      { text: "A brand that finally looks like what I want to do", type: "system" },
+      { text: "To understand miscommunication with future clients and why", type: "perception" },
+      { text: "A foundation that holds as my brand grows", type: "expansion" },
+      { text: "A clear direction. I'm starting from scratch", type: "system" }
     ]
   },
   {
     id: 9,
-    question: "What would change if your brand was fully aligned?",
+    question: "What would actually change if this was fixed?",
     options: [
-      { text: "I could charge what I'm actually worth", type: "system" },
-      { text: "I'd finally know exactly how I'm being seen", type: "perception" },
-      { text: "I could scale without sacrificing quality", type: "expansion" },
-      { text: "Everything would finally feel like it makes sense", type: "system" }
+      { text: "My brand would finally match my skill", type: "system" },
+      { text: "I'd know exactly how clients are seeing me", type: "perception" },
+      { text: "I could grow without my brand falling apart", type: "expansion" },
+      { text: "I'd stop second guessing everything I put out", type: "system" }
     ]
   },
   {
     id: 10,
-    question: "What's your biggest priority right now?",
+    question: "What's the real priority right now?",
     options: [
-      { text: "Building a brand that actually reflects my expertise", type: "system" },
-      { text: "Finding out where my brand is falling short", type: "perception" },
-      { text: "Creating a system I can maintain as I grow", type: "expansion" },
-      { text: "Starting fresh with a clear foundation", type: "system" }
+      { text: "Building something that actually reflects my expertise", type: "system" },
+      { text: "Finding out where my brand is losing people", type: "perception" },
+      { text: "Creating structure I can sustain as I scale", type: "expansion" },
+      { text: "Getting clear direction so I can move forward", type: "system" }
     ]
   }
 ]
