@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 import { useCart } from "@/app/context/CartContext";
 import { Navigation } from "@/app/components/Navigation";
-import { projectId, publicAnonKey } from "/utils/supabase/info";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { ArrowLeft } from "lucide-react";
 
@@ -84,24 +85,24 @@ export function CheckoutPage() {
       }
       
       // Create Stripe Checkout Session
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-61755bec/create-checkout-session`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify({
-            items: items,
-            customerInfo: formData,
-            successUrl: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancelUrl: `${origin}/checkout`,
-            brandIntakeData: brandIntakeData, // Include brand intake data with intakeId
-          }),
-          signal: controller.signal,
-        }
-      );
+     const response = await fetch(
+  `${supabaseUrl}/functions/v1/make-server-61755bec/create-checkout-session`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${supabaseAnonKey}`,
+    },
+    body: JSON.stringify({
+      items,
+      customerInfo: formData,
+      successUrl: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${origin}/checkout`,
+      brandIntakeData,
+    }),
+    signal: controller.signal,
+  }
+);
 
       clearTimeout(timeoutId);
 
