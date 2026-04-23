@@ -1,176 +1,108 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Stripe from 'stripe';
+// netlify/functions/stripe-webhook.ts
+import type { Handler } from "@netlify/functions";
+import Stripe from "stripe";
 
-export const config = {
-  api: {
-    bodyParser: false, // Disable body parsing, need raw body for signature verification
-  },
-};
+const SUPABASE_URL =
+  "https://zfzwknmljpotidwyoefk.supabase.co/functions/v1/make-server-61755bec/send-purchase-email";
 
-// Helper to get raw body
-async function getRawBody(req: VercelRequest): Promise<Buffer> {
-  const chunks: Uint8Array[] = [];
-  for await (const chunk of req) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks);
-}
+// Keep your existing key usage as-is (you already use anon key)
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmendrbm1sanBvdGlkd3lvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3ODQxNTMsImV4cCI6MjA4NTM2MDE1M30.zz_eMP7Xg04HI69y0sgpQzs4osujmMJ1Dt6fkDwLvPI";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Add CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Stripe-Signature'
-  );
-
-  // Handle OPTIONS request
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+export const handler: Handler = async (event) => {
+  // Don’t crash when opened in a browser
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 200, body: "OK" };
   }
 
-  // ✅ Don’t crash when someone opens the endpoint in a browser
-  if (req.method === 'GET') {
-    return res.status(200).send('OK');
-  }
-
-  // Log everything for debugging
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🔔 WEBHOOK RECEIVED FROM STRIPE!", new Date().toISOString());
-  console.log("📍 Request Method:", req.method);
-  console.log("📍 Request URL:", req.url);
-  console.log("📍 Request Headers:", JSON.stringify(req.headers, null, 2));
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-  if (req.method !== 'POST') {
-    console.error(`❌ WRONG METHOD: Expected POST, got ${req.method}`);
-    return res.status(405).json({ error: `Method ${req.method} not allowed. Expected POST.` });
-  }
-
-  // ✅ Read env vars inside handler (prevents crash during module load)
   const stripeSecretKey =
-    process.env.STRIPE_SECRET_KEY ||
-    process.env.Stripe_Secret_Key ||
-    '';
-
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    process.env.STRIPE_SECRET_KEY || process.env.Stripe_Secret_Key || "";
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
   if (!stripeSecretKey) {
-    console.error("❌ STRIPE_SECRET_KEY not configured!");
-    return res.status(500).json({ error: 'Stripe secret key not configured' });
+    return { statusCode: 500, body: "STRIPE_SECRET_KEY not configured" };
   }
-
   if (!webhookSecret) {
-    console.error("❌ STRIPE_WEBHOOK_SECRET not configured!");
-    return res.status(500).json({ error: 'Webhook secret not configured' });
+    return { statusCode: 500, body: "STRIPE_WEBHOOK_SECRET not configured" };
   }
 
-  // ✅ Instantiate Stripe only after env is validated
-  const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2026-02-25.clover',
-  });
+  const stripe = new Stripe(stripeSecretKey, { apiVersion: "2026-02-25.clover" });
 
+  const signature =
+    event.headers["stripe-signature"] || event.headers["Stripe-Signature"];
+  if (!signature) {
+    return { statusCode: 400, body: "No Stripe signature found" };
+  }
+
+  let stripeEvent: Stripe.Event;
   try {
-    const rawBody = await getRawBody(req);
-    const signature = req.headers['stripe-signature'] as string;
+    // Netlify provides the raw payload as a string in event.body
+    stripeEvent = stripe.webhooks.constructEvent(
+      event.body ?? "",
+      signature,
+      webhookSecret
+    );
+  } catch (err: any) {
+    return {
+      statusCode: 400,
+      body: `Invalid signature: ${err?.message ?? "unknown"}`,
+    };
+  }
 
-    if (!signature) {
-      console.error("❌ No Stripe signature found");
-      return res.status(400).json({ error: 'No signature' });
-    }
+  // Only handle checkout.session.completed (same as your Vercel function)
+  if (stripeEvent.type === "checkout.session.completed") {
+    const session = stripeEvent.data.object as Stripe.Checkout.Session;
 
-    // Verify webhook signature
-    let event: Stripe.Event;
-    try {
-      event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
-    } catch (err) {
-      console.error("❌ Webhook signature verification failed:", err);
-      return res.status(400).json({ error: 'Invalid signature' });
-    }
+    // Pull line items (same as your existing logic)
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+      limit: 100,
+      expand: ["data.price.product"],
+    });
 
-    console.log(`✅ Webhook verified: ${event.type}`);
-
-    // Handle checkout.session.completed
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-
-      console.log("🛒 Checkout completed:", session.id);
-      console.log("📧 Customer email:", session.customer_details?.email);
-
-      // Forward to Supabase backend for processing
-      const supabaseUrl = `https://zfzwknmljpotidwyoefk.supabase.co/functions/v1/make-server-61755bec/send-purchase-email`;
-
-      // Use the anon key from the info file
-      const supabaseAnonKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmendrbm1sanBvdGlkd3lvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3ODQxNTMsImV4cCI6MjA4NTM2MDE1M30.zz_eMP7Xg04HI69y0sgpQzs4osujmMJ1Dt6fkDwLvPI";
-
-      console.log("📤 Forwarding to Supabase backend for email processing...");
-
-      // Get line items
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
-        limit: 100,
-        expand: ['data.price.product'],
-      });
-
-      console.log(`📦 Found ${lineItems.data.length} line items from Stripe`);
-
-      const items = lineItems.data.map((lineItem: any) => {
-        const productId = typeof lineItem.price?.product === 'object'
+    const items = lineItems.data.map((lineItem: any) => {
+      const productId =
+        typeof lineItem.price?.product === "object"
           ? lineItem.price.product.id
           : lineItem.price?.product;
 
-        const name = lineItem.description ||
-          (typeof lineItem.price?.product === 'object' ? lineItem.price.product.name : undefined) ||
-          'Unknown Product';
+      const name =
+        lineItem.description ||
+        (typeof lineItem.price?.product === "object"
+          ? lineItem.price.product.name
+          : undefined) ||
+        "Unknown Product";
 
-        const item = {
-          productId,
-          priceId: lineItem.price?.id ?? null,
-          name,
-          quantity: lineItem.quantity ?? 1,
-          price: ((lineItem.amount_total ?? lineItem.amount_subtotal ?? 0) / 100),
-        };
-
-        console.log(`  - Item: ${name} (productId: ${productId}, quantity: ${item.quantity})`);
-        return item;
-      });
-
-      console.log("✅ ITEMS WITH PRODUCT IDS:", JSON.stringify(items, null, 2));
-
-      // Call Supabase backend
-      const backendResponse = await fetch(supabaseUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${supabaseAnonKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sessionId: session.id,
-          customerEmail: session.customer_details?.email,
-          customerName: session.customer_details?.name,
-          items: items,
-          amountTotal: session.amount_total,
-          metadata: session.metadata,
-        }),
-      });
-
-      if (backendResponse.ok) {
-        console.log("✅ Email processing successful");
-      } else {
-        const errorData = await backendResponse.text();
-        console.error("❌ Backend processing failed:", errorData);
-        // Optional: return 500 so Stripe retries delivery
-        // return res.status(500).json({ error: 'Supabase processing failed' });
-      }
-    }
-
-    return res.status(200).json({ received: true });
-  } catch (error) {
-    console.error("❌ Webhook handler error:", error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : 'Webhook processing failed'
+      return {
+        productId,
+        priceId: lineItem.price?.id ?? null,
+        name,
+        quantity: lineItem.quantity ?? 1,
+        price: (lineItem.amount_total ?? lineItem.amount_subtotal ?? 0) / 100,
+      };
     });
+
+    const resp = await fetch(SUPABASE_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sessionId: session.id,
+        customerEmail: session.customer_details?.email,
+        customerName: session.customer_details?.name,
+        items,
+        amountTotal: session.amount_total,
+        metadata: session.metadata,
+      }),
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      // Return 500 so Stripe retries delivery
+      return { statusCode: 500, body: `Supabase processing failed: ${text}` };
+    }
   }
-}
+
+  return { statusCode: 200, body: "received" };
+};
