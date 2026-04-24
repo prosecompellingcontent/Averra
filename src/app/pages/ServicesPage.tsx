@@ -17,14 +17,14 @@ const brandAlignmentService = {
   salePrice: "$100",
   priceNum: 100,
   originalPriceNum: 250,
-  description: "A complete brand alignment system designed to position your brand for success based on its specific identity, not by blending into an oversaturated market.",
+  description: "A complete brand alignment system built to ensure everything you put out reflects the level you're intentionally operating at so the right clients find you.",
   industryStandard: {
     title: "The Industry Standard",
-    intro: "Markets become oversaturated when brands start to look, move, and communicate the same. When that happens, content becomes scattered, clients lose consistency, and loyalty drops, regardless of the quality of the work.",
+    intro: "When there's no defined identity behind what you're putting out, content becomes scattered, clients become inconsistent, and loyalty drops no matter how good the work is.",
     standards: [
       { name: "Perception", description: "How your brand is seen at first glance" },
       { name: "Translation", description: "How clearly your message is communicated" },
-      { name: "Visual Clarity", description: "How cohesive your visuals appear" },
+      { name: "Visual Clarity", description: "How aligned your visuals appear" },
       { name: "Consistency", description: "How reliable your brand identity remains" },
     ],
     conclusionPart1: "If any of these are off, your perceived value decreases.",
@@ -33,18 +33,18 @@ const brandAlignmentService = {
   stages: [
     {
       name: "Interpretation",
-      subtitle: "Defines what your brand is actually trying to communicate",
-      detail: "This stage establishes your brand identity, clarifies the level you are currently operating at, and positions your brand where it should be. It removes unclear direction, unaligned aesthetics, and unnecessary content so your brand is no longer open to interpretation.",
+      subtitle: "Determining Brand Direction",
+      detail: "We establish your brand identity and intention so everything you create leaves no room for misinterpretation.",
     },
     {
       name: "Alignment",
-      subtitle: "Ensures every element of your brand communicates the same message",
-      detail: "This stage evaluates your visuals through lighting, color environment, composition, styling, texture, and client presence. Any inconsistencies are corrected so your visuals no longer conflict, your communication becomes clear, and your perceived value is no longer lowered.",
+      subtitle: "Unifies The Brand's Presentation",
+      detail: "We evaluate every visual element so everything communicates equally. This eliminates mixed signals and strengthens how your brand is perceived.",
     },
     {
       name: "Stabilization",
-      subtitle: "Builds structure so your brand remains consistent over time",
-      detail: "This stage creates defined visual standards and a repeatable content direction so your brand no longer resets or drifts. It removes confusion and decision fatigue by establishing clear boundaries for how your brand is maintained moving forward.",
+      subtitle: "Maintaining Consistency",
+      detail: "A structured visual system is built custom your brand so your content stays consistent, controlled, and aligned as you grow.",
     },
   ],
   deliverables: [
@@ -65,9 +65,9 @@ const auditAddOns = [
     priceNum: 75,
     originalPriceNum: 100,
     subtitle: "A focused evaluation of how your brand is currently being seen",
-    whatThisCovers: "Message clarity, visual consistency, perceived value, and content performance.",
-    whatIsIdentified: "Where your brand loses its message, where visuals conflict, and what is lowering how your work is perceived.",
-    outcome: "A clear understanding of what is not translating and what needs to change.",
+    whatThisCovers: "Visual consistency, message clarity, perceived value, and overall brand presence.",
+    whatIsIdentified: "What your visuals are actually communicating and where they're lowering the level of your brand.",
+    outcome: "Exact direction on what to address so nothing about your brand undersells or contradicts what you're actually capable of.",
   },
   {
     id: "brand-expansion-audit",
@@ -76,10 +76,10 @@ const auditAddOns = [
     salePrice: "$75",
     priceNum: 75,
     originalPriceNum: 100,
-    subtitle: "An extension of your brand system to support growth without losing consistency",
-    whatThisCovers: "Scaling content, maintaining visual alignment, and reinforcing brand standards at a higher level.",
-    whatIsIdentified: "Where your brand begins to drift as output increases and what is needed to maintain control.",
-    outcome: "Your brand remains consistent, aligned, and recognizable as it grows.",
+    subtitle: "A focused consultation on how to scale your brand without your identity or perception shifting in the process.",
+    whatThisCovers: "Where your brand starts to drift as content increases and what's needed to keep it controlled.",
+    whatIsIdentified: "Where your brand loses control as content and output increase.",
+    outcome: "A brand that holds its standard, its identity, and its level regardless of how far it grows",
   },
 ];
 
@@ -356,7 +356,7 @@ export function ServicesPage() {
                 <div className="w-20 h-px bg-[#c9969e] mb-10"></div>
 
                 <p className="text-xl text-[#251218]/80 leading-relaxed mb-12" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-                  A complete brand alignment system designed to position your brand for success based on its specific identity, not by blending into an oversaturated market.
+Your work speaks for itself. Your brand should too. When it doesn't, clients hesitate, pricing stalls, and your content gets lost in a market full of people doing the same thing. AVERRA aligns your brand so everything you put out reflects the level you're actually at.
                 </p>
 
                 <div className="flex items-center gap-6 mb-8">
