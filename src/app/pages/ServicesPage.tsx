@@ -17,17 +17,17 @@ const brandAlignmentService = {
   salePrice: "$100",
   priceNum: 100,
   originalPriceNum: 250,
-  description: "A complete brand alignment system built to ensure everything you put out reflects the level you're intentionally operating at so the right clients find you.",
+  description: "A complete alignment system built to ensure your brand reflects the level you're intentionally operating at so the right clients find you.",
   industryStandard: {
     title: "The Industry Standard",
-    intro: "When there's no defined identity behind what you're putting out, content becomes scattered, clients become inconsistent, and loyalty drops no matter how good the work is.",
+    intro: "When there's no defined brand identity behind your visuals, content becomes scattered, clients become inconsistent, and loyalty drops no matter how good the work is.",
     standards: [
-      { name: "Perception", description: "How your brand is seen at first glance" },
-      { name: "Translation", description: "How clearly your message is communicated" },
-      { name: "Visual Clarity", description: "How aligned your visuals appear" },
-      { name: "Consistency", description: "How reliable your brand identity remains" },
+      { name: "Perception", description: "How your brand is seen at first glance." },
+      { name: "Translation", description: "How clearly your message is communicated." },
+      { name: "Visual Clarity", description: "How aligned your visuals appear." },
+      { name: "Consistency", description: "How reliable your brand identity remains." },
     ],
-    conclusionPart1: "If any of these are off, your perceived value decreases.",
+    conclusionPart1: "If any of these are off, your value decreases.",
     conclusionPart2: "Our system corrects that."
   },
   stages: [
@@ -38,7 +38,7 @@ const brandAlignmentService = {
     },
     {
       name: "Alignment",
-      subtitle: "Unifies The Brand's Presentation",
+      subtitle: "Unifies The Presentation",
       detail: "We evaluate every visual element so everything communicates equally. This eliminates mixed signals and strengthens how your brand is perceived.",
     },
     {
@@ -356,7 +356,7 @@ export function ServicesPage() {
                 <div className="w-20 h-px bg-[#c9969e] mb-10"></div>
 
                 <p className="text-xl text-[#251218]/80 leading-relaxed mb-12" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-Your work speaks for itself. Your brand should too. When it doesn't, clients hesitate, pricing stalls, and your content gets lost in a market full of people doing the same thing. AVERRA aligns your brand so everything you put out reflects the level you're actually at.
+The market is full of brands built on talent. Very few are built on clarity. When your brand doesn't communicate at the level you're operating at, clients hesitate, pricing becomes harder to justify, and your work gets lost in a saturated market.
                 </p>
 
                 <div className="flex items-center gap-6 mb-8">
@@ -443,7 +443,7 @@ Your work speaks for itself. Your brand should too. When it doesn't, clients hes
                 <span className="text-[#c9969e]/50">•</span>
                 <span>UP TO 50% OFF</span>
                 <span className="text-[#c9969e]/50">•</span>
-                <span>LAUNCH PRICING   April 1st to August 31st</span>
+                <span>LAUNCH PRICING   May 1st to May 31st</span>
                 <span className="text-[#c9969e]/50">•</span>
                 <span>FOUNDING MEMBERS ONLY</span>
                 <span className="text-[#c9969e]/50">•</span>
