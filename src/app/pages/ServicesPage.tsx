@@ -437,13 +437,13 @@ The market is full of brands built on talent. Very few are built on clarity. Whe
           <div className="mb-12 border-y border-[#c9969e]/20 py-4">
             <MarqueeScroll disableOnMobile={false} duration={30}>
               <div className="flex items-center gap-8 text-[#c9969e] text-sm uppercase tracking-[0.3em] font-light whitespace-nowrap" style={{ fontFamily: "Montserrat, sans-serif" }}>
-                <span>LAUNCH PRICING   May 1st to May 31st</span>
+                <span>LAUNCH PRICING   Limited Time Only!</span>
                 <span className="text-[#c9969e]/50">•</span>
                 <span>FOUNDING MEMBERS ONLY</span>
                 <span className="text-[#c9969e]/50">•</span>
                 <span>UP TO 50% OFF</span>
                 <span className="text-[#c9969e]/50">•</span>
-                <span>LAUNCH PRICING   May 1st to May 31st</span>
+                <span>LAUNCH PRICING   Limited Time Only!</span>
                 <span className="text-[#c9969e]/50">•</span>
                 <span>FOUNDING MEMBERS ONLY</span>
                 <span className="text-[#c9969e]/50">•</span>
