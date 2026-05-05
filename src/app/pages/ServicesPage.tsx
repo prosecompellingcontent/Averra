@@ -339,6 +339,51 @@ const serviceTypes = [
   "And more",
 ];
 
+const reviewCards = [
+  {
+    initial: "J",
+    text:
+      "After the alignment work, I raised my prices and bookings didn’t drop. They improved. People came in already understanding the value.",
+    name: "Jade M.",
+    role: "Lash Artist · AVERRA Client",
+  },
+  {
+    initial: "C",
+    text:
+      "My work was strong, but my feed didn’t show it. Once my brand was aligned, clients started calling it luxury and booking like it.",
+    name: "Camille R.",
+    role: "Makeup Artist · AVERRA Client",
+  },
+  {
+    initial: "K",
+    text:
+      "The Brand Perception Audit showed exactly where my visuals were undercutting pricing. Fixing it changed the conversations immediately.",
+    name: "Kezia T.",
+    role: "Nail Artist · AVERRA Client",
+  },
+  {
+    initial: "S",
+    text:
+      "I finally got a system. Every post feels like the same brand now. That consistency changed loyalty and how clients talk about me.",
+    name: "Simone A.",
+    role: "Esthetician · AVERRA Client",
+  },
+  {
+    initial: "B",
+    text:
+      "I stopped blending in. My brand reads elevated, and now people tag me as the standard in my city.",
+    name: "Brianna H.",
+    role: "Hair Stylist · AVERRA Client",
+  },
+  {
+    initial: "M",
+    text:
+      "The Brand Expansion Audit helped me scale without my brand cracking. Everything stayed aligned as I grew.",
+    name: "Maya L.",
+    role: "Brow Artist · AVERRA Client",
+  },
+];
+
 export function ServicesPage() {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -387,7 +432,7 @@ export function ServicesPage() {
       </div>
 
       <div
-        className="bg-[#251218] px-4 py-3 text-center text-[10px] uppercase tracking-[0.22em] text-[#fdf5f7]/90 md:text-[11px]"
+        className="border-b border-[#251218]/10 bg-[#251218] px-4 py-3 text-center text-[10px] uppercase tracking-[0.22em] text-[#fdf5f7]/90 md:text-[11px]"
         style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 500 }}
       >
         Founding Member Pricing · Limited Time Only · Up To 50% Off
@@ -418,14 +463,14 @@ export function ServicesPage() {
         <div className="flex items-center px-6 py-16 md:px-10 lg:px-16 xl:px-20">
           <div className="max-w-[560px]">
             <p
-              className="mb-6 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
+              className="mb-6 text-[10px] uppercase tracking-[0.28em] text-[#c9969e]"
               style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
             >
               Brand Alignment System
             </p>
 
             <h1
-              className="mb-4 text-[clamp(2.8rem,6vw,4.8rem)] leading-[1.04] text-[#251218]"
+              className="mb-4 text-[clamp(2.9rem,6vw,5rem)] leading-[1.02] text-[#251218]"
               style={{
                 fontFamily: "Playfair Display, serif",
                 fontWeight: 400,
@@ -438,7 +483,7 @@ export function ServicesPage() {
             </h1>
 
             <p
-              className="mb-10 max-w-[470px] text-[15px] leading-[1.85] text-[#251218]/70 md:text-[16px]"
+              className="mb-10 max-w-[470px] text-[15px] leading-[1.9] text-[#251218]/72 md:text-[16px]"
               style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
             >
               The market is full of brands built on talent. Very few are built
@@ -447,16 +492,22 @@ export function ServicesPage() {
               justify, and your work gets lost in a saturated market.
             </p>
 
-            <div className="mb-8 flex items-center gap-4 md:gap-6">
+            <div className="mb-8 flex items-end gap-4 md:gap-6">
               <span
                 className="text-2xl text-[#251218]/30 line-through md:text-3xl"
-                style={{ fontFamily: "Playfair Display, serif", fontWeight: 300 }}
+                style={{
+                  fontFamily: "Playfair Display, serif",
+                  fontWeight: 300,
+                }}
               >
                 {brandAlignmentService.price}
               </span>
               <span
-                className="text-5xl text-[#251218] md:text-6xl"
-                style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+                className="text-5xl leading-none text-[#251218] md:text-6xl"
+                style={{
+                  fontFamily: "Playfair Display, serif",
+                  fontWeight: 400,
+                }}
               >
                 {brandAlignmentService.salePrice}
               </span>
@@ -503,7 +554,7 @@ export function ServicesPage() {
             alt="AVERRA Services"
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#251218]/20 via-[#251218]/60 to-[#251218]/85" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#251218]/15 via-[#251218]/50 to-[#251218]/78" />
           <div className="absolute bottom-10 left-10 bg-[#c9969e] px-5 py-2.5">
             <p
               className="text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7]"
@@ -524,7 +575,7 @@ export function ServicesPage() {
         </p>
 
         <h2
-          className="mb-12 max-w-[720px] text-[clamp(2rem,4vw,3.1rem)] leading-[1.16] text-[#fdf5f7]"
+          className="mb-12 max-w-[720px] text-[clamp(2rem,4vw,3.15rem)] leading-[1.14] text-[#fdf5f7]"
           style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
         >
           If you're being honest, you've probably said this before…
@@ -534,7 +585,7 @@ export function ServicesPage() {
           {painPoints.map((point, index) => (
             <div
               key={point}
-              className={`flex items-start gap-4 border-b border-[#fdf5f7]/10 py-6 text-[14px] leading-[1.7] text-[#fdf5f7]/80 ${
+              className={`flex items-start gap-4 border-b border-[#fdf5f7]/10 py-6 text-[14px] leading-[1.7] text-[#fdf5f7]/82 ${
                 index % 2 === 0
                   ? "md:border-r md:border-[#fdf5f7]/10 md:pr-10"
                   : "md:pl-10"
@@ -604,13 +655,13 @@ export function ServicesPage() {
       </section>
 
       <section className="grid min-h-[60vh] grid-cols-1 lg:grid-cols-2">
-        <div className="relative min-h-[280px] overflow-hidden bg-[#251218]">
+        <div className="relative min-h-[320px] overflow-hidden bg-[#251218]">
           <img
             src={getImageUrl("/meet-the-ceo-2.png")}
             alt="The System Behind AVERRA"
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#251218]/10 via-[#251218]/50 to-[#251218]/75" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#251218]/10 via-[#251218]/42 to-[#251218]/70" />
           <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#c9969e]" />
         </div>
 
@@ -874,6 +925,62 @@ export function ServicesPage() {
         </MarqueeScroll>
       </div>
 
+      <section className="bg-[#251218] px-6 py-20 md:px-10 lg:px-20">
+        <div className="mb-16 text-center">
+          <p
+            className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
+            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+          >
+            Client Results
+          </p>
+
+          <h2
+            className="mx-auto max-w-[760px] text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#fdf5f7]"
+            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+          >
+            These results aren't luck. They're what happens when a brand is
+            aligned.
+          </h2>
+        </div>
+
+        <div className="grid gap-[2px] lg:grid-cols-3">
+          {reviewCards.map((review) => (
+            <div
+              key={review.name}
+              className="border-t-2 border-[#c9969e] bg-white/[0.04] px-7 py-9"
+            >
+              <div
+                className="mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#c9969e] text-[13px] text-[#fdf5f7]"
+                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+              >
+                {review.initial}
+              </div>
+
+              <p
+                className="mb-6 text-[13px] italic leading-[1.85] text-[#fdf5f7]/82"
+                style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
+              >
+                “{review.text}”
+              </p>
+
+              <p
+                className="text-[11px] uppercase tracking-[0.14em] text-[#fdf5f7]"
+                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+              >
+                {review.name}
+              </p>
+
+              <p
+                className="mt-1 text-[11px] text-[#fdf5f7]/45"
+                style={{ fontFamily: "Montserrat, sans-serif" }}
+              >
+                {review.role}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section id="audits" className="bg-[#fdf5f7] px-6 py-20 md:px-10 lg:px-20">
         <div className="mb-16 text-center">
           <p
@@ -904,14 +1011,20 @@ export function ServicesPage() {
             <div key={audit.id} className="bg-[#fbf0f3] px-8 py-9">
               <p
                 className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#c9969e]"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+                style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: 700,
+                }}
               >
                 Brand Audit
               </p>
 
               <h3
                 className="mb-3 text-[30px] leading-[1.2] text-[#251218]"
-                style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+                style={{
+                  fontFamily: "Playfair Display, serif",
+                  fontWeight: 400,
+                }}
               >
                 {audit.name}
               </h3>
@@ -926,7 +1039,10 @@ export function ServicesPage() {
               <div className="mb-6 flex items-baseline gap-3">
                 <span
                   className="text-[32px] text-[#251218]"
-                  style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+                  style={{
+                    fontFamily: "Playfair Display, serif",
+                    fontWeight: 400,
+                  }}
                 >
                   {audit.salePrice}
                 </span>
@@ -969,7 +1085,10 @@ export function ServicesPage() {
                 className={`w-full bg-[#251218] px-6 py-3.5 text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7] transition-all duration-500 ${
                   !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
                 }`}
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+                style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: 700,
+                }}
               >
                 Add to Cart
               </button>
@@ -978,7 +1097,7 @@ export function ServicesPage() {
         </div>
       </section>
 
-      <section id="digitals" className="bg-[#fdf5f7] px-6 py-20 md:px-10 lg:px-20">
+      <section id="digitals" className="bg-[#fbf0f3] px-6 py-20 md:px-10 lg:px-20">
         <div className="mb-16 text-center">
           <p
             className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
@@ -1003,7 +1122,7 @@ export function ServicesPage() {
         </div>
 
         <div className="mx-auto mb-14 max-w-4xl">
-          <div className="border-l-2 border-[#c9969e] bg-[#fbf0f3] px-8 py-6">
+          <div className="border-l-2 border-[#c9969e] bg-[#fdf5f7] px-8 py-6">
             <p
               className="text-[13px] leading-[1.8] text-[#251218]/70"
               style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
@@ -1020,18 +1139,24 @@ export function ServicesPage() {
           {digitalProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-[#fbf0f3] px-8 py-9 transition-transform duration-200 hover:-translate-y-1"
+              className="bg-[#fdf5f7] px-8 py-9 transition-transform duration-200 hover:-translate-y-1"
             >
               <p
                 className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#c9969e]"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+                style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: 700,
+                }}
               >
                 Digital Pack
               </p>
 
               <h3
                 className="mb-3 text-[28px] leading-[1.2] text-[#251218]"
-                style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+                style={{
+                  fontFamily: "Playfair Display, serif",
+                  fontWeight: 400,
+                }}
               >
                 {product.name}
               </h3>
@@ -1046,7 +1171,10 @@ export function ServicesPage() {
               <div className="mb-5 flex items-baseline gap-3">
                 <span
                   className="text-[30px] text-[#251218]"
-                  style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+                  style={{
+                    fontFamily: "Playfair Display, serif",
+                    fontWeight: 400,
+                  }}
                 >
                   {product.price}
                 </span>
@@ -1085,7 +1213,10 @@ export function ServicesPage() {
                 className={`w-full bg-[#251218] px-6 py-3.5 text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7] transition-all duration-500 ${
                   !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
                 }`}
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+                style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: 700,
+                }}
               >
                 Add to Cart
               </button>
@@ -1148,7 +1279,10 @@ export function ServicesPage() {
             className={`bg-[#c9969e] px-10 py-4 text-[11px] uppercase tracking-[0.22em] text-[#251218] transition-all duration-500 ${
               !isMobile ? "hover:bg-[#fdf5f7]" : ""
             }`}
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontWeight: 700,
+            }}
           >
             Get Started
           </button>
@@ -1189,7 +1323,10 @@ export function ServicesPage() {
               >
                 <span
                   className="w-8 shrink-0 text-[18px] text-[#c9969e]"
-                  style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
+                  style={{
+                    fontFamily: "Playfair Display, serif",
+                    fontWeight: 400,
+                  }}
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
