@@ -80,11 +80,10 @@ export async function trackAction(
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      logger.error('Failed to track action:', error);
+      // Silently fail - analytics not critical for user experience
     }
   } catch (error) {
-    logger.error('Error tracking action:', error);
+    // Silently fail - analytics not critical for user experience
   }
 }
 

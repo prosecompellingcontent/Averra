@@ -26,8 +26,8 @@ export function StaggeredText({ children, className, style, delay = 0 }: Animate
       y: 0,
       transition: {
         type: "spring",
-        damping: 12,
-        stiffness: 100,
+        damping: 20,
+        stiffness: 40,
       },
     },
     hidden: {
@@ -62,7 +62,7 @@ export function FadeInUp({ children, className, style, delay = 0 }: AnimatedText
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.8, delay, ease: [0.25, 0.4, 0.25, 1] }}
+      transition={{ duration: 2.8, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
@@ -70,17 +70,24 @@ export function FadeInUp({ children, className, style, delay = 0 }: AnimatedText
 }
 
 // Float animation - gentle up and down
+// PERFORMANCE: GPU accelerated, optimized for all devices
 export function FloatingBox({ children, className, style }: AnimatedTextProps) {
   return (
     <motion.div
       className={className}
-      style={style}
+      style={{
+        ...style,
+        // GPU acceleration for smooth performance
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+        willChange: 'transform',
+      }}
       initial={{ y: 0 }}
       animate={{
         y: [0, -6, 0],
       }}
       transition={{
-        duration: 4,
+        duration: 8,
         ease: "easeInOut",
         repeat: Infinity,
         repeatType: "loop",
@@ -98,7 +105,7 @@ export function ScaleOnHover({ children, className, style }: AnimatedTextProps) 
       className={className}
       style={style}
       whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>

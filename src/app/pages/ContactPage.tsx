@@ -119,11 +119,11 @@ export function ContactPage() {
                       General Support & Inquiries
                     </h3>
                     <a 
-                      href="mailto:info@averraaistudio.com" 
+                      href="mailto:info@averraistudio.com" 
                       className="text-xl text-[#c9969e] hover:text-[#251218] transition-colors duration-300 inline-block mb-6" 
                       style={{ fontFamily: 'Lora, serif', fontWeight: 500 }}
                     >
-                      info@averraaistudio.com
+                      info@averraistudio.com
                     </a>
                     <div className="pt-6 border-t border-[#251218]/10">
                       <p 
@@ -155,23 +155,29 @@ export function ContactPage() {
                         By using AVERRA AI Studio services, you agree to our terms and conditions. All branding packages include commercial licensing for your purchased content.
                       </p>
                       <div className="space-y-2">
-                        <Link 
-                          to="/terms-of-service" 
+                        <Link
+                          to="/terms-of-service"
                           className="block text-[#251218] hover:text-[#c9969e] transition-colors text-sm font-medium"
                         >
                           → Terms of Service
                         </Link>
-                        <Link 
-                          to="/privacy-policy" 
+                        <Link
+                          to="/privacy-policy"
                           className="block text-[#251218] hover:text-[#c9969e] transition-colors text-sm font-medium"
                         >
                           → Privacy Policy
                         </Link>
-                        <Link 
-                          to="/refund-policy" 
+                        <Link
+                          to="/refund-policy"
                           className="block text-[#251218] hover:text-[#c9969e] transition-colors text-sm font-medium"
                         >
                           → Refund Policy
+                        </Link>
+                        <Link
+                          to="/membership-terms"
+                          className="block text-[#251218] hover:text-[#c9969e] transition-colors text-sm font-medium"
+                        >
+                          → Membership Terms
                         </Link>
                       </div>
                     </div>
@@ -304,7 +310,7 @@ export function ContactPage() {
                       {submitStatus === "error" && (
                         <div className="text-center p-5 bg-red-900/10 border border-red-900/30 text-[#251218]" style={{ fontFamily: 'Lora, serif' }}>
                           <p className="font-semibold mb-1">Unable to send message.</p>
-                          <p className="text-sm text-[#251218]/70">Please email us directly at info@averraaistudio.com</p>
+                          <p className="text-sm text-[#251218]/70">Please email us directly at info@averraistudio.com</p>
                         </div>
                       )}
                     </form>

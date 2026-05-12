@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVERRA — Clarity Through Alignment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F9F6F1;
+    --warm-white: #FDFCFA;
+    --charcoal: #1A1A18;
+    --dark: #0E0E0C;
+    --gold: #B8963E;
+    --gold-light: #D4AF6A;
+    --gold-pale: #F0E4C8;
+    --muted: #6B6860;
+    --border: rgba(26,26,24,0.12);
+    --border-gold: rgba(184,150,62,0.3);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── ANNOUNCEMENT BAR ── */
+  .announcement {
+    background: var(--charcoal);
+    color: var(--gold-light);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--warm-white);
+    border-bottom: 0.5px solid var(--border);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--charcoal); }
+
+  .nav-cta {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--charcoal);
+    color: var(--gold-light);
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: #2d2d28; }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    background: var(--gold);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 9px 0;
+  }
+
+  .ticker-inner {
+    display: inline-flex;
+    animation: ticker 30s linear infinite;
+  }
+
+  .ticker-item {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-white);
+    padding: 0 28px;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 88vh;
+  }
+
+  .hero-text {
+    padding: 80px 60px 80px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--warm-white);
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .hero-headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(42px, 5vw, 68px);
+    font-weight: 400;
+    line-height: 1.08;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 400px;
+    margin-bottom: 40px;
+  }
+
+  .hero-sub strong { color: var(--charcoal); font-weight: 600; }
+
+  .hero-btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--charcoal);
+    color: var(--gold-light);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+  }
+
+  .btn-primary:hover { background: #2d2d28; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--charcoal);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 15px 36px;
+    border: 1px solid var(--charcoal);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+
+  .btn-outline:hover { background: var(--charcoal); color: var(--gold-light); }
+
+  .hero-image {
+    position: relative;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  .hero-image-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #2C2A22 0%, #1A1815 40%, #0E0C08 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-monogram {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 220px;
+    font-weight: 300;
+    color: rgba(184,150,62,0.12);
+    letter-spacing: -0.05em;
+    user-select: none;
+    line-height: 1;
+  }
+
+  .hero-badge {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    background: var(--gold);
+    color: var(--warm-white);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+  }
+
+  /* ── PAIN POINTS ── */
+  .pain {
+    background: var(--charcoal);
+    padding: 80px;
+  }
+
+  .pain-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .pain-headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 400;
+    color: var(--warm-white);
+    line-height: 1.2;
+    margin-bottom: 48px;
+    max-width: 640px;
+  }
+
+  .pain-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 0.5px solid rgba(255,255,255,0.1);
+  }
+
+  .pain-item {
+    padding: 24px 0;
+    border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+    color: rgba(249,246,241,0.75);
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .pain-item:nth-child(odd) { padding-right: 40px; border-right: 0.5px solid rgba(255,255,255,0.1); }
+  .pain-item:nth-child(even) { padding-left: 40px; }
+
+  .pain-dash {
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .pain-cta {
+    margin-top: 48px;
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 2.5vw, 32px);
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  /* ── WHO IT'S FOR ── */
+  .for-section {
+    padding: 80px;
+    background: var(--cream);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .section-headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(30px, 3.5vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--charcoal);
+    margin-bottom: 20px;
+  }
+
+  .section-body {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.85;
+    margin-bottom: 32px;
+  }
+
+  .for-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .for-item {
+    background: var(--warm-white);
+    padding: 18px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    border-left: 2px solid var(--gold);
+  }
+
+  /* ── ABOUT / FOUNDER ── */
+  .founder {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 60vh;
+  }
+
+  .founder-image {
+    background: linear-gradient(140deg, #1A1815 0%, #2C2820 60%, #1A1410 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 480px;
+  }
+
+  .founder-monogram {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 180px;
+    font-weight: 300;
+    color: rgba(184,150,62,0.1);
+    letter-spacing: -0.05em;
+  }
+
+  .founder-accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gold);
+  }
+
+  .founder-text {
+    padding: 80px;
+    background: var(--warm-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ── SYSTEM / PROCESS ── */
+  .system {
+    padding: 100px 80px;
+    background: var(--warm-white);
+  }
+
+  .system-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+
+  .system-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .step-card {
+    background: var(--cream);
+    padding: 48px 36px;
+    position: relative;
+  }
+
+  .step-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: var(--gold-pale);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .step-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .step-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    background: var(--charcoal);
+    padding: 100px 80px;
+  }
+
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .testimonials-header .section-headline {
+    color: var(--warm-white);
+  }
+
+  .testimonials-header .section-label {
+    color: var(--gold);
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .review-card {
+    background: rgba(255,255,255,0.04);
+    padding: 36px 30px;
+    border-top: 2px solid var(--gold);
+  }
+
+  .review-text {
+    font-size: 13px;
+    color: rgba(249,246,241,0.8);
+    line-height: 1.85;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .review-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+  }
+
+  .review-role {
+    font-size: 11px;
+    color: rgba(249,246,241,0.4);
+    margin-top: 2px;
+  }
+
+  .review-initial {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--warm-white);
+    margin-bottom: 18px;
+  }
+
+  /* ── RESULTS MARQUEE ── */
+  .results-marquee {
+    background: var(--gold);
+    padding: 18px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .results-inner {
+    display: inline-flex;
+    animation: ticker 20s linear infinite;
+  }
+
+  .result-item {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--warm-white);
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .result-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    flex-shrink: 0;
+  }
+
+  /* ── SERVICES / PRODUCTS ── */
+  .services {
+    padding: 100px 80px;
+    background: var(--cream);
+  }
+
+  .services-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .product-card {
+    background: var(--warm-white);
+    padding: 36px 30px;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .product-card:hover { transform: translateY(-4px); }
+
+  .product-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .product-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .product-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .product-pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .price-sale {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--charcoal);
+  }
+
+  .price-original {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+
+  .product-includes {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .product-includes li {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .product-includes li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .btn-add {
+    width: 100%;
+    background: var(--charcoal);
+    color: var(--gold-light);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 14px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    transition: background 0.2s;
+  }
+
+  .btn-add:hover { background: #2d2d28; }
+
+  /* ── FLAGSHIP ── */
+  .flagship {
+    padding: 120px 80px;
+    background: var(--charcoal);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .flagship-left .section-headline { color: var(--warm-white); }
+  .flagship-left .section-label { color: var(--gold); }
+  .flagship-left .section-body { color: rgba(249,246,241,0.65); }
+
+  .flagship-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .flagship-price-note {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(249,246,241,0.4);
+    margin-bottom: 36px;
+  }
+
+  .flagship-modules {
+    list-style: none;
+    border-top: 0.5px solid rgba(255,255,255,0.1);
+  }
+
+  .flagship-module {
+    padding: 16px 0;
+    border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .module-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  .module-text {
+    font-size: 12px;
+    color: rgba(249,246,241,0.75);
+    line-height: 1.7;
+  }
+
+  .module-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--warm-white);
+    margin-bottom: 2px;
+  }
+
+  /* ── QUIZ CTA ── */
+  .quiz-cta {
+    padding: 100px 80px;
+    background: var(--gold-pale);
+    text-align: center;
+  }
+
+  .quiz-cta .section-headline {
+    max-width: 600px;
+    margin: 0 auto 12px;
+  }
+
+  .quiz-cta .section-body {
+    max-width: 480px;
+    margin: 0 auto 40px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    padding: 60px 80px 40px;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+    padding-bottom: 60px;
+    border-bottom: 0.5px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+
+  .footer-tagline {
+    font-size: 11px;
+    color: rgba(249,246,241,0.4);
+    line-height: 1.7;
+  }
+
+  .footer-col-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(249,246,241,0.35);
+    margin-bottom: 20px;
+  }
+
+  .footer-links { list-style: none; }
+  .footer-links li { margin-bottom: 10px; }
+  .footer-links a {
+    font-size: 12px;
+    color: rgba(249,246,241,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(249,246,241,0.25);
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .gold-line {
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.3;
+  }
+
+  /* ── FOUR PILLARS ── */
+  .pillars {
+    padding: 100px 80px;
+    background: var(--warm-white);
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+  }
+
+  .pillar {
+    background: var(--cream);
+    padding: 36px 28px;
+  }
+
+  .pillar-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--gold-pale);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .pillar-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    margin-bottom: 10px;
+  }
+
+  .pillar-body {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-image { display: none; }
+    .hero-text { padding: 60px 24px; }
+    .pain { padding: 60px 24px; }
+    .pain-list { grid-template-columns: 1fr; }
+    .pain-item:nth-child(odd) { padding-right: 0; border-right: none; }
+    .pain-item:nth-child(even) { padding-left: 0; }
+    .for-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
+    .founder { grid-template-columns: 1fr; }
+    .founder-image { min-height: 240px; }
+    .founder-text { padding: 60px 24px; }
+    .system { padding: 60px 24px; }
+    .system-steps { grid-template-columns: 1fr; gap: 2px; }
+    .testimonials { padding: 60px 24px; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .services { padding: 60px 24px; }
+    .products-grid { grid-template-columns: 1fr; }
+    .flagship { grid-template-columns: 1fr; gap: 48px; padding: 60px 24px; }
+    .quiz-cta { padding: 60px 24px; }
+    footer { padding: 60px 24px 40px; }
+    .footer-top { grid-template-columns: 1fr; gap: 40px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .pillars { padding: 60px 24px; }
+    .pillars-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement">
+  Founding Member Pricing — Limited Time &nbsp;&nbsp;·&nbsp;&nbsp; Up to 50% Off &nbsp;&nbsp;·&nbsp;&nbsp; Spots Are Closing
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Averra</a>
+  <ul class="nav-links">
+    <li><a href="#system">The Process</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#digitals">Digital Products</a></li>
+    <li><a href="#flagship">Brand Alignment</a></li>
+  </ul>
+  <a href="#flagship" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item">Founding Members Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Launch Pricing — Up To 50% Off</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Limited Time Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Founding Members Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Launch Pricing — Up To 50% Off</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Limited Time Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Founding Members Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Launch Pricing — Up To 50% Off</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Limited Time Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Founding Members Only</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Launch Pricing — Up To 50% Off</span>
+    <span class="ticker-item">·</span>
+    <span class="ticker-item">Limited Time Only</span>
+    <span class="ticker-item">·</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Brand Alignment System</p>
+    <h1 class="hero-headline">Your brand should work<br><em>as hard as you do.</em></h1>
+    <p class="hero-sub">
+      The market is full of talent. Very few are built on <strong>clarity.</strong><br><br>
+      When your brand doesn't communicate at the level you're operating at, clients hesitate, pricing becomes harder to justify, and your work gets lost in a saturated market.
+    </p>
+    <div class="hero-btns">
+      <a href="#flagship" class="btn-primary">Get Started</a>
+      <a href="#system" class="btn-outline">The Process</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="hero-image-inner">
+      <div class="hero-monogram">A</div>
+    </div>
+    <div class="hero-badge">Clarity Through Alignment</div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="pain">
+  <p class="pain-label">Sound Familiar?</p>
+  <h2 class="pain-headline">If you're being honest, you've probably said this before…</h2>
+  <ul class="pain-list">
+    <li class="pain-item"><span class="pain-dash">—</span>"I'm posting consistently but nobody's booking"</li>
+    <li class="pain-item"><span class="pain-dash">—</span>"My content gets views but no appointments"</li>
+    <li class="pain-item"><span class="pain-dash">—</span>"I keep lowering my prices just to fill my chair"</li>
+    <li class="pain-item"><span class="pain-dash">—</span>"My visuals don't match the level of my work"</li>
+    <li class="pain-item"><span class="pain-dash">—</span>"Other pros are booked out — what am I doing wrong?"</li>
+    <li class="pain-item"><span class="pain-dash">—</span>"I have no idea how to make my brand feel premium"</li>
+  </ul>
+  <p class="pain-cta">The AVERRA Brand Alignment System was built to fix exactly that.</p>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="for-section">
+  <div>
+    <p class="section-label">Built For You</p>
+    <h2 class="section-headline">If you're a beauty service provider, this is for you.</h2>
+    <p class="section-body">Whether you specialize in lashes, brows, nails, hair, facials, makeup, skincare, or waxing — if clients book appointments with you, your brand identity determines everything. Perception, pricing, loyalty, and growth all start here.</p>
+    <p class="section-body">Any other beauty service? If you rely on clients to book, the AVERRA system applies to you.</p>
+  </div>
+  <div class="for-grid">
+    <div class="for-item">Lashes</div>
+    <div class="for-item">Brows</div>
+    <div class="for-item">Nails</div>
+    <div class="for-item">Makeup</div>
+    <div class="for-item">Hair</div>
+    <div class="for-item">Facials</div>
+    <div class="for-item">Skincare</div>
+    <div class="for-item">Waxing</div>
+    <div class="for-item">Injections</div>
+    <div class="for-item">And more</div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder">
+  <div class="founder-image">
+    <div class="founder-monogram">A</div>
+    <div class="founder-accent"></div>
+  </div>
+  <div class="founder-text">
+    <p class="section-label">The System Behind AVERRA</p>
+    <h2 class="section-headline">Built from experience, not theory.</h2>
+    <p class="section-body">
+      I have been exactly where you are. Building a brand without a system, posting without direction, and watching clients choose someone else — not because the work wasn't there, but because the brand wasn't communicating it.
+    </p>
+    <p class="section-body">
+      I stopped guessing and started building with intention. The result was a brand that attracted the right clients, supported premium pricing, and stayed consistent as it grew. What took years to figure out, AVERRA has simplified into a structured system you can start using immediately.
+    </p>
+    <p class="section-body" style="font-style: italic; color: #1A1A18;">
+      Real clarity. Real alignment. Real results.
+    </p>
+    <a href="#flagship" class="btn-primary">Start The Process</a>
+  </div>
+</section>
+
+<!-- FOUR PILLARS -->
+<section class="pillars" id="system">
+  <div style="text-align: center;">
+    <p class="section-label" style="justify-content: center; display: block;">The Industry Standard</p>
+    <h2 class="section-headline" style="max-width: 600px; margin: 0 auto 16px;">When any of these are off,<br>your value decreases.</h2>
+    <p class="section-body" style="max-width: 520px; margin: 0 auto;">Our system is built around four critical brand signals. If any one of them is misaligned, the whole brand suffers — no matter how strong the work is.</p>
+  </div>
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="pillar-num">01</div>
+      <div class="pillar-title">Perception</div>
+      <p class="pillar-body">How your brand is seen at first glance — before a single word is read or a service is experienced.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02</div>
+      <div class="pillar-title">Translation</div>
+      <p class="pillar-body">How clearly your message is communicated — whether clients immediately understand your value or scroll past.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03</div>
+      <div class="pillar-title">Visual Clarity</div>
+      <p class="pillar-body">How aligned your visuals appear — whether every element communicates the same level you're operating at.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">04</div>
+      <div class="pillar-title">Consistency</div>
+      <p class="pillar-body">How reliable your brand identity remains — whether your brand holds its standard as you grow and scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- THE SYSTEM / PROCESS -->
+<section class="system" style="background: var(--cream);">
+  <div class="system-header">
+    <p class="section-label" style="display: block;">The System</p>
+    <h2 class="section-headline">Three Stage Process</h2>
+    <p class="section-body" style="max-width: 480px; margin: 0 auto;">Everything you create should leave no room for misinterpretation. The AVERRA process ensures it.</p>
+  </div>
+  <div class="system-steps">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <p class="step-sub">Stage One</p>
+      <h3 class="step-title">Interpretation</h3>
+      <p class="step-body">We establish your brand identity and intention so everything you create leaves no room for misinterpretation. Direction is set before anything is built.</p>
+    </div>
+    <div class="step-card" style="background: var(--charcoal);">
+      <div class="step-number" style="color: rgba(184,150,62,0.25);">2</div>
+      <p class="step-sub" style="color: var(--gold-light);">Stage Two</p>
+      <h3 class="step-title" style="color: var(--warm-white);">Alignment</h3>
+      <p class="step-body" style="color: rgba(249,246,241,0.65);">We evaluate every visual element so everything communicates equally. This eliminates mixed signals and strengthens how your brand is perceived at every touch point.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <p class="step-sub">Stage Three</p>
+      <h3 class="step-title">Stabilization</h3>
+      <p class="step-body">A structured visual system is built custom to your brand so your content stays consistent, controlled, and aligned as you grow. No drift. No guessing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS MARQUEE -->
+<div class="results-marquee">
+  <div class="results-inner">
+    <span class="result-item">Clarity that converts<span class="result-dot"></span></span>
+    <span class="result-item">Brands that hold their standard<span class="result-dot"></span></span>
+    <span class="result-item">Visuals that match the level of the work<span class="result-dot"></span></span>
+    <span class="result-item">Identity that scales<span class="result-dot"></span></span>
+    <span class="result-item">Clarity that converts<span class="result-dot"></span></span>
+    <span class="result-item">Brands that hold their standard<span class="result-dot"></span></span>
+    <span class="result-item">Visuals that match the level of the work<span class="result-dot"></span></span>
+    <span class="result-item">Identity that scales<span class="result-dot"></span></span>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-header">
+    <p class="section-label" style="display: block; text-align: center;">Client Results</p>
+    <h2 class="section-headline" style="color: var(--warm-white); text-align: center; max-width: 520px; margin: 0 auto;">These results aren't luck. They're what happens when a brand is aligned.</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-initial">J</div>
+      <p class="review-text">"After going through the alignment process, I raised my prices and my bookings actually increased. The clarity in my brand changed how clients perceived my value before they even reached out."</p>
+      <p class="review-name">Jade M.</p>
+      <p class="review-role">Lash Artist · AVERRA Client</p>
+    </div>
+    <div class="review-card">
+      <div class="review-initial">C</div>
+      <p class="review-text">"I had beautiful work but my brand didn't show it. Within weeks of working with AVERRA, I had new clients commenting that my feed looked like a luxury brand — and booking to match."</p>
+      <p class="review-name">Camille R.</p>
+      <p class="review-role">Makeup Artist · AVERRA Client</p>
+    </div>
+    <div class="review-card">
+      <div class="review-initial">K</div>
+      <p class="review-text">"The Brand Perception Audit alone was worth it. It showed me exactly where my visuals were undercutting my prices. I fixed those things and the difference was immediate — clients stopped negotiating."</p>
+      <p class="review-name">Kezia T.</p>
+      <p class="review-role">Nail Artist · AVERRA Client</p>
+    </div>
+    <div class="review-card">
+      <div class="review-initial">S</div>
+      <p class="review-text">"I always had a 'vibe' for my brand but couldn't make it consistent. AVERRA gave me a system so every post, every story, every graphic — it all feels like the same brand. The loyalty I've built since then is different."</p>
+      <p class="review-name">Simone A.</p>
+      <p class="review-role">Esthetician · AVERRA Client</p>
+    </div>
+    <div class="review-card">
+      <div class="review-initial">B</div>
+      <p class="review-text">"I went from looking like every other hair stylist on the feed to being the one people tag when they talk about 'elevated' salons in my city. The visual system AVERRA built me did that."</p>
+      <p class="review-name">Brianna H.</p>
+      <p class="review-role">Hair Stylist · AVERRA Client</p>
+    </div>
+    <div class="review-card">
+      <div class="review-initial">M</div>
+      <p class="review-text">"The Brand Expansion Audit was exactly what I needed when I started scaling. My brand didn't drift — it grew. That's rare. AVERRA built me a system that grows with me, not against me."</p>
+      <p class="review-name">Maya L.</p>
+      <p class="review-role">Brow Artist · AVERRA Client</p>
+    </div>
+  </div>
+</section>
+
+<!-- ADD-ON SERVICES -->
+<section class="services" id="services">
+  <div class="services-header">
+    <p class="section-label" style="display: block;">Add-On Services</p>
+    <h2 class="section-headline">Focused Brand Audits</h2>
+    <p class="section-body" style="max-width: 440px; margin: 0 auto;">Targeted evaluations for specific brand problems — standalone or as an add-on to your alignment system.</p>
+  </div>
+  <div class="products-grid" style="grid-template-columns: 1fr 1fr; max-width: 860px; margin: 0 auto;">
+    <div class="product-card">
+      <p class="product-label">Brand Audit</p>
+      <h3 class="product-name">Brand Perception Audit</h3>
+      <p class="product-desc">A focused evaluation of how your brand is currently being seen — and exactly where it's undercutting your value.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$75</span>
+        <span class="price-original">$100</span>
+      </div>
+      <ul class="product-includes">
+        <li>Visual consistency & message clarity</li>
+        <li>Perceived value & overall brand presence</li>
+        <li>What your visuals are actually communicating</li>
+        <li>Exact direction on what to address</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+    <div class="product-card">
+      <p class="product-label">Brand Audit</p>
+      <h3 class="product-name">Brand Expansion Audit</h3>
+      <p class="product-desc">A focused consultation on how to scale your brand without your identity or perception shifting in the process.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$75</span>
+        <span class="price-original">$100</span>
+      </div>
+      <ul class="product-includes">
+        <li>Where your brand starts to drift as content increases</li>
+        <li>What's needed to keep it controlled</li>
+        <li>Where your brand loses control at scale</li>
+        <li>A brand that holds its standard regardless of growth</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+  </div>
+</section>
+
+<!-- DIGITAL PRODUCTS -->
+<section class="services" id="digitals" style="background: var(--warm-white);">
+  <div class="services-header">
+    <p class="section-label" style="display: block;">Digital Products</p>
+    <h2 class="section-headline">Brand Ready Visuals</h2>
+    <p class="section-body" style="max-width: 480px; margin: 0 auto;">Instant access. No revisions. Ready to use. AI-generated brand imagery created for marketing and promotional use.</p>
+  </div>
+  <div class="products-grid">
+    <div class="product-card">
+      <p class="product-label">Digital Pack</p>
+      <h3 class="product-name">The Lash Collection</h3>
+      <p class="product-desc">Three lash-focused visuals featuring clean isolation, full lash lines, soft volume, and a polished finish. Ideal for set promos, fill reminders, and retention posts.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$30</span>
+        <span class="price-original">$50</span>
+      </div>
+      <ul class="product-includes">
+        <li>Scene 1: The Service Moment</li>
+        <li>Scene 2: The Finished Set</li>
+        <li>Scene 3: The Detail Finish</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+    <div class="product-card">
+      <p class="product-label">Digital Pack</p>
+      <h3 class="product-name">The Map Pack</h3>
+      <p class="product-desc">Three brow visuals perfected for precision — clean mapping, crisp shaping, defined arches, and structured finishes. Built for brow promos and launches.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$30</span>
+        <span class="price-original">$50</span>
+      </div>
+      <ul class="product-includes">
+        <li>Scene 1: The Precision Moment</li>
+        <li>Scene 2: The Sculpted Result</li>
+        <li>Scene 3: The Detail Close Up</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+    <div class="product-card">
+      <p class="product-label">Digital Pack</p>
+      <h3 class="product-name">The Base Bundle</h3>
+      <p class="product-desc">Three elevated MUA visuals — seamless blend, flawless base, clean liner work, and camera-ready finish. For brand announcements, glam promos, and launches.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$30</span>
+        <span class="price-original">$50</span>
+      </div>
+      <ul class="product-includes">
+        <li>Scene 1: The Application Moment</li>
+        <li>Scene 2: The Finished Glam Close Up</li>
+        <li>Scene 3: The Beauty Detail</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+    <div class="product-card">
+      <p class="product-label">Digital Pack</p>
+      <h3 class="product-name">Fresh Out The Chair</h3>
+      <p class="product-desc">Three hair-focused visuals showcasing precision, shine, and that polished finish clients book for. Ideal for launches, specials, and seasonal hair campaigns.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$30</span>
+        <span class="price-original">$50</span>
+      </div>
+      <ul class="product-includes">
+        <li>Scene 1: The Work Behind the Result</li>
+        <li>Scene 2: The Finished Transformation</li>
+        <li>Scene 3: The Detail Finish</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+    <div class="product-card">
+      <p class="product-label">Digital Pack</p>
+      <h3 class="product-name">The Cuticle Collection</h3>
+      <p class="product-desc">Three manicure visuals highlighting structure, precision, and that flawless finished set clients zoom in on. Built for new set promos and seasonal design launches.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$30</span>
+        <span class="price-original">$50</span>
+      </div>
+      <ul class="product-includes">
+        <li>Scene 1: The Precision Process</li>
+        <li>Scene 2: The Elevated Finish</li>
+        <li>Scene 3: The Detail Standard</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+    <div class="product-card">
+      <p class="product-label">Digital Pack</p>
+      <h3 class="product-name">You Glow Girl Bundle</h3>
+      <p class="product-desc">Three esthetic visuals designed to make promotions look polished and professional from the first glance. Ideal for facials, new treatment launches, and membership promos.</p>
+      <div class="product-pricing">
+        <span class="price-sale">$30</span>
+        <span class="price-original">$50</span>
+      </div>
+      <ul class="product-includes">
+        <li>Scene 1: The Treatment Moment</li>
+        <li>Scene 2: The Healthy Glow</li>
+        <li>Scene 3: The Skin Detail</li>
+      </ul>
+      <a href="#" class="btn-add">Add to Cart</a>
+    </div>
+  </div>
+  <p style="text-align: center; font-size: 11px; color: var(--muted); margin-top: 40px; letter-spacing: 0.06em;">
+    All digital products include commercial use rights &nbsp;·&nbsp; Files delivered instantly after purchase &nbsp;·&nbsp; No edits, swaps, or personalization included
+  </p>
+</section>
+
+<!-- FLAGSHIP -->
+<section class="flagship" id="flagship">
+  <div class="flagship-left">
+    <p class="section-label">The Complete System</p>
+    <h2 class="section-headline">AVERRA Brand Alignment</h2>
+    <p class="section-body">A complete alignment system built to ensure your brand reflects the level you're intentionally operating at — so the right clients find you, stay with you, and pay what you're worth.</p>
+    <div class="flagship-price">$250</div>
+    <p class="flagship-price-note">Founding Member Pricing &nbsp;·&nbsp; Was $500</p>
+    <a href="#" class="btn-primary" style="display: inline-block;">Get Started</a>
+  </div>
+  <div>
+    <ul class="flagship-modules">
+      <li class="flagship-module">
+        <span class="module-num">01</span>
+        <div class="module-text">
+          <strong>Interpretation — Brand Direction</strong>
+          We establish your brand identity and intention so everything you create leaves no room for misinterpretation.
+        </div>
+      </li>
+      <li class="flagship-module">
+        <span class="module-num">02</span>
+        <div class="module-text">
+          <strong>Perception — First Glance Audit</strong>
+          How your brand is seen before a word is read. We evaluate and correct every visual element communicating below your level.
+        </div>
+      </li>
+      <li class="flagship-module">
+        <span class="module-num">03</span>
+        <div class="module-text">
+          <strong>Translation — Message Clarity</strong>
+          We ensure your content communicates your value clearly — so clients don't hesitate, they book.
+        </div>
+      </li>
+      <li class="flagship-module">
+        <span class="module-num">04</span>
+        <div class="module-text">
+          <strong>Alignment — Visual Unification</strong>
+          Every element evaluated so everything communicates equally. Mixed signals eliminated. Brand strength increased.
+        </div>
+      </li>
+      <li class="flagship-module">
+        <span class="module-num">05</span>
+        <div class="module-text">
+          <strong>Stabilization — Custom Visual System</strong>
+          A structured system built custom to your brand so content stays consistent, controlled, and aligned as you grow.
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- QUIZ CTA -->
+<section class="quiz-cta">
+  <p class="section-label" style="display: block;">Exclusive Offer — Limited Time</p>
+  <h2 class="section-headline">Ready to be the face of your brand?</h2>
+  <p class="section-body">Discover your beauty brand style. Get your palette, voice tone, and next steps delivered in 2 minutes.</p>
+  <a href="#" class="btn-primary">Start Brand Quiz</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Averra</div>
+      <p class="footer-tagline">Clarity Through Alignment.<br>The brand system for beauty professionals operating at the highest level.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Navigation</p>
+      <ul class="footer-links">
+        <li><a href="#system">The Process</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#digitals">Digital Products</a></li>
+        <li><a href="#flagship">Brand Alignment</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Policies</p>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 AVERRA. All rights reserved.</span>
+    <span>Clarity Through Alignment</span>
+  </div>
+</footer>
+
+</body>
+</html>

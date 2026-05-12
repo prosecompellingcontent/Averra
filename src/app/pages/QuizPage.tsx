@@ -1,494 +1,582 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/app/components/Navigation";
-import { Link } from "react-router";
-import { ArrowLeft } from "lucide-react";
-import { trackQuizCompletion, trackAction } from "@/utils/analytics";
+import { useNavigate } from "react-router";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { trackAction } from "@/utils/analytics";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { useMemo } from "react";
-import { getImageUrl } from "@/utils/imageHelpers";
+import { useCart } from "@/app/context/CartContext";
+import { projectId, publicAnonKey } from "/utils/supabase/info";
 
-const questions = [
+// 9 Diagnostic Result Types
+type DiagnosticResult =
+  | "availability_trap"
+  | "emotional_labor_debt"
+  | "fully_booked_illusion"
+  | "urgency_conditioning"
+  | "burnout_architecture"
+  | "service_ceiling"
+  | "identity_based_burnout"
+  | "nervous_system_business_models"
+  | "building_beyond_the_chair";
+
+interface QuizAnswer {
+  text: string;
+  patterns: DiagnosticResult[];
+}
+
+interface QuizQuestion {
+  id: number;
+  question: string;
+  answers: QuizAnswer[];
+}
+
+const diagnosticQuestions: QuizQuestion[] = [
   {
     id: 1,
-    question: "What's actually going on with your brand right now?",
-    options: [
-      { text: "My brand doesn't match the work I'm putting out", type: "system" },
-      { text: "I don't know how my clients view me", type: "perception" },
-      { text: "It's fine but I'm ready to grow", type: "expansion" },
-      { text: "There's no real brand, I'm starting from zero", type: "system" }
+    question: "What feels hardest to turn off after work?",
+    answers: [
+      { text: "Thinking about money", patterns: ["fully_booked_illusion", "nervous_system_business_models"] },
+      { text: "Feeling responsible for everyone", patterns: ["emotional_labor_debt", "availability_trap"] },
+      { text: "The pressure to stay booked", patterns: ["fully_booked_illusion", "urgency_conditioning"] },
+      { text: "The feeling that I should still be doing more", patterns: ["identity_based_burnout", "burnout_architecture"] }
     ]
   },
   {
     id: 2,
-    question: "Be honest, what do think is affecting you most?",
-    options: [
-      { text: "My content is all over the place", type: "system" },
-      { text: "Clients aren't loyal to me and I don't know why", type: "perception" },
-      { text: "The more I post the less engagement I get", type: "expansion" },
-      { text: "Nothing feels intentional or put together", type: "system" }
+    question: "What happens emotionally when someone cancels?",
+    answers: [
+      { text: "I immediately think about the money", patterns: ["fully_booked_illusion", "nervous_system_business_models"] },
+      { text: "I feel anxious even if I'm booked", patterns: ["urgency_conditioning", "burnout_architecture"] },
+      { text: "I start trying to fill the spot immediately", patterns: ["availability_trap", "urgency_conditioning"] },
+      { text: "It affects my mood more than I want to admit", patterns: ["emotional_labor_debt", "identity_based_burnout"] }
     ]
   },
   {
     id: 3,
-    question: "Which part do you keep avoiding?",
-    options: [
-      { text: "Figuring out my brand identity", type: "system" },
-      { text: "Actual structure behind my content", type: "perception" },
-      { text: "Building something worth maintaining long term", type: "expansion" },
-      { text: "Admitting I don't know where to start", type: "system" }
+    question: "Which moment feels most familiar?",
+    answers: [
+      { text: "Checking my phone before I'm fully awake", patterns: ["urgency_conditioning", "nervous_system_business_models"] },
+      { text: "Answering messages while trying to relax", patterns: ["emotional_labor_debt", "availability_trap"] },
+      { text: "Feeling guilty during days off", patterns: ["identity_based_burnout", "burnout_architecture"] },
+      { text: "Thinking about work during personal moments", patterns: ["nervous_system_business_models", "burnout_architecture"] }
     ]
   },
   {
     id: 4,
-    question: "If a potential client landed on your page today, what would they see?",
-    options: [
-      { text: "Outdated content that doesn't reflect my current skill", type: "system" },
-      { text: "Something decent but I'm not sure what impression it leaves", type: "perception" },
-      { text: "Good work but it looks different every time", type: "expansion" },
-      { text: "Something that doesn't represent me at all", type: "system" }
+    question: "What makes rest feel uncomfortable?",
+    answers: [
+      { text: "Losing money", patterns: ["fully_booked_illusion", "service_ceiling"] },
+      { text: "Falling behind", patterns: ["urgency_conditioning", "burnout_architecture"] },
+      { text: "Feeling lazy", patterns: ["identity_based_burnout", "burnout_architecture"] },
+      { text: "Feeling replaceable", patterns: ["emotional_labor_debt", "availability_trap"] }
     ]
   },
   {
     id: 5,
-    question: "What's actually stopping you from charging more?",
-    options: [
-      { text: "My brand doesn't look like it's worth more yet", type: "system" },
-      { text: "I'm not confident in how I'm coming across", type: "perception" },
-      { text: "My content is too inconsistent to justify it", type: "expansion" },
-      { text: "Everything needs to be rebuilt before I can", type: "system" }
+    question: "What quietly makes you feel safe in business?",
+    answers: [
+      { text: "Staying booked", patterns: ["fully_booked_illusion", "service_ceiling"] },
+      { text: "Seeing appointments on my schedule", patterns: ["urgency_conditioning", "nervous_system_business_models"] },
+      { text: "Clients needing me", patterns: ["emotional_labor_debt", "availability_trap"] },
+      { text: "Immediate income coming in", patterns: ["service_ceiling", "fully_booked_illusion"] }
     ]
   },
   {
     id: 6,
-    question: "How long has this been an issue?",
-    options: [
-      { text: "I never had a real foundation", type: "system" },
-      { text: "Something has always felt slightly off", type: "perception" },
-      { text: "It started when I began growing", type: "expansion" },
-      { text: "It got to a point where I had to stop and reset", type: "system" }
+    question: "What drains you most that people do not fully see?",
+    answers: [
+      { text: "Constant communication", patterns: ["emotional_labor_debt", "availability_trap"] },
+      { text: "Carrying people emotionally all day", patterns: ["emotional_labor_debt", "burnout_architecture"] },
+      { text: "Never mentally shutting off", patterns: ["nervous_system_business_models", "identity_based_burnout"] },
+      { text: "Feeling emotionally responsible for everyone", patterns: ["emotional_labor_debt", "availability_trap"] }
     ]
   },
   {
     id: 7,
-    question: "How do you feel about your content currently?",
-    options: [
-      { text: "Nothing feels consistent", type: "system" },
-      { text: "Fine but I'm not sure it's working", type: "perception" },
-      { text: "Like it's hard to keep up with", type: "expansion" },
-      { text: "Like I'm guessing every single time", type: "system" }
+    question: "Which statement feels most true?",
+    answers: [
+      { text: "My business depends too heavily on me", patterns: ["availability_trap", "building_beyond_the_chair"] },
+      { text: "Rest feels stressful instead of relaxing", patterns: ["urgency_conditioning", "nervous_system_business_models"] },
+      { text: "I work constantly but still feel pressure", patterns: ["fully_booked_illusion", "burnout_architecture"] },
+      { text: "My schedule controls my life more than I do", patterns: ["identity_based_burnout", "service_ceiling"] }
     ]
   },
   {
     id: 8,
-    question: "What do you actually need right now?",
-    options: [
-      { text: "A brand that finally looks like what I want to do", type: "system" },
-      { text: "To understand miscommunication with future clients and why", type: "perception" },
-      { text: "A foundation that holds as my brand grows", type: "expansion" },
-      { text: "A clear direction. I'm starting from scratch", type: "system" }
+    question: "What scares you most about slowing down?",
+    answers: [
+      { text: "Losing momentum", patterns: ["urgency_conditioning", "burnout_architecture"] },
+      { text: "Losing money", patterns: ["fully_booked_illusion", "service_ceiling"] },
+      { text: "Becoming irrelevant", patterns: ["emotional_labor_debt", "identity_based_burnout"] },
+      { text: "Realizing how exhausted I actually am", patterns: ["burnout_architecture", "nervous_system_business_models"] }
     ]
   },
   {
     id: 9,
-    question: "What would actually change if this was fixed?",
-    options: [
-      { text: "My brand would finally match my skill", type: "system" },
-      { text: "I'd know exactly how clients are seeing me", type: "perception" },
-      { text: "I could grow without my brand falling apart", type: "expansion" },
-      { text: "I'd stop second guessing everything I put out", type: "system" }
+    question: "What happens internally during a slow week?",
+    answers: [
+      { text: "I panic", patterns: ["urgency_conditioning", "nervous_system_business_models"] },
+      { text: "I question myself", patterns: ["identity_based_burnout", "emotional_labor_debt"] },
+      { text: "I lower my standards too quickly", patterns: ["service_ceiling", "service_ceiling"] },
+      { text: "I immediately try fixing it", patterns: ["availability_trap", "burnout_architecture"] }
     ]
   },
   {
     id: 10,
-    question: "What's the real priority right now?",
-    options: [
-      { text: "Building something that actually reflects my expertise", type: "system" },
-      { text: "Finding out where my brand is losing people", type: "perception" },
-      { text: "Creating structure I can sustain as I scale", type: "expansion" },
-      { text: "Getting clear direction so I can move forward", type: "system" }
+    question: "What role have you quietly become inside your business?",
+    answers: [
+      { text: "The provider everyone depends on", patterns: ["availability_trap", "building_beyond_the_chair"] },
+      { text: "The person fixing everything", patterns: ["burnout_architecture", "identity_based_burnout"] },
+      { text: "The person who never rests", patterns: ["urgency_conditioning", "nervous_system_business_models"] },
+      { text: "The emotional support system for everyone else", patterns: ["emotional_labor_debt", "identity_based_burnout"] }
+    ]
+  },
+  {
+    id: 11,
+    question: "What currently defines \"success\" for you emotionally?",
+    answers: [
+      { text: "Staying fully booked", patterns: ["fully_booked_illusion", "service_ceiling"] },
+      { text: "Being constantly needed", patterns: ["emotional_labor_debt", "availability_trap"] },
+      { text: "Never having empty spaces", patterns: ["urgency_conditioning", "burnout_architecture"] },
+      { text: "Feeling productive all the time", patterns: ["identity_based_burnout", "nervous_system_business_models"] }
+    ]
+  },
+  {
+    id: 12,
+    question: "What feels hardest to imagine?",
+    answers: [
+      { text: "Making money while resting", patterns: ["service_ceiling", "building_beyond_the_chair"] },
+      { text: "Taking real time off", patterns: ["availability_trap", "nervous_system_business_models"] },
+      { text: "A business that runs without constant pressure", patterns: ["burnout_architecture", "urgency_conditioning"] },
+      { text: "Not tying my worth to productivity", patterns: ["identity_based_burnout", "emotional_labor_debt"] }
+    ]
+  },
+  {
+    id: 13,
+    question: "What do you feel your business is actually missing?",
+    answers: [
+      { text: "Structure", patterns: ["building_beyond_the_chair", "availability_trap"] },
+      { text: "Stability", patterns: ["nervous_system_business_models", "fully_booked_illusion"] },
+      { text: "Systems", patterns: ["service_ceiling", "burnout_architecture"] },
+      { text: "A way to grow without sacrificing more of myself", patterns: ["identity_based_burnout", "building_beyond_the_chair"] }
+    ]
+  },
+  {
+    id: 14,
+    question: "If nothing changes over the next few years, what honestly worries you most?",
+    answers: [
+      { text: "Burning out completely", patterns: ["burnout_architecture", "identity_based_burnout"] },
+      { text: "Resenting the business I built", patterns: ["emotional_labor_debt", "nervous_system_business_models"] },
+      { text: "Staying trapped in nonstop appointments", patterns: ["service_ceiling", "building_beyond_the_chair"] },
+      { text: "Realizing I built a business that only works if I never stop", patterns: ["availability_trap", "fully_booked_illusion"] }
+    ]
+  },
+  {
+    id: 15,
+    question: "What do you actually want your business to feel like?",
+    answers: [
+      { text: "Calmer", patterns: ["nervous_system_business_models", "urgency_conditioning"] },
+      { text: "More stable", patterns: ["fully_booked_illusion", "service_ceiling"] },
+      { text: "Less emotionally heavy", patterns: ["emotional_labor_debt", "burnout_architecture"] },
+      { text: "Able to grow without consuming my life", patterns: ["building_beyond_the_chair", "availability_trap"] }
     ]
   }
-]
+];
+
+const resultContent: Record<DiagnosticResult, {
+  title: string;
+  subtitle: string;
+  whatsHappening: string;
+  whyItHappens: string;
+  longTerm: string;
+  whatFixes: string;
+  whyGoldStandard: string;
+}> = {
+  availability_trap: {
+    title: "THE AVAILABILITY TRAP",
+    subtitle: "Your Business Still Depends Entirely On You",
+    whatsHappening: "Right now, your business depends heavily on your availability, responsiveness, time, energy, and emotional presence. Every booking, cancellation, reschedule, client concern, and income fluctuation still runs directly through you. That is why the business never fully leaves your mind, even when the workday technically ends. Your nervous system knows that if you stop moving, the business slows down too.",
+    whyItHappens: "Most beauty professionals were taught how to become great providers, not how to build businesses that could eventually operate with more structure and less emotional pressure. So every time things feel uncertain, the automatic response becomes: work more, answer faster, stay available longer, overextend yourself again. Over time, staying busy stopped feeling optional and started feeling emotionally necessary just to feel financially safe.",
+    longTerm: "At first, the pressure feels manageable because growth feels exciting. Then eventually the business becomes emotionally heavy to maintain because your body is carrying the weight of keeping everything functioning constantly. Days off stop feeling restful. Slow weeks start affecting your mood immediately. The schedule may look successful from the outside while internally you feel like the business owns all of your mental space.",
+    whatFixes: "The solution is not becoming more disciplined or working harder. The structure itself has to change. The business needs systems, positioning, leverage, and income opportunities that reduce emotional dependence on your nonstop availability. The goal is building something that can eventually support your life instead of requiring your constant physical presence just to survive.",
+    whyGoldStandard: "The Gold Standard breaks down exactly why beauty businesses become emotionally tied to constant availability and how to begin building beyond that model without throwing away everything you already built."
+  },
+  emotional_labor_debt: {
+    title: "EMOTIONAL LABOR DEBT",
+    subtitle: "You're Carrying More Than The Service Itself",
+    whatsHappening: "Your exhaustion is not only physical. A large part of it comes from constantly carrying emotional energy all day long. Listening to people. Managing emotions. Reassuring clients. Staying emotionally present. Absorbing stress while still needing to remain warm, calm, attentive, and professional yourself. Most beauty professionals normalize this so deeply they stop realizing how much emotional pressure they are carrying daily.",
+    whyItHappens: "The beauty industry quietly rewards emotional availability. Clients come back because of how you make them feel, not only because of the technical service itself. Over time, emotional support becomes part of the business model whether you intended it to or not. That means your nervous system never fully gets to relax because emotionally, you are still \"on\" for people constantly.",
+    longTerm: "Eventually the emotional exhaustion starts becoming heavier than the actual appointments. Providers begin feeling mentally overstimulated, emotionally drained, disconnected from themselves, or resentful without fully understanding why. A lot of people assume they are simply \"burned out,\" when really they have been emotionally overloaded for years without enough structure protecting them underneath it.",
+    whatFixes: "You do not need to stop caring about people. You need stronger boundaries, systems, emotional separation, and a business structure that does not depend entirely on your emotional energy to maintain loyalty and income. The goal is building a business where connection still exists without emotional depletion becoming the cost of keeping it alive.",
+    whyGoldStandard: "The Gold Standard explains why emotional labor affects beauty professionals so deeply and how structure, positioning, and boundaries directly impact long term emotional sustainability."
+  },
+  fully_booked_illusion: {
+    title: "THE FULLY BOOKED ILLUSION",
+    subtitle: "You're Busy Constantly But Still Don't Feel Stable",
+    whatsHappening: "Your schedule may look successful, but emotionally and financially the business still feels fragile underneath it. You stay booked, work constantly, and keep pushing yourself, yet slow weeks still create stress and time off still feels expensive. That usually means the business is scaling labor instead of building real stability.",
+    whyItHappens: "The industry teaches providers to chase bookings instead of building scalable business structure. So eventually many people become fully booked while still depending completely on nonstop appointments to maintain income. More growth creates more work. More work creates more pressure. And the nervous system never fully relaxes because the business still depends on constant physical output.",
+    longTerm: "A lot of providers quietly realize they built a business that only works if they never stop moving. The schedule fills up, but freedom never fully arrives. Rest starts feeling financially dangerous. Burnout slowly increases even while the business technically appears successful online and to other people.",
+    whatFixes: "The solution is not adding more appointments. The business needs structure that creates leverage instead of only creating more labor. Stronger positioning, scalable income opportunities, better systems, and less emotional dependency on being booked every hour of the week.",
+    whyGoldStandard: "The Gold Standard explains why fully booked does not automatically mean financially free and how to begin building a business that eventually grows beyond nonstop appointments alone."
+  },
+  urgency_conditioning: {
+    title: "URGENCY CONDITIONING",
+    subtitle: "Your Nervous System Got Used To Constant Pressure",
+    whatsHappening: "Your body has been operating under pressure for so long that urgency started feeling normal. Notifications, appointments, cancellations, reschedules, messages, income fluctuations, and constant decision making became part of everyday life. Now quiet moments almost feel uncomfortable because your nervous system adapted to functioning inside constant stimulation.",
+    whyItHappens: "Every time pressure appeared, the business taught you to respond faster, work harder, and stay emotionally alert. Over time, urgency became tied to productivity and productivity became tied to emotional safety. That is why slowing down now feels emotionally unfamiliar even when your body clearly needs rest.",
+    longTerm: "Many providers eventually lose the ability to feel calm without pressure attached to it. Rest becomes difficult. Slow periods create anxiety. The nervous system stays alert even after work is finished. Eventually the body starts carrying chronic emotional exhaustion because it never fully leaves survival mode.",
+    whatFixes: "This is not fixed through motivation or \"better time management.\" The structure itself has to create more stability. The business needs systems, boundaries, predictable structure, and income models that reduce constant emotional reactivity and pressure.",
+    whyGoldStandard: "The Gold Standard explains how beauty businesses unintentionally train providers into survival mode and how to begin building a calmer, more sustainable structure instead."
+  },
+  burnout_architecture: {
+    title: "BURNOUT ARCHITECTURE",
+    subtitle: "Your Business Was Built In A Way That Drains You",
+    whatsHappening: "The exhaustion is not happening because you are weak, lazy, or unmotivated. The structure itself is creating pressure faster than your body can recover from it. The business currently depends on your constant output, emotional regulation, communication, availability, and labor all at the same time.",
+    whyItHappens: "Most beauty businesses are unintentionally built around survival instead of sustainability. Providers keep adding more clients, more hours, more responsibilities, and more emotional labor without enough systems underneath them to reduce pressure. Eventually the business itself starts producing burnout structurally.",
+    longTerm: "At first, overworking feels productive. Then eventually the business becomes emotionally expensive to maintain. Providers begin losing energy, clarity, patience, creativity, and emotional capacity while still forcing themselves to keep functioning because the structure leaves very little room to slow down safely.",
+    whatFixes: "The answer is not simply resting more. The business itself has to become less emotionally consuming. Better systems, stronger boundaries, scalable structure, positioning, and leverage all reduce the amount of pressure your body is carrying every day.",
+    whyGoldStandard: "The Gold Standard explains why burnout becomes built directly into beauty business models and how to start restructuring the business into something more stable and sustainable long term."
+  },
+  service_ceiling: {
+    title: "THE SERVICE CEILING",
+    subtitle: "Your Income Still Depends On Your Physical Output",
+    whatsHappening: "You may already be talented, experienced, and in demand, but the business still depends heavily on how much your body can physically produce. More income still requires more appointments, more hours, more emotional energy, and more availability. That creates a ceiling where eventually growth starts feeling heavier instead of freer.",
+    whyItHappens: "Most providers were taught how to perfect the service, not how to build beyond it. So the business continues scaling labor instead of scaling structure. Every increase in demand still requires more of your time, which means eventually the body itself becomes the limitation controlling business growth.",
+    longTerm: "Many beauty professionals eventually realize they created a successful business that still cannot function without nonstop physical involvement. The schedule becomes emotionally overwhelming because growth no longer creates more freedom. It only creates more responsibility and more pressure to maintain momentum constantly.",
+    whatFixes: "The business needs systems that eventually allow income, authority, and growth to expand beyond appointments alone. Strong positioning, scalable offers, operational structure, and leverage reduce dependency on physical output over time.",
+    whyGoldStandard: "The Gold Standard explains why the service based business model eventually becomes emotionally and financially limiting and how to begin building a business capable of growing beyond nonstop labor."
+  },
+  identity_based_burnout: {
+    title: "IDENTITY BASED BURNOUT",
+    subtitle: "Exhaustion Slowly Became Part Of Who You Are",
+    whatsHappening: "At some point, overworking stopped feeling temporary and started becoming your identity. You became known as the dependable one, the hardworking one, the booked one, the provider who always pushes through no matter how tired they are. Because people admired that version of you, it became harder to separate your worth from exhaustion itself.",
+    whyItHappens: "The industry constantly rewards self sacrifice. More hours create more income. More availability creates more loyalty. More emotional labor creates stronger client attachment. Eventually burnout becomes normalized because overworking feels emotionally tied to ambition, responsibility, and success.",
+    longTerm: "Many providers slowly lose the ability to recognize how exhausted they actually are because functioning overwhelmed became normal. The body keeps going while emotional capacity quietly shrinks underneath it. Eventually resentment, numbness, emotional exhaustion, and disconnection from the work itself start replacing passion.",
+    whatFixes: "The goal is not becoming less ambitious. The goal is building a business that no longer requires self abandonment to survive. Structure, systems, boundaries, leverage, and calmer operational models reduce the emotional cost of growth long term.",
+    whyGoldStandard: "The Gold Standard explains why burnout becomes emotionally attached to identity in beauty businesses and how to begin separating success from nonstop self sacrifice."
+  },
+  nervous_system_business_models: {
+    title: "NERVOUS SYSTEM BUSINESS MODELS",
+    subtitle: "Your Business Is Affecting Your Body More Than You Realize",
+    whatsHappening: "Your business is not only affecting your schedule. It is affecting your nervous system constantly. The uncertainty, pressure, emotional labor, constant responsiveness, and financial inconsistency keep your body emotionally alert far more often than it should be. Over time, your nervous system adapts to operating inside chronic stress.",
+    whyItHappens: "Most beauty businesses unintentionally create emotional unpredictability. Income changes constantly. Demand changes constantly. Client emotions change constantly. The business teaches providers to remain emotionally available and hyper responsive at all times just to maintain stability.",
+    longTerm: "Eventually the body struggles to fully relax even during breaks. Many providers begin experiencing emotional exhaustion, overstimulation, anxiety, irritability, sleep issues, or chronic mental fatigue because the nervous system never fully exits work mode emotionally.",
+    whatFixes: "The business itself needs more emotional stability built into it. Systems, structure, stronger positioning, boundaries, operational clarity, and more scalable income models reduce how much survival pressure the nervous system carries every day.",
+    whyGoldStandard: "The Gold Standard explains how labor dependent beauty businesses directly affect emotional regulation and what it actually takes to build a calmer, more sustainable business structure long term."
+  },
+  building_beyond_the_chair: {
+    title: "BUILDING BEYOND THE CHAIR",
+    subtitle: "You're Ready For The Business To Grow Beyond Constant Labor",
+    whatsHappening: "You are starting to realize the goal was never simply staying booked forever. You want more stability, more structure, more freedom, and a business that eventually supports your life instead of consuming all of it. You are no longer only thinking like a provider. You are starting to think like someone who wants to build something that lasts.",
+    whyItHappens: "Eventually many beauty professionals reach a point where they understand that nonstop appointments alone cannot create the life they actually want long term. The body gets tired. Emotional capacity gets stretched thin. And the business starts revealing the limits of labor based growth models.",
+    longTerm: "Without change, many providers remain trapped in cycles where success still requires nonstop physical output forever. But once this realization happens, people usually start craving something deeper than more bookings. They start craving sustainability, leverage, authority, freedom, and peace.",
+    whatFixes: "This is where structure changes everything. Systems. Positioning. Scalable business models. Authority based growth. Income opportunities that do not disappear every time you step away. The goal becomes building a business that eventually expands beyond your constant physical availability.",
+    whyGoldStandard: "The Gold Standard was built specifically for beauty professionals who know they are capable of more than surviving inside nonstop appointments forever. It explains how to begin transitioning from labor based survival into long term business structure and scalable growth."
+  }
+};
 
 export function QuizPage() {
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [showIntro, setShowIntro] = useState(true);
+  const { addItem } = useCart();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [showResults, setShowResults] = useState(false);
+  const [answers, setAnswers] = useState<DiagnosticResult[]>([]);
+  const [answerTexts, setAnswerTexts] = useState<string[]>([]);
+  const [sessionId] = useState(() => crypto.randomUUID());
+  const [showResult, setShowResult] = useState(false);
+  const [primaryResult, setPrimaryResult] = useState<DiagnosticResult | null>(null);
+  const [secondaryResult, setSecondaryResult] = useState<DiagnosticResult | null>(null);
 
-  const handleAnswer = (optionIndex: number) => {
-    const newAnswers = [...answers, optionIndex];
+  const handleAnswer = async (answerIndex: number) => {
+    const selectedAnswer = diagnosticQuestions[currentQuestion].answers[answerIndex];
+    const newAnswers = [...answers, ...selectedAnswer.patterns];
+    const newAnswerTexts = [...answerTexts, selectedAnswer.text];
     setAnswers(newAnswers);
+    setAnswerTexts(newAnswerTexts);
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < diagnosticQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      setShowResults(true);
-      const selectedOption = questions[currentQuestion].options[optionIndex];
-      const answerType = typeof selectedOption === 'string' ? 'system' : selectedOption.type;
-      trackQuizCompletion(answerType === 'perception' ? "Brand Perception Audit" : answerType === 'expansion' ? "Brand Expansion Audit" : "AVERRA Brand Alignment System", newAnswers);
+      // Calculate results
+      const patternCounts: Record<DiagnosticResult, number> = {
+        availability_trap: 0,
+        emotional_labor_debt: 0,
+        fully_booked_illusion: 0,
+        urgency_conditioning: 0,
+        burnout_architecture: 0,
+        service_ceiling: 0,
+        identity_based_burnout: 0,
+        nervous_system_business_models: 0,
+        building_beyond_the_chair: 0
+      };
+
+      newAnswers.forEach(pattern => {
+        patternCounts[pattern]++;
+      });
+
+      const sortedPatterns = (Object.keys(patternCounts) as DiagnosticResult[])
+        .sort((a, b) => patternCounts[b] - patternCounts[a]);
+
+      const primary = sortedPatterns[0];
+      const secondary = sortedPatterns[1];
+
+      setPrimaryResult(primary);
+      setSecondaryResult(secondary);
+      setShowResult(true);
+
+      // Store diagnostic result via server
+      try {
+        const answerData: Record<string, string> = {};
+        diagnosticQuestions.forEach((q, index) => {
+          if (index < newAnswerTexts.length) {
+            answerData[`question_${q.id}_answer`] = newAnswerTexts[index];
+          }
+        });
+
+        const deviceType = isMobile ? "mobile" : "desktop";
+
+        const response = await fetch(
+          `https://${projectId}.supabase.co/functions/v1/make-server-61755bec/save-diagnostic-result`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${publicAnonKey}`
+            },
+            body: JSON.stringify({
+              session_id: sessionId,
+              primary_result: primary,
+              secondary_result: secondary,
+              ...answerData,
+              device_type: deviceType,
+              traffic_source: document.referrer || "direct"
+            })
+          }
+        );
+
+        if (!response.ok) {
+          // Silently log - don't break user experience
+          console.warn("Diagnostic save warning");
+        }
+
+        trackAction("diagnostic_completed", {
+          primary_result: primary,
+          secondary_result: secondary
+        });
+      } catch (error) {
+        // Silently fail - server not required for quiz to function
+      }
     }
   };
 
-  const handleBack = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      setAnswers(answers.slice(0, -1));
-    }
-  };
-
-  const getTierRecommendation = useMemo(() => {
-    if (answers.length === 0) return "AVERRA Brand Alignment System";
-
-    const typeCounts = { system: 0, perception: 0, expansion: 0 };
-
-    answers.forEach((answerIndex, questionIndex) => {
-      const option = questions[questionIndex].options[answerIndex];
-      const type = typeof option === 'string' ? 'system' : option.type;
-      typeCounts[type as keyof typeof typeCounts]++;
+  const handleGetEbook = async () => {
+    addItem({
+      id: "gold-standard-ebook",
+      name: "The Gold Standard eBook",
+      price: 97,
+      originalPrice: 147,
+      quantity: 1,
+      type: "digital"
     });
 
-    if (typeCounts.perception > typeCounts.system && typeCounts.perception > typeCounts.expansion) {
-      return "Brand Perception Audit";
-    } else if (typeCounts.expansion > typeCounts.system && typeCounts.expansion > typeCounts.perception) {
-      return "Brand Expansion Audit";
-    } else {
-      return "AVERRA Brand Alignment System";
+    trackAction("diagnostic_ebook_cta_clicked", {
+      primary_result: primaryResult,
+      secondary_result: secondaryResult
+    });
+
+    // Update CTA click via server
+    try {
+      await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-61755bec/diagnostic-result/${sessionId}/cta-click`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${publicAnonKey}`
+          }
+        }
+      );
+    } catch (error) {
+      // Silently fail - server not required for checkout to function
     }
-  }, [answers]);
 
-  const getTierContent = useMemo(() => {
-    return (tier: string) => {
-      if (tier === "Brand Perception Audit") {
-        return {
-          subtitle: "Your brand needs a focused evaluation to understand what's not translating.",
-          sections: [
-            {
-              title: "Here's What We're Seeing",
-              content: "You have a brand presence, but something feels off and you're not sure exactly what's lowering your perceived value.\n\nYour visuals might look decent at first glance, but when someone scrolls through, the message isn't landing. Elements conflict. The cohesion is missing. And as a result, your brand doesn't communicate the level of work you're actually delivering.\n\nYou don't need a full rebuild. You need clarity on what's not working."
-            },
-            {
-              title: "What You Need Right Now",
-              subtitle: "Brand Perception Audit",
-              content: "A focused evaluation of how your brand is currently being seen.\n\nWhat This Covers: Message clarity, visual consistency, perceived value, and content performance.\n\nWhat Is Identified: Where your brand loses its message, where visuals conflict, and what is lowering how your work is perceived.\n\nYou'll receive a clear breakdown of what's not translating so you know exactly what needs to change."
-            },
-            {
-              title: "What Changes After This",
-              content: "You'll have a clear understanding of what's holding your brand back and a roadmap for what needs to be corrected. No more guessing. You'll know exactly where the gaps are and how to close them."
-            }
-          ]
-        };
-      } else if (tier === "Brand Expansion Audit") {
-        return {
-          subtitle: "Your brand needs structured support to scale without losing consistency.",
-          sections: [
-            {
-              title: "Here's What We're Seeing",
-              content: "Your brand has a foundation, but as output increases, consistency is starting to slip.\n\nThis happens when you're creating more content, booking more clients, or expanding your offerings but your brand wasn't built with systems that can hold that growth.\n\nYour visuals start to drift. Your messaging becomes less cohesive. And over time, the brand you worked to build no longer feels aligned. You don't need to start over. You need an extension that supports where you're going."
-            },
-            {
-              title: "What You Need Right Now",
-              subtitle: "Brand Expansion Audit",
-              content: "An extension of your brand system designed to support growth without losing consistency.\n\nWhat This Covers: Scaling content, maintaining visual alignment, and reinforcing brand standards at a higher level.\n\nWhat Is Identified: Where your brand begins to drift as output increases and what is needed to maintain control.\n\nYou'll receive guidance on how to scale confidently without losing your brand identity."
-            },
-            {
-              title: "What Changes After This",
-              content: "Your brand remains consistent, aligned, and recognizable as it grows. You'll have the structure to scale confidently, knowing your brand won't lose its identity in the process."
-            }
-          ]
-        };
-      } else {
-        return {
-          subtitle: "Your brand needs clear direction, visual alignment, and consistent structure.",
-          sections: [
-            {
-              title: "Here's What We're Seeing",
-              content: "You're talented, skilled, and ready for more. But somewhere between the work you do and how you show up, there's a disconnect.\n\nYour content may feel scattered. Your pricing may not reflect your value. Your visuals may contradict each other. And when potential clients land on your page, they're not seeing the full picture of what you offer.\n\nThis isn't about working harder or doing better work. It's about alignment.\n\nWhen your brand communicates clearly, clients recognize your value immediately. When it doesn't, they scroll past regardless of how good you actually are."
-            },
-            {
-              title: "What You Need Right Now",
-              subtitle: "The AVERRA Brand Alignment System",
-              content: "You need a complete system that addresses perception, translation, visual clarity, and consistency.\n\nThe AVERRA Brand Alignment System takes you through three critical stages:\n\nInterpretation: We define what your brand is actually trying to communicate. \n\nAlignment: We evaluate your visuals through a our 6 step visual system. Any inconsistencies are corrected so your visuals no longer conflict and your perceived value is elevated.\n\nStabilization: We create defined visual direction custom to your brand so that it's no longer inconsistent. This removes confusion and burnout for long term consistency.\n\nYou walk away with a custom brand direction, aligned visual framework, corrected perception and brand positioning, and a structured content system with clear standards for future content."
-            },
-            {
-              title: "What Happens If You Don't Fix This",
-              content: "You may keep attracting price shoppers instead of ideal clients. You may keep second guessing your rates. You may lose bookings to competitors who aren't better than you, just better branded.\n\nAnd you stay stuck in the cycle of I'll fix my brand later when later never comes."
-            },
-            {
-              title: "What Happens If You Do",
-              content: "Your brand becomes clear, consistent, and recognizable. Your content holds together. Your pricing feels justified. Clients see you at the level you're actually operating at.\n\nYou stop blending into an oversaturated market and start standing out with intention."
-            }
-          ]
-        };
-      }
-    };
-  }, []);
+    navigate("/checkout");
+  };
 
-  const getColorScheme = useMemo(() => {
-    return () => {
-      const schemes = [
-        { name: "Deep Noir & Champagne", colors: ["#0d0d0d", "#f9f6f0", "#d4c5a9"] },
-        { name: "Midnight & Gold", colors: ["#0d0d0d", "#d4c5a9", "#f9f6f0"] },
-        { name: "Couture Spring", colors: ["#f9f6f0", "#0d0d0d", "#d4c5a9"] }
-      ];
-      return schemes[answers[0] % schemes.length];
-    };
-  }, [answers]);
+  const progress = ((currentQuestion + 1) / diagnosticQuestions.length) * 100;
 
-  if (showIntro) {
+  if (showResult && primaryResult && secondaryResult) {
+    const primary = resultContent[primaryResult];
+    const secondary = resultContent[secondaryResult];
+
     return (
       <div className="min-h-screen bg-[#fdf5f7]">
         <Navigation />
 
-        {/* Intro - Centered elegant design over gradient */}
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-          {/* Soft gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#fdf5f7] via-[#c9969e]/10 to-[#fdf5f7]"></div>
-
-          {/* Subtle decorative elements */}
-          <div className="absolute inset-0 opacity-5 hidden md:block">
-            <div className="absolute top-20 right-20 w-[500px] h-[500px] bg-[#c9969e] rounded-full blur-[100px]"></div>
-            <div className="absolute bottom-20 left-20 w-[400px] h-[400px] bg-[#251218] rounded-full blur-[90px]"></div>
-          </div>
-
-          <div className="relative z-10 max-w-3xl mx-auto px-8 text-center">
-            <div className="mb-16">
-              <div className="inline-block px-10 py-3 bg-[#c9969e]/10 border border-[#c9969e]/30 backdrop-blur-sm mb-12">
-                <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9969e]" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300 }}>
-                  Brand Assessment
-                </p>
-              </div>
-
-              <h1
-                className="text-[clamp(3rem,8vw,6rem)] text-[#251218] leading-[0.95] mb-12"
-                style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-              >
-                Where Does Your Brand<br/>
-                <span className="italic font-light">Stand?</span>
+        <div className="max-w-5xl mx-auto px-6 pt-32 pb-20">
+          {/* Primary Result */}
+          <div className="mb-32">
+            <div className="text-center mb-16">
+              <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9969e] mb-6" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                Your Primary Diagnosis
+              </p>
+              <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] leading-[1.1] text-[#251218] mb-4" style={{ fontFamily: "Playfair Display, serif", fontWeight: 500 }}>
+                {primary.title}
               </h1>
-
-              <div className="w-20 h-px bg-[#c9969e] mx-auto mb-16"></div>
-
-              <div className="space-y-6 mb-16 max-w-2xl mx-auto">
-                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-                  You've grown a lot since you first started.
-                </p>
-                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-                  Your work is better. Your clientele is better. Your standards are higher.
-                </p>
-                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-                  But sometimes the brand doesn't evolve at the same pace.
-                </p>
-              </div>
-
-              <button
-                onClick={() => setShowIntro(false)}
-                className={`group relative inline-block px-16 py-6 bg-[#251218] text-[#fdf5f7] uppercase tracking-[0.5em] text-sm overflow-hidden ${
-                  !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218] hover:scale-105" : ""
-                } transition-all duration-700`}
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 400 }}
-              >
-                <span className="relative z-10">Begin Assessment</span>
-                <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full ${!isMobile ? "group-hover:translate-x-full" : ""} transition-transform duration-1000`}></div>
-              </button>
-            </div>
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-px h-16 bg-gradient-to-b from-[#c9969e] to-transparent"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (showResults) {
-    const tier = getTierRecommendation;
-    const colorScheme = getColorScheme();
-    const tierContent = getTierContent(tier);
-
-    return (
-      <div className="min-h-screen bg-[#fdf5f7] text-[#251218] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5 hidden md:block">
-          <div className="absolute top-20 right-20 w-[600px] h-[600px] bg-[#c9969e] rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-20 left-20 w-[500px] h-[500px] bg-[#251218] rounded-full blur-[90px]"></div>
-        </div>
-
-        <div className="relative z-10">
-          <Navigation />
-          <div className="max-w-5xl mx-auto px-8 py-32">
-
-            <div className="text-center mb-32">
-              <div className="inline-block mb-12 px-12 py-4 bg-white/50 backdrop-blur-sm border-y border-[#c9969e]/30">
-                <p className="text-xs uppercase tracking-[0.5em] text-[#c9969e]" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300 }}>
-                  Your Results
-                </p>
-              </div>
-
-              <div className="relative inline-block mb-12">
-                <div className="absolute inset-0 bg-[#c9969e]/20 blur-[80px]"></div>
-                <div className="relative px-16 py-10 bg-white/30 backdrop-blur-md border border-[#c9969e]/30 shadow-[0_20px_60px_rgba(201,150,158,0.15)]">
-                  <h1
-                    className="text-[clamp(2.5rem,8vw,5.5rem)] text-[#251218] leading-[0.95]"
-                    style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-                  >
-                    {tier}
-                  </h1>
-                </div>
-              </div>
-
-              <p
-                className="text-xl text-[#251218]/70 max-w-2xl mx-auto leading-relaxed"
-                style={{ fontFamily: "Lora, serif", fontWeight: 300, fontStyle: "italic" }}
-              >
-                {tierContent.subtitle}
+              <p className="text-2xl text-[#c9969e] italic" style={{ fontFamily: "Lora, serif", fontWeight: 400 }}>
+                {primary.subtitle}
               </p>
             </div>
 
-            <div className="space-y-20 mb-32">
-              {tierContent.sections.map((section, index) => (
-                <div key={index} className="relative">
-                  <div className="absolute -left-12 -top-12 text-[8rem] text-[#c9969e]/8 leading-none select-none z-10" style={{ fontFamily: "Playfair Display, serif" }}>
-                    {String(index + 1).padStart(2, '0')}
-                  </div>
+            <div className="space-y-12">
+              <section>
+                <h3 className="text-xl uppercase tracking-[0.3em] text-[#c9969e] mb-4" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                  What's Actually Happening
+                </h3>
+                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  {primary.whatsHappening}
+                </p>
+              </section>
 
-                  <div className="relative bg-white/40 backdrop-blur-sm p-16 border-l-2 border-[#c9969e] hover:bg-white hover:shadow-[0_20px_60px_rgba(201,150,158,0.15)] transition-all duration-700 z-0">
-                    <h2
-                      className="text-3xl text-[#251218] mb-8"
-                      style={{ fontFamily: "Playfair Display, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-                    >
-                      {section.title}
-                    </h2>
+              <section>
+                <h3 className="text-xl uppercase tracking-[0.3em] text-[#c9969e] mb-4" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                  Why This Keeps Happening
+                </h3>
+                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  {primary.whyItHappens}
+                </p>
+              </section>
 
-                    {section.subtitle && (
-                      <div>
-                        <div className="w-16 h-px bg-[#c9969e] mb-6"></div>
-                        <p
-                          className="text-xl text-[#c9969e] mb-8"
-                          style={{ fontFamily: "Lora, serif", fontWeight: 300, fontStyle: "italic" }}
-                        >
-                          {section.subtitle}
-                        </p>
-                      </div>
-                    )}
+              <section>
+                <h3 className="text-xl uppercase tracking-[0.3em] text-[#c9969e] mb-4" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                  What This Usually Turns Into Long Term
+                </h3>
+                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  {primary.longTerm}
+                </p>
+              </section>
 
-                    <div className="text-base text-[#251218]/80 leading-relaxed whitespace-pre-line" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-                      {section.content}
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <section>
+                <h3 className="text-xl uppercase tracking-[0.3em] text-[#c9969e] mb-4" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                  What Actually Fixes It
+                </h3>
+                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  {primary.whatFixes}
+                </p>
+              </section>
+
+              <section>
+                <h3 className="text-xl uppercase tracking-[0.3em] text-[#c9969e] mb-4" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                  Why The Gold Standard Was Built For You
+                </h3>
+                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                  {primary.whyGoldStandard}
+                </p>
+              </section>
+            </div>
+          </div>
+
+          {/* Secondary Result */}
+          <div className="mb-20 pt-20 border-t-2 border-[#c9969e]/30">
+            <div className="text-center mb-12">
+              <p className="text-[10px] uppercase tracking-[0.5em] text-[#c9969e]/70 mb-4" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+                Supporting Pattern
+              </p>
+              <h2 className="text-[clamp(2rem,4vw,3rem)] leading-[1.1] text-[#251218] mb-3" style={{ fontFamily: "Playfair Display, serif", fontWeight: 500 }}>
+                {secondary.title}
+              </h2>
+              <p className="text-xl text-[#c9969e]/80 italic" style={{ fontFamily: "Lora, serif", fontWeight: 400 }}>
+                {secondary.subtitle}
+              </p>
             </div>
 
-            <div className="text-center">
-              <Link
-                to={tier === "AVERRA Brand Alignment System" ? "/services" : "/services#audits"}
-                onClick={() => {
-                  sessionStorage.setItem(
-                    "selectedServiceTier",
-                    JSON.stringify({
-                      id: tier.toLowerCase().replace(/\s+/g, '-'),
-                      name: tier,
-                      type: "service",
-                    })
-                  );
-                  trackAction("CTA Click", { location: "Quiz Results", tier });
-                }}
-                className={`group relative inline-block px-24 py-7 bg-[#251218] text-[#fdf5f7] uppercase tracking-[0.5em] text-sm overflow-hidden ${
-                  !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218] hover:scale-105" : ""
-                } transition-all duration-700`}
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 400 }}
-              >
-                <span className="relative z-10">Get Started</span>
-                <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full ${!isMobile ? "group-hover:translate-x-full" : ""} transition-transform duration-1000`}></div>
-              </Link>
-
-              <div className="mt-12">
-                <button
-                  onClick={() => {
-                    setShowResults(false);
-                    setCurrentQuestion(0);
-                    setAnswers([]);
-                  }}
-                  className="text-sm text-[#251218]/60 uppercase tracking-[0.3em] hover:text-[#c9969e] transition-colors"
-                  style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300 }}
-                >
-                  Retake Quiz
-                </button>
-              </div>
+            <div className="space-y-8 opacity-90">
+              <p className="text-base text-[#251218]/70 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                {secondary.whatsHappening}
+              </p>
+              <p className="text-base text-[#251218]/70 leading-relaxed" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+                {secondary.whatFixes}
+              </p>
             </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center py-20">
+            <h3 className="text-3xl text-[#251218] mb-6" style={{ fontFamily: "Playfair Display, serif", fontWeight: 500 }}>
+              Ready to build beyond this?
+            </h3>
+            <p className="text-lg text-[#251218]/70 mb-10 max-w-2xl mx-auto" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
+              The Gold Standard breaks down exactly why these patterns exist and how to begin building a business that doesn't require constant self-sacrifice to survive.
+            </p>
+            <button
+              onClick={handleGetEbook}
+              className={`inline-flex items-center gap-3 px-12 py-5 bg-[#251218] text-[#fdf5f7] uppercase tracking-[0.3em] ${!isMobile ? 'hover:bg-[#c9969e] hover:text-[#251218]' : ''} transition-all duration-300 shadow-xl`}
+              style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700, fontSize: "0.875rem" }}
+            >
+              Download The Gold Standard
+              <ArrowRight className="w-5 h-5" />
+            </button>
+            <p className="text-sm text-[#c9969e] mt-4" style={{ fontFamily: "Lora, serif" }}>
+              $97 Founder Pricing — Instant Access
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
+  const question = diagnosticQuestions[currentQuestion];
+
   return (
-    <div className="min-h-screen bg-[#fdf5f7] text-[#251218] relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5 hidden md:block">
-        <div className="absolute top-40 right-20 w-[500px] h-[500px] bg-[#c9969e] rounded-full blur-[90px]"></div>
-        <div className="absolute bottom-40 left-20 w-[450px] h-[450px] bg-[#251218] rounded-full blur-[80px]"></div>
+    <div className="min-h-screen bg-[#fdf5f7]">
+      <Navigation />
+
+      {/* Progress Bar */}
+      <div className="fixed top-0 left-0 right-0 h-1 bg-[#251218]/10 z-50">
+        <div
+          className="h-full bg-[#c9969e] transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
       </div>
 
-      <Navigation />
-      <div className="relative max-w-4xl mx-auto px-8 py-24 min-h-screen flex flex-col justify-center">
-        <div className="mb-20">
-          {/* Progress - Rose gold dots */}
-          <div className="flex justify-center items-center gap-3 mb-16">
-            {questions.map((_, index) => (
-              <div
-                key={index}
-                className={`transition-all duration-500 ${
-                  index <= currentQuestion
-                    ? 'w-3 h-3 bg-[#c9969e]'
-                    : 'w-2 h-2 bg-[#c9969e]/20'
-                } rounded-full`}
-              />
-            ))}
-          </div>
+      <div className="max-w-3xl mx-auto px-6 pt-32 pb-20">
+        <div className="mb-12 text-center">
+          <p className="text-sm text-[#c9969e] mb-2" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}>
+            Question {currentQuestion + 1} of {diagnosticQuestions.length}
+          </p>
+        </div>
 
-          <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.5em] text-[#251218]/40 mb-8" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300 }}>
-              Question {currentQuestion + 1} of {questions.length}
-            </p>
+        <div className="mb-16">
+          <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] leading-[1.3] text-[#251218] text-center mb-12" style={{ fontFamily: "Playfair Display, serif", fontWeight: 500 }}>
+            {question.question}
+          </h2>
 
-            <h1
-              className="text-[clamp(1.75rem,5vw,3rem)] text-[#251218] leading-[1.2]"
-              style={{ fontFamily: 'Playfair Display, serif', fontWeight: 400, letterSpacing: "-0.01em" }}
-            >
-              {questions[currentQuestion].question}
-            </h1>
-          </div>
-
-          <div className="space-y-4 max-w-2xl mx-auto">
-            {questions[currentQuestion].options.map((option, index) => (
+          <div className="space-y-4">
+            {question.answers.map((answer, index) => (
               <button
                 key={index}
                 onClick={() => handleAnswer(index)}
-                className={`group w-full text-center relative bg-white/40 backdrop-blur-sm px-10 py-8 border border-[#c9969e]/20 ${
-                  !isMobile ? "hover:border-[#c9969e] hover:bg-white hover:shadow-[0_10px_40px_rgba(201,150,158,0.15)] hover:-translate-y-1" : ""
-                } transition-all duration-500 overflow-hidden`}
+                className={`w-full text-left px-8 py-6 bg-white/60 border-2 border-[#c9969e]/20 ${!isMobile ? 'hover:border-[#c9969e] hover:bg-[#c9969e]/5' : ''} transition-all duration-300 rounded-xl`}
               >
-                <div className={`absolute inset-0 bg-gradient-to-r from-[#c9969e]/0 via-[#c9969e]/10 to-[#c9969e]/0 -translate-x-full ${!isMobile ? "group-hover:translate-x-0" : ""} transition-transform duration-700`}></div>
-                <span className="relative text-lg text-[#251218]" style={{ fontFamily: "Lora, serif", fontWeight: 300 }}>
-                  {typeof option === 'string' ? option : option.text}
-                </span>
+                <p className="text-lg text-[#251218]" style={{ fontFamily: "Lora, serif", fontWeight: 400 }}>
+                  {answer.text}
+                </p>
               </button>
             ))}
           </div>
         </div>
 
         {currentQuestion > 0 && (
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-3 text-sm text-[#251218]/60 uppercase tracking-[0.3em] hover:text-[#c9969e] transition-colors mx-auto"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 300 }}
-          >
-            <ArrowLeft size={16} />
-            Previous
-          </button>
+          <div className="text-center">
+            <button
+              onClick={() => setCurrentQuestion(currentQuestion - 1)}
+              className="inline-flex items-center gap-2 text-[#c9969e] hover:text-[#251218] transition-colors"
+              style={{ fontFamily: "Montserrat, sans-serif", fontSize: "0.875rem", fontWeight: 600 }}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Previous Question
+            </button>
+          </div>
         )}
       </div>
     </div>

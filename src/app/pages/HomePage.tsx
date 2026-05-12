@@ -25,35 +25,35 @@ const editorialContent = [
   {
     number: "01",
     title: "THE ARCHIVE",
-    subtitle: "Premium Beauty",
+    subtitle: "Building Beyond The Chair",
     archiveDate: "Spring 2026"
   },
   {
     splitText: {
-      top: "Most beauty professionals struggle not because they lack skill,",
-      bottom: "Their brand doesn't reflect how good they actually are."
+      top: "Most beauty professionals struggle not because they're lazy.",
+      bottom: "They have a business model that still depends entirely on them being available."
     }
   },
   {
     process: true,
-    title: "THE AVERRA METHOD",
-    subtitle: "Clarify  Align  Standardize",
+    title: "THE AVERRA SYSTEM",
+    subtitle: "",
     steps: [
-  { number: "01", label: "CLARIFY", subtitle: "Identify Current Brand Perception", detail: " " },
-  { number: "02", label: "ALIGN", subtitle: "Establish Clarity & Value In Visual Direction", detail: " " },
-  { number: "03", label: "STANDARDIZE", subtitle: "Execute Your New System", detail: " " }
+  { number: "01", label: "IDENTIFY", subtitle: "Understand exactly what is keeping your business dependent on you and what it is quietly costing you.", detail: " " },
+  { number: "02", label: "BUILD", subtitle: "Create income, systems, and structure that allow your business to grow beyond nonstop appointments.", detail: " " },
+  { number: "03", label: "EXPAND", subtitle: "Build a business that continues moving even when you are not constantly available.", detail: " " }
 ]
   },
   null, // Nail Photo - clean, no text
   {
 boldStatement: {
   lines: [
-    { text: "Set your", size: "small", align: "left" },
-    { text: "STANDARD", size: "large", align: "left" },
-    { text: "Control your", size: "small", align: "center" },
-    { text: "PERCEPTION", size: "large", align: "center" },
-    { text: "Your pricing", size: "small", align: "right" },
-    { text: "FOLLOWS", size: "large", align: "right" }
+    { text: "Make more", size: "small", align: "left" },
+    { text: "MONEY", size: "large", align: "left" },
+    { text: "Work less", size: "small", align: "center" },
+    { text: "HOURS", size: "large", align: "center" },
+    { text: "Love your", size: "small", align: "right" },
+    { text: "BUSINESS again", size: "large", align: "right" }
       ]
     },
   }, // Lash Photo - from about
@@ -87,6 +87,10 @@ export function HomePage() {
   const isMobile = useIsMobile();
   const galleryRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // MOBILE PERFORMANCE: Simplified timing - stable and smooth over cinematic
+  // Mobile uses slightly slower but not excessive durations to maintain stability
+  const dur = (base: number) => isMobile ? base * 1.5 : base;
 
   useEffect(() => {
     const gallery = galleryRef.current;
@@ -226,18 +230,18 @@ export function HomePage() {
                 {index === 0 && (
                   <div className={`absolute inset-0 flex items-center justify-center z-10 ${isMobile ? "px-6" : "px-8"}`}>
                     <div className={`w-full text-center mx-auto ${isMobile ? "max-w-md mt-24" : "max-w-4xl mt-24"}`}>
-                      <motion.div 
+                      <motion.div
                         className={`${isMobile ? "space-y-2 mb-8" : "space-y-4 mb-8"}`}
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.2 }}
+                        transition={{ duration: dur(1), delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <motion.p
                           className={`leading-tight text-white/95 ${isMobile ? "text-[2rem]" : "text-4xl xl:text-5xl 2xl:text-6xl"}`}
                           style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 500, letterSpacing: "0.03em" }}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.8, delay: 0.4 }}
+                          transition={{ duration: dur(0.8), delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         >
                           Beauty&apos;s New Blueprint
                         </motion.p>
@@ -246,17 +250,17 @@ export function HomePage() {
                           style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "0.04em" }}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.8, delay: 0.6 }}
+                          transition={{ duration: dur(0.8), delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
                         >
-                          Hesitation Is Expensive.
+                          Make Your Money Work For You
                         </motion.p>
                       </motion.div>
 
-                      <motion.div 
+                      <motion.div
                         className={`flex flex-col items-center ${isMobile ? "space-y-3 mt-6" : "space-y-4 mt-10"}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.8 }}
+                        transition={{ duration: dur(0.8), delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                       >
                         {!isMobile ? (
                           <MagneticButton
@@ -268,7 +272,7 @@ export function HomePage() {
                               letterSpacing: "0.15em",
                             }}
                           >
-                            Start Your Brand Quiz
+                            Take The Quiz →
                           </MagneticButton>
                         ) : (
                           <a
@@ -280,7 +284,7 @@ export function HomePage() {
                               letterSpacing: "0.15em",
                             }}
                           >
-                            Start Your Brand Quiz
+                            Take The Quiz →
                           </a>
                         )}
                       </motion.div>
@@ -288,27 +292,27 @@ export function HomePage() {
                     
                     {/* Spread out text at bottom */}
                     <div className={`absolute ${isMobile ? "bottom-6 left-0 right-0 px-6" : "bottom-12 left-0 right-0 px-12"}`}>
-                      <motion.div 
+                      <motion.div
                         className={`flex ${isMobile ? "justify-between items-center" : "justify-between items-center"}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 1, staggerChildren: 0.2 }}
+                        transition={{ duration: dur(0.8), delay: 1, staggerChildren: 0.2, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <motion.p
                           className={`text-white/80 tracking-wide ${isMobile ? "text-xs" : "text-lg xl:text-xl"}`}
                           style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.6, delay: 1.1 }}
+                          transition={{ duration: dur(0.6), delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
                         >
-                          Apply
+                          Start Here
                         </motion.p>
                         <motion.p
                           className={`text-white/80 tracking-wide ${isMobile ? "text-xs" : "text-lg xl:text-xl"}`}
                           style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.6, delay: 1.3 }}
+                          transition={{ duration: dur(0.6), delay: 1.3, ease: [0.16, 1, 0.3, 1] }}
                         >
                           The
                         </motion.p>
@@ -317,7 +321,7 @@ export function HomePage() {
                           style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.6, delay: 1.5 }}
+                          transition={{ duration: dur(0.6), delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
                         >
                           Standard
                         </motion.p>
@@ -336,28 +340,28 @@ export function HomePage() {
                         <FadeInUp delay={0.2}>
                           <div className={`${isMobile ? "mb-4" : "mb-6"} flex items-center gap-4`}>
                             <div className={`${isMobile ? "w-8" : "w-12"} h-[2px] bg-white/60`} />
-                            <p 
+                            <p
                               className={`${isMobile ? "text-[0.6rem]" : "text-xs"} text-white/50 uppercase tracking-[0.5em]`}
                               style={{ fontFamily: "Inter, sans-serif", fontWeight: 600 }}
                             >
-                              AVERRA ASSESSMENT
+                              AVERRA QUIZ
                             </p>
                           </div>
                         </FadeInUp>
-                        
+
                         <FadeInUp delay={0.3}>
                           <h2 
                             className={`${isMobile ? "text-[2.75rem] leading-[0.95]" : "text-[6.5rem] xl:text-[7.5rem] leading-[0.9]"} text-white uppercase mb-6`}
-                            style={{ 
-                              fontFamily: "Bebas Neue, sans-serif", 
-                              fontWeight: 700, 
+                            style={{
+                              fontFamily: "Bebas Neue, sans-serif",
+                              fontWeight: 700,
                               letterSpacing: "0.03em"
                             }}
                           >
-                            What Is<br />
-                            Your Brand<br />
-                            Actually<br />
-                            Saying?
+                            Find out<br />
+                            exactly<br />
+                            where to<br />
+                            start.
                           </h2>
                         </FadeInUp>
                         
@@ -368,7 +372,7 @@ export function HomePage() {
                               className="text-base text-white/85 leading-relaxed mb-8 max-w-sm"
                               style={{ fontFamily: "Cormorant, serif", fontWeight: 300 }}
                             >
-                              Take the quick quiz and get a personalized breakdown of where you stand and what it&apos;s going to take to get to the next level.
+                              Answer 10 honest questions about your business right now. We&apos;ll tell you exactly what you need and why.
                             </p>
                           </FadeInUp>
                         )}
@@ -383,7 +387,7 @@ export function HomePage() {
                               className="text-2xl xl:text-3xl text-white/90 leading-relaxed mb-10"
                               style={{ fontFamily: "Cormorant, serif", fontWeight: 300, letterSpacing: "0.01em" }}
                             >
-                              Take the quick quiz and get a personalized breakdown of where you stand and what it&apos;s going to take to get to the next level.
+                              Answer 10 honest questions about your business right now. We&apos;ll tell you exactly what you need and why.
                             </p>
                           </FadeInUp>
                         )}
@@ -401,7 +405,7 @@ export function HomePage() {
                                   letterSpacing: "0.15em",
                                 }}
                               >
-                                Take Quiz →
+                                Take The Quiz →
                               </MagneticButton>
                             ) : (
                               <a
@@ -413,7 +417,7 @@ export function HomePage() {
                                   letterSpacing: "0.15em",
                                 }}
                               >
-                                Take Quiz →
+                                Take The Quiz →
                               </a>
                             )}
                           </FadeInUp>
@@ -471,7 +475,7 @@ export function HomePage() {
                           initial={{ scaleX: 0, opacity: 0 }}
                           whileInView={{ scaleX: 1, opacity: 1 }}
                           viewport={{ once: true }}
-                          transition={{ duration: 1.2, delay: 0.4 }}
+                          transition={{ duration: dur(1.2), delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         />
                       )}
                     </div>
@@ -572,7 +576,7 @@ export function HomePage() {
                               initial={{ opacity: 0, scale: 0.8 }}
                               whileInView={{ opacity: 0.1, scale: 1 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8 }}
+                              transition={{ duration: dur(0.8), ease: [0.16, 1, 0.3, 1] }}
                             >
                               &ldquo;
                             </motion.div>
@@ -738,7 +742,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 48 : 64 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: 0.3 }}
+                              transition={{ duration: dur(0.8), delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             />
                             <p 
                               className={`${isMobile ? "text-lg" : "text-2xl xl:text-3xl"} text-white/90 leading-relaxed max-w-2xl`}
@@ -767,7 +771,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 48 : 64 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: 0.5 }}
+                              transition={{ duration: dur(0.8), delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                             />
                           </div>
                         </FadeInUp>
@@ -785,7 +789,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 64 : 96 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: 0.3 }}
+                              transition={{ duration: dur(0.8), delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             />
                             <p 
                               className={`${isMobile ? "text-lg" : "text-2xl xl:text-3xl"} text-white/90 leading-relaxed text-center max-w-2xl`}
@@ -798,7 +802,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 64 : 96 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: 0.3 }}
+                              transition={{ duration: dur(0.8), delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                             />
                           </div>
                         </FadeInUp>
@@ -811,7 +815,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 64 : 96 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: 0.5 }}
+                              transition={{ duration: dur(0.8), delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                             />
                             <p 
                               className={`${isMobile ? "text-lg" : "text-2xl xl:text-3xl"} text-white/90 leading-relaxed text-center max-w-2xl`}
@@ -824,7 +828,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 64 : 96 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.8, delay: 0.5 }}
+                              transition={{ duration: dur(0.8), delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                             />
                           </div>
                         </FadeInUp>
@@ -852,7 +856,7 @@ export function HomePage() {
                               initial={{ width: 0 }}
                               whileInView={{ width: isMobile ? 32 : 48 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.6, delay: 0.4 }}
+                              transition={{ duration: dur(0.6), delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
                             />
                           </div>
                         </FadeInUp>
@@ -870,7 +874,7 @@ export function HomePage() {
                                 initial={{ width: 0 }}
                                 whileInView={{ width: isMobile ? 32 : 48 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: 0.6 }}
+                                transition={{ duration: dur(0.6), delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
                               />
                               <p 
                                 className={`${isMobile ? "text-base" : "text-xl xl:text-2xl"} text-white/90 leading-relaxed`}
@@ -962,7 +966,7 @@ export function HomePage() {
                                     initial={{ opacity: 0, scale: 0.5 }}
                                     whileInView={{ opacity: 0.6, scale: 1 }}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.6, delay: 0.3 + pairIndex * 0.4 }}
+                                    transition={{ duration: dur(0.6), delay: 0.3 + pairIndex * 0.4, ease: [0.16, 1, 0.3, 1] }}
                                   >
                                     <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M0 16H45M45 16L30 2M45 16L30 30" stroke="white" strokeOpacity="0.6" strokeWidth="2.5"/>

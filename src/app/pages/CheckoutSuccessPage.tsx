@@ -56,7 +56,7 @@ export function CheckoutSuccessPage() {
           </div>
 
           <p className="text-lg text-[#c9969e]/80 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Lora, serif' }}>
-            Payment confirmed. We're thrilled to partner with you in elevating your brand presence to reflect the caliber of work you create.
+            Payment confirmed. Your copy of The Gold Standard is ready. Check your email for instant access.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export function CheckoutSuccessPage() {
                       Check Your Email
                     </p>
                     <p className="text-[#c9969e]/70 text-sm">
-                      Your order confirmation and detailed next steps are waiting in your inbox.
+                      Your order confirmation and ebook access link are waiting in your inbox.
                     </p>
                   </div>
                 </div>
@@ -97,10 +97,10 @@ export function CheckoutSuccessPage() {
                   </div>
                   <div>
                     <p className="text-[#251218] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
-                      Schedule Your Session
+                      Access Your eBook
                     </p>
                     <p className="text-[#c9969e]/70 text-sm">
-                      You'll receive your Calendly booking link within 24 hours to schedule your strategy call.
+                      Read The Gold Standard instantly in your Members Library. Lifetime access included.
                     </p>
                   </div>
                 </div>
@@ -111,10 +111,10 @@ export function CheckoutSuccessPage() {
                   </div>
                   <div>
                     <p className="text-[#251218] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
-                      Define Your Direction
+                      Start Reading
                     </p>
                     <p className="text-[#c9969e]/70 text-sm">
-                      We'll align on your vision before production begins—ensuring intention, not trends.
+                      Begin with the Introduction or jump to any chapter. Read at your own pace.
                     </p>
                   </div>
                 </div>
@@ -125,10 +125,10 @@ export function CheckoutSuccessPage() {
                   </div>
                   <div>
                     <p className="text-[#251218] font-semibold mb-1" style={{ fontFamily: 'Lora, serif' }}>
-                      Receive Your Assets
+                      Take the Quiz
                     </p>
                     <p className="text-[#c9969e]/70 text-sm">
-                      Your custom brand visuals delivered within 7-10 business days.
+                      After reading, take the quiz to see where you are now and what to build next.
                     </p>
                   </div>
                 </div>
@@ -193,37 +193,37 @@ export function CheckoutSuccessPage() {
         {/* Quote Section */}
         <div className="text-center mb-12 py-12 border-y border-[#301710]/10">
           <p className="text-3xl md:text-4xl text-[#251218] max-w-3xl mx-auto leading-relaxed" style={{ fontFamily: 'Cormorant, serif', fontWeight: 300, fontStyle: 'italic' }}>
-            "Your brand should feel like the work you create—intentional, refined, unmistakably yours."
+            "Your business should eventually support your life. Not consume all of it."
           </p>
           <p className="text-[#c9969e]/60 text-sm mt-4 uppercase tracking-[0.3em]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300 }}>
-            — The AVERRA Philosophy
+            — The Gold Standard
           </p>
         </div>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
-            to="/"
+            to="/ebook?access=granted"
             className="group inline-flex items-center gap-3 px-10 py-4 bg-[#251218] text-[#DCDACC] uppercase tracking-[0.3em] hover:bg-[#251218]/90 transition-all shadow-lg hover:shadow-xl"
             style={{ fontFamily: 'Lora, serif', fontWeight: 600, fontSize: '11px' }}
           >
-            Return Home
+            Read Now
             <span className="group-hover:translate-x-1 transition-transform">→</span>
           </Link>
-          
+
           <Link
-            to="/services"
+            to="/quiz-intro"
             className="group inline-flex items-center gap-3 px-10 py-4 border-2 border-[#301710] text-[#251218] uppercase tracking-[0.3em] hover:bg-[#251218] hover:text-[#DCDACC] transition-all"
             style={{ fontFamily: 'Lora, serif', fontWeight: 600, fontSize: '11px' }}
           >
-            Explore More Services
+            Take The Quiz
             <span className="group-hover:translate-x-1 transition-transform">→</span>
           </Link>
         </div>
 
         {/* Footer note */}
         <p className="text-center text-[#c9969e]/50 text-xs mt-16 italic" style={{ fontFamily: 'Lora, serif' }}>
-          We can't wait to begin this creative journey with you.
+          Welcome to building beyond the chair.
         </p>
       </div>
     </div>

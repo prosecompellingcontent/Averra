@@ -2,14 +2,11 @@
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { CartProvider } from "@/app/context/CartContext";
 
 export default function App() {
   return (
     <ErrorBoundary>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
+      <RouterProvider router={router} />
     </ErrorBoundary>
   );
 }

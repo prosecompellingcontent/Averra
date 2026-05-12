@@ -1,1383 +1,1173 @@
 import { Navigation } from "@/app/components/Navigation";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
 import { useCart } from "@/app/context/CartContext";
 import { CTAFooter } from "@/app/components/CTAFooter";
 import { MarqueeScroll } from "@/app/components/MarqueeScroll";
-import { trackAction } from "@/utils/analytics";
-import { getImageUrl } from "@/utils/imageHelpers";
-
-const brandAlignmentService = {
-  id: "brand-alignment",
-  name: "AVERRA Brand Alignment System",
-  subtitle: "Industry Standard Alignment",
-  price: "$250",
-  salePrice: "$100",
-  priceNum: 100,
-  originalPriceNum: 250,
-  description:
-    "A complete alignment system built to ensure your brand reflects the level you're intentionally operating at so the right clients find you.",
-  industryStandard: {
-    title: "The Industry Standard",
-    intro:
-      "When there's no defined brand identity behind your visuals, content becomes scattered, clients become inconsistent, and loyalty drops no matter how good the work is.",
-    standards: [
-      {
-        name: "Perception",
-        description: "How your brand is seen at first glance.",
-      },
-      {
-        name: "Translation",
-        description: "How clearly your message is communicated.",
-      },
-      {
-        name: "Visual Clarity",
-        description: "How aligned your visuals appear.",
-      },
-      {
-        name: "Consistency",
-        description: "How reliable your brand identity remains.",
-      },
-    ],
-    conclusionPart1: "If any of these are off, your value decreases.",
-    conclusionPart2: "Our system corrects that.",
-  },
-  stages: [
-    {
-      name: "Interpretation",
-      subtitle: "Determining Brand Direction",
-      detail:
-        "We establish your brand identity and intention so everything you create leaves no room for misinterpretation.",
-    },
-    {
-      name: "Alignment",
-      subtitle: "Unifies The Presentation",
-      detail:
-        "We evaluate every visual element so everything communicates equally. This eliminates mixed signals and strengthens how your brand is perceived.",
-    },
-    {
-      name: "Stabilization",
-      subtitle: "Maintaining Consistency",
-      detail:
-        "A structured visual system is built custom to your brand so your content stays consistent, controlled, and aligned as you grow.",
-    },
-  ],
-  deliverables: [
-    "Defined brand direction",
-    "Aligned visual framework",
-    "Corrected perception and positioning",
-    "Structured content system with clear standards for future content",
-  ],
-};
-
-const auditAddOns = [
-  {
-    id: "brand-perception-audit",
-    name: "Brand Perception Audit",
-    price: "$100",
-    salePrice: "$75",
-    priceNum: 75,
-    originalPriceNum: 100,
-    subtitle: "A focused evaluation of how your brand is currently being seen",
-    whatThisCovers:
-      "Visual consistency, message clarity, perceived value, and overall brand presence.",
-    whatIsIdentified:
-      "What your visuals are actually communicating and where they're lowering the level of your brand.",
-    outcome:
-      "Exact direction on what to address so nothing about your brand undersells or contradicts what you're actually capable of.",
-  },
-  {
-    id: "brand-expansion-audit",
-    name: "Brand Expansion Audit",
-    price: "$100",
-    salePrice: "$75",
-    priceNum: 75,
-    originalPriceNum: 100,
-    subtitle:
-      "A focused consultation on how to scale your brand without your identity or perception shifting in the process.",
-    whatThisCovers:
-      "Where your brand starts to drift as content increases and what's needed to keep it controlled.",
-    whatIsIdentified:
-      "Where your brand loses control as content and output increase.",
-    outcome:
-      "A brand that holds its standard, its identity, and its level regardless of how far it grows",
-  },
-];
-
-const digitalProducts = [
-  {
-    id: "lash-extension-look",
-    name: "The Lash Collection",
-    price: "$30",
-    priceNum: 30,
-    originalPrice: "$50",
-    originalPriceNum: 50,
-    description:
-      "Three individual lash focused visuals featuring clean isolation, full lash lines, soft volume, and a polished finish, this pack highlights the detail and precision behind expert lash work. Ideal for set promos, fill reminders, new announcements, retention or education posts. Built to use immediately across socials, booking platforms, and promotional graphics.",
-    scenes: [
-      {
-        title: "Scene 1: The Service Moment",
-        detail:
-          "A relaxed in service lash appointment capturing focused application, clean placement, and steady hands at work. A professional behind the bed moment that shows care and control.",
-      },
-      {
-        title: "Scene 2: The Finished Set",
-        detail:
-          "A close beauty shot highlighting fullness, symmetry, and a flawless lash line. Soft, defined, and made to stand out on the feed.",
-      },
-      {
-        title: "Scene 3: The Detail Finish",
-        detail:
-          "A refined close up showcasing clean isolation, consistent mapping, and smooth density. Designed to spotlight the quality of the set and the professionalism that comes with it.",
-      },
-    ],
-    includes: [
-      "3 high resolution AI generated scenes",
-      "Commercial use license",
-      "Instant download",
-      "No edits or customization",
-    ],
-    positioning:
-      "All visuals are AI generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
-  },
-  {
-    id: "brow-services-look",
-    name: "The Map Pack",
-    price: "$30",
-    priceNum: 30,
-    originalPrice: "$50",
-    originalPriceNum: 50,
-    description:
-      "Three brow visuals perfected for precision. Including clean mapping, crisp shaping, defined arches, and structured finishes, this pack highlights the level of control and detail behind expert brow work. Ideal for brow promos, tint and shape specials, new service launches, or collaborations. Built to use immediately across socials, booking platforms, and promotional graphics.",
-    scenes: [
-      {
-        title: "Scene 1: The Precision Moment",
-        detail:
-          "A focused in service shot capturing mapping, shaping, and hands on detail. Clean lines and steady technique that show real expertise.",
-      },
-      {
-        title: "Scene 2: The Sculpted Result",
-        detail:
-          "A polished brow finish with defined structure, balanced symmetry, and a sharp, refined outline. The kind of result that instantly looks high level.",
-      },
-      {
-        title: "Scene 3: The Detail Close Up",
-        detail:
-          "A refined beauty shot highlighting clean edges, smooth tint, and precise definition. Designed to spotlight the quality of the work without overstatement.",
-      },
-    ],
-    includes: [
-      "3 high resolution AI generated scenes",
-      "Commercial use license",
-      "Instant download",
-      "No edits or customization",
-    ],
-    positioning:
-      "All visuals are AI generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
-  },
-  {
-    id: "makeup-artistry-look",
-    name: "The Base Bundle",
-    price: "$30",
-    priceNum: 30,
-    originalPrice: "$50",
-    originalPriceNum: 50,
-    description:
-      "Three elevated visuals designed to make artistry feel visible, polished, and undeniable. Featuring seamless blend, flawless base, clean liner work, soft highlight, and camera ready finish, this pack captures the level of detail clients expect from a serious MUA. Ideal for brand announcements, glam promos, launches, sales, or showcasing signature looks. Built to use immediately across socials, booking platforms, and promotional graphics.",
-    scenes: [
-      {
-        title: "Scene 1: The Application Moment",
-        detail:
-          "A mid service beauty shot capturing blending, brushwork, and focused technique in progress. A clean, professional image that shows real artistry at work.",
-      },
-      {
-        title: "Scene 2: The Finished Glam Close Up",
-        detail:
-          "A striking final look with smooth skin, defined features, and balanced highlight. Polished, confident, and ready for the camera.",
-      },
-      {
-        title: "Scene 3: The Beauty Detail",
-        detail:
-          "A refined close up highlighting texture, blend, and precision. Designed to spotlight the quality of the work without overstatement.",
-      },
-    ],
-    includes: [
-      "3 high resolution AI generated scenes",
-      "Commercial use license",
-      "Instant download",
-      "No edits or customization",
-    ],
-    positioning:
-      "All visuals are AI generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
-  },
-  {
-    id: "hair-styling-look",
-    name: "Fresh Out The Chair",
-    price: "$30",
-    priceNum: 30,
-    originalPrice: "$50",
-    originalPriceNum: 50,
-    description:
-      "Three hair focused visuals created to showcase precision, shine, and that polished finish clients book for. Ideal for launches, specials, promos, seasonal hair campaigns, or transformations. Built to use immediately across socials, booking platforms, and promotional graphics.",
-    scenes: [
-      {
-        title: "Scene 1: The Work Behind the Result",
-        detail:
-          "A hands on, behind the chair moment capturing clean sectioning, controlled tension, and focused technique in action. The foundation of every seamless blend, sharp cut, and high gloss finish clients book for.",
-      },
-      {
-        title: "Scene 2: The Finished Transformation",
-        detail:
-          "A polished final look with visible shine, smooth movement, and a flawless finish. The kind of hair that photographs beautifully, feels healthy, and makes clients run to the mirror.",
-      },
-      {
-        title: "Scene 3: The Detail Finish",
-        detail:
-          "A close up highlighting technique, clarity, and precision. Designed to spotlight the quality of the work without needing a before and after.",
-      },
-    ],
-    includes: [
-      "3 high resolution AI generated scenes",
-      "Commercial use license",
-      "Instant download",
-      "No edits or customization",
-    ],
-    positioning:
-      "All visuals are AI generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
-  },
-  {
-    id: "nail-services-look",
-    name: "The Cuticle Collection",
-    price: "$30",
-    priceNum: 30,
-    originalPrice: "$50",
-    originalPriceNum: 50,
-    description:
-      "Three manicure visuals designed to highlight structure, precision, and that flawless finished set clients zoom in on. Featuring clean cuticle work, sharp shaping, smooth structure, and high gloss shine, this pack makes detail visible at first glance. Ideal for new set promos, seasonal design launches, retention education posts, price increases, or showcasing signature shapes and finishes. Built to use immediately across socials, booking platforms, and promotional graphics.",
-    scenes: [
-      {
-        title: "Scene 1: The Precision Process",
-        detail:
-          "A close manicure moment capturing clean cuticle work, shaping, and hands on detail. The kind of angle that shows skill, not just polish.",
-      },
-      {
-        title: "Scene 2: The Elevated Finish",
-        detail:
-          "A perfectly structured set shown up close with sharp shape, smooth application, and high gloss shine. Bold enough to stop scrolling and strong enough to support pricing.",
-      },
-      {
-        title: "Scene 3: The Detail Standard",
-        detail:
-          "A set shot highlighting symmetry, structure, and consistency. Designed to visually emphasize the level of care behind every appointment.",
-      },
-    ],
-    includes: [
-      "3 high resolution AI generated scenes",
-      "Commercial use license",
-      "Instant download",
-      "No edits or customization",
-    ],
-    positioning:
-      "All visuals are AI generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
-  },
-  {
-    id: "esthetics-skincare-look",
-    name: "You Glow Girl Bundle",
-    price: "$30",
-    priceNum: 30,
-    originalPrice: "$50",
-    originalPriceNum: 50,
-    description:
-      "Three esthetic visuals designed to make promotions look polished and professional from the first glance. Ideal for facial specials, new treatment launches, membership promotions, or skincare product features. Built to use immediately across socials, booking platforms, and promotional graphics.",
-    scenes: [
-      {
-        title: "Scene 1: The Treatment Moment",
-        detail:
-          "A calm facial appointment scene that captures the treatment table setup, clean linens, and hands on care clients expect. Soft lighting and a relaxed client position create the kind of environment that feels professional and safe.",
-      },
-      {
-        title: "Scene 2: The Healthy Glow",
-        detail:
-          "A close up of fresh, glowing skin with natural texture and hydration visible. Perfect for promoting results focused services like custom facials, acne treatments, brightening services, or skin barrier repair.",
-      },
-      {
-        title: "Scene 3: The Skin Detail",
-        detail:
-          "A polished detail shot highlighting smooth texture, even tone, and post treatment radiance. Ideal for showcasing expertise, precision, and high standard skincare work.",
-      },
-    ],
-    includes: [
-      "3 AI generated brand scenes",
-      "Commercial use license for marketing and promotional materials",
-      "Instant download",
-      "No edits or customization",
-    ],
-    positioning:
-      "All visuals are AI generated brand imagery created for marketing and promotional use. These images are intended to elevate brand presentation and should not be used to misrepresent real client results or services not legally provided.",
-  },
-];
-
-const painPoints = [
-  `"I'm posting consistently but nobody's booking"`,
-  `"My content gets views but no appointments"`,
-  `"I keep lowering my prices just to fill my chair"`,
-  `"My visuals don't match the level of my work"`,
-  `"Other pros are booked out. What am I doing wrong?"`,
-  `"I have no idea how to make my brand feel premium"`,
-];
-
-const serviceTypes = [
-  "Lashes",
-  "Brows",
-  "Nails",
-  "Makeup",
-  "Hair",
-  "Facials",
-  "Skincare",
-  "Waxing",
-  "Injections",
-  "And more",
-];
-
-const reviewCards = [
-  {
-    initial: "J",
-    text:
-      "After the alignment work, I raised my prices and bookings didn’t drop. They improved. People came in already understanding the value.",
-    name: "Jade M.",
-    role: "Lash Artist · AVERRA Client",
-  },
-  {
-    initial: "C",
-    text:
-      "My work was strong, but my feed didn’t show it. Once my brand was aligned, clients started calling it luxury and booking like it.",
-    name: "Camille R.",
-    role: "Makeup Artist · AVERRA Client",
-  },
-  {
-    initial: "K",
-    text:
-      "The Brand Perception Audit showed exactly where my visuals were undercutting pricing. Fixing it changed the conversations immediately.",
-    name: "Kezia T.",
-    role: "Nail Artist · AVERRA Client",
-  },
-  {
-    initial: "S",
-    text:
-      "I finally got a system. Every post feels like the same brand now. That consistency changed loyalty and how clients talk about me.",
-    name: "Simone A.",
-    role: "Esthetician · AVERRA Client",
-  },
-  {
-    initial: "B",
-    text:
-      "I stopped blending in. My brand reads elevated, and now people tag me as the standard in my city.",
-    name: "Brianna H.",
-    role: "Hair Stylist · AVERRA Client",
-  },
-  {
-    initial: "M",
-    text:
-      "The Brand Expansion Audit helped me scale without my brand cracking. Everything stayed aligned as I grew.",
-    name: "Maya L.",
-    role: "Brow Artist · AVERRA Client",
-  },
-];
 
 export function ServicesPage() {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { addItem } = useCart();
 
-  const handleAddToCart = (item: {
-    id: string;
-    name: string;
-    priceNum: number;
-    originalPriceNum?: number;
-    subtitle?: string;
-    type: "service" | "digital";
-    description?: string;
-  }) => {
+  const handleDownloadEbook = () => {
     addItem({
-      id: item.id,
-      name: item.name,
-      price: item.priceNum,
-      originalPrice: item.originalPriceNum,
-      type: item.type,
-      description: item.subtitle || item.description,
+      id: "gold-standard-ebook",
+      name: "The Gold Standard: Building Beyond The Chair",
+      price: 97,
+      originalPrice: 147,
+      type: "digital"
     });
-    trackAction("Add to Cart", { item: item.name, type: item.type });
-  };
-
-  const handleStartBrandAlignment = () => {
-    sessionStorage.setItem(
-      "selectedServiceTier",
-      JSON.stringify({
-        id: brandAlignmentService.id,
-        name: brandAlignmentService.name,
-        priceNum: brandAlignmentService.priceNum,
-        originalPriceNum: brandAlignmentService.originalPriceNum,
-        subtitle: brandAlignmentService.subtitle,
-        type: "service",
-        description: brandAlignmentService.description,
-      })
-    );
-    navigate("/brand-intake");
+    navigate("/checkout");
   };
 
   return (
-    <div className="min-h-screen bg-[#fdf5f7] text-[#251218]">
-      <div className="bg-[#fdf5f7]">
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+
+        :root {
+          --averra-cream: #fdf5f7;
+          --averra-blush: #fcf3f5;
+          --averra-dark: #251218;
+          --averra-mauve: #c9969e;
+          --averra-muted: #6b585d;
+          --averra-border: rgba(37, 18, 24, 0.1);
+        }
+
+        .services-page {
+          font-family: 'Montserrat', sans-serif;
+          background: var(--averra-cream);
+          color: var(--averra-dark);
+          font-size: 15px;
+          line-height: 1.7;
+        }
+
+        .pf { font-family: 'Playfair Display', serif; }
+        .lr { font-family: 'Lora', serif; }
+        .ms { font-family: 'Montserrat', sans-serif; }
+
+        @keyframes ambientGlow {
+          0%, 100% {
+            opacity: 0.5;
+            transform: scale3d(1, 1, 1); /* GPU accelerated */
+          }
+          50% {
+            opacity: 0.75;
+            transform: scale3d(1.05, 1.05, 1); /* GPU accelerated */
+          }
+        }
+
+        @keyframes ambientGlowMobile {
+          0%, 100% {
+            opacity: 0.4;
+            transform: scale3d(1, 1, 1); /* GPU accelerated */
+          }
+          50% {
+            opacity: 0.65;
+            transform: scale3d(1.03, 1.03, 1); /* GPU accelerated */
+          }
+        }
+
+        @keyframes softFloat {
+          0%, 100% {
+            transform: translate3d(0, 0, 0); /* GPU accelerated */
+          }
+          50% {
+            transform: translate3d(0, -12px, 0); /* GPU accelerated */
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translate3d(0, 20px, 0); /* GPU accelerated */
+          }
+          to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0); /* GPU accelerated */
+          }
+        }
+
+        .ebook-glow {
+          animation: ambientGlow 50s ease-in-out infinite;
+        }
+
+        .ebook-float {
+          animation: softFloat 8s ease-in-out infinite;
+          /* PERFORMANCE: GPU acceleration for smooth animation */
+          transform: translateZ(0);
+          will-change: transform;
+          backface-visibility: hidden;
+        }
+
+        .pain-item {
+          animation: fadeInUp 2.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+        }
+
+        .pain-item:nth-child(1) { animation-delay: 0.1s; }
+        .pain-item:nth-child(2) { animation-delay: 0.2s; }
+        .pain-item:nth-child(3) { animation-delay: 0.3s; }
+        .pain-item:nth-child(4) { animation-delay: 0.4s; }
+        .pain-item:nth-child(5) { animation-delay: 0.5s; }
+        .pain-item:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Hero Section */
+        .hero-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          min-height: 86vh;
+        }
+
+        .hero-text {
+          padding: 80px 60px 80px 80px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          background: var(--averra-cream);
+        }
+
+        .hero-eyebrow {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 24px;
+        }
+
+        .hero-headline {
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(42px, 5vw, 68px);
+          font-weight: 400;
+          line-height: 1.08;
+          color: var(--averra-dark);
+          margin-bottom: 12px;
+        }
+
+        .hero-headline em {
+          font-style: italic;
+          color: var(--averra-mauve);
+        }
+
+        .hero-sub {
+          font-size: 14px;
+          color: var(--averra-muted);
+          line-height: 1.8;
+          max-width: 400px;
+          margin-bottom: 40px;
+        }
+
+        .hero-sub strong {
+          color: var(--averra-dark);
+          font-weight: 600;
+        }
+
+        .hero-btns {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+
+        .btn-primary {
+          background: var(--averra-dark);
+          color: var(--averra-mauve);
+          font-family: 'Montserrat', sans-serif;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          padding: 16px 36px;
+          border: none;
+          cursor: pointer;
+          transition: background 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-primary:hover {
+          background: #3a232d;
+        }
+
+        .btn-outline {
+          background: transparent;
+          color: var(--averra-dark);
+          font-family: 'Montserrat', sans-serif;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          padding: 15px 36px;
+          border: 1px solid var(--averra-dark);
+          cursor: pointer;
+          transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-outline:hover {
+          background: var(--averra-dark);
+          color: var(--averra-mauve);
+        }
+
+        .hero-image {
+          position: relative;
+          overflow: hidden;
+          background: var(--averra-blush);
+        }
+
+        .hero-image-inner {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(160deg, #3a232d 0%, #251218 40%, #1a0e12 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .hero-monogram {
+          font-family: 'Playfair Display', serif;
+          font-size: 220px;
+          font-weight: 300;
+          color: rgba(201, 150, 158, 0.12);
+          letter-spacing: -0.05em;
+          user-select: none;
+          line-height: 1;
+        }
+
+        .hero-badge {
+          position: absolute;
+          bottom: 40px;
+          left: 40px;
+          background: var(--averra-mauve);
+          color: var(--averra-cream);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          padding: 10px 20px;
+        }
+
+        /* Pain Section */
+        .pain-section {
+          background: var(--averra-dark);
+          padding: 80px;
+        }
+
+        .section-label {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 32px;
+        }
+
+        .pain-headline {
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(28px, 3.5vw, 46px);
+          font-weight: 400;
+          color: var(--averra-cream);
+          line-height: 1.2;
+          margin-bottom: 48px;
+          max-width: 640px;
+        }
+
+        .pain-list {
+          list-style: none;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0;
+          border-top: 0.5px solid rgba(253, 245, 247, 0.1);
+        }
+
+        .pain-item {
+          padding: 28px 0;
+          border-bottom: 0.5px solid rgba(253, 245, 247, 0.1);
+          font-size: 15px;
+          color: rgba(253, 245, 247, 0.85);
+          line-height: 1.7;
+        }
+
+        .pain-item:nth-child(odd) {
+          padding-right: 40px;
+          border-right: 0.5px solid rgba(253, 245, 247, 0.1);
+        }
+
+        .pain-item:nth-child(even) {
+          padding-left: 40px;
+        }
+
+        /* Ebook Feature */
+        .ebook-feature {
+          padding: 120px 80px;
+          background: var(--averra-cream);
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 80px;
+          align-items: center;
+        }
+
+        .ebook-visual {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .ebook-glow-layer {
+          position: absolute;
+          width: 600px;
+          height: 800px;
+          background: radial-gradient(
+            circle,
+            rgba(201, 150, 158, 0.4) 0%,
+            rgba(201, 150, 158, 0.25) 30%,
+            rgba(255, 220, 200, 0.15) 50%,
+            transparent 75%
+          );
+          border-radius: 50%;
+          filter: blur(80px);
+        }
+
+        .ebook-glow-secondary {
+          position: absolute;
+          width: 700px;
+          height: 900px;
+          background: radial-gradient(
+            circle,
+            rgba(255, 235, 220, 0.2) 0%,
+            rgba(201, 150, 158, 0.15) 40%,
+            transparent 70%
+          );
+          border-radius: 50%;
+          filter: blur(100px);
+          animation: ambientGlow 8s ease-in-out infinite;
+          animation-delay: 1s;
+        }
+
+        .ebook-cover {
+          position: relative;
+          max-width: 460px;
+          width: 100%;
+          box-shadow:
+            0 40px 80px -20px rgba(37, 18, 24, 0.2),
+            0 20px 40px -20px rgba(201, 150, 158, 0.25);
+          border-radius: 8px;
+        }
+
+        .ebook-content .section-headline {
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(30px, 3.5vw, 48px);
+          font-weight: 400;
+          line-height: 1.15;
+          color: var(--averra-dark);
+          margin-bottom: 20px;
+        }
+
+        .section-body {
+          font-size: 14px;
+          color: var(--averra-muted);
+          line-height: 1.85;
+          margin-bottom: 32px;
+        }
+
+        .ebook-price-wrap {
+          display: flex;
+          align-items: baseline;
+          gap: 16px;
+          margin-bottom: 8px;
+        }
+
+        .price-sale {
+          font-family: 'Playfair Display', serif;
+          font-size: 64px;
+          font-weight: 300;
+          color: var(--averra-dark);
+          line-height: 1;
+        }
+
+        .price-original {
+          font-size: 24px;
+          color: rgba(37, 18, 24, 0.25);
+          text-decoration: line-through;
+        }
+
+        .price-note {
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(37, 18, 24, 0.4);
+          margin-bottom: 36px;
+        }
+
+        .cta-group {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .cta-secondary {
+          padding-top: 24px;
+          border-top: 0.5px solid var(--averra-border);
+        }
+
+        /* Chapters Section */
+        .chapters-section {
+          padding: 120px 80px;
+          background: var(--averra-cream);
+        }
+
+        .chapters-header {
+          text-align: center;
+          margin-bottom: 80px;
+        }
+
+        .chapters-list {
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        .chapter-item {
+          padding: 48px 0;
+          border-bottom: 0.5px solid var(--averra-border);
+        }
+
+        .chapter-item:first-child {
+          border-top: 0.5px solid var(--averra-border);
+        }
+
+        .chapter-number {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 16px;
+        }
+
+        .chapter-title {
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(24px, 3vw, 36px);
+          font-weight: 400;
+          line-height: 1.2;
+          color: var(--averra-dark);
+          margin-bottom: 12px;
+        }
+
+        .chapter-subtitle {
+          font-family: 'Lora', serif;
+          font-size: 14px;
+          font-style: italic;
+          color: var(--averra-muted);
+          line-height: 1.6;
+        }
+
+        /* Before/After Section */
+        .transformation-section {
+          background: var(--averra-dark);
+          padding: 100px 80px;
+        }
+
+        .transformation-header {
+          text-align: center;
+          margin-bottom: 64px;
+        }
+
+        .transformation-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 80px;
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+
+        .transform-col-title {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          margin-bottom: 32px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .transform-col-title::before {
+          content: '';
+          width: 24px;
+          height: 1px;
+        }
+
+        .before-title::before { background: rgba(201, 150, 158, 0.3); }
+        .after-title::before { background: var(--averra-mauve); }
+        .before-title { color: rgba(253, 245, 247, 0.4); }
+        .after-title { color: var(--averra-mauve); }
+
+        .transform-list {
+          list-style: none;
+          border-top: 0.5px solid rgba(253, 245, 247, 0.1);
+        }
+
+        .transform-item {
+          padding: 16px 0;
+          border-bottom: 0.5px solid rgba(253, 245, 247, 0.1);
+          font-size: 13px;
+          line-height: 1.7;
+        }
+
+        .before-list .transform-item {
+          color: rgba(253, 245, 247, 0.5);
+        }
+
+        .after-list .transform-item {
+          color: rgba(253, 245, 247, 0.85);
+        }
+
+        /* Built For You Section */
+        .built-for-section {
+          padding: 80px;
+          background: var(--averra-blush);
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 80px;
+          align-items: center;
+        }
+
+        .for-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2px;
+        }
+
+        .for-item {
+          background: var(--averra-cream);
+          padding: 18px 20px;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--averra-dark);
+          border-left: 2px solid var(--averra-mauve);
+        }
+
+        /* Testimonials */
+        .testimonials {
+          background: var(--averra-dark);
+          padding: 100px 80px;
+        }
+
+        .testimonials-header {
+          text-align: center;
+          margin-bottom: 64px;
+        }
+
+        .reviews-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2px;
+        }
+
+        .review-card {
+          background: rgba(253, 245, 247, 0.04);
+          padding: 36px 30px;
+          border-top: 2px solid var(--averra-mauve);
+        }
+
+        .review-text {
+          font-size: 13px;
+          color: rgba(253, 245, 247, 0.8);
+          line-height: 1.85;
+          margin-bottom: 24px;
+          font-style: italic;
+        }
+
+        .review-name {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+        }
+
+        .review-role {
+          font-size: 11px;
+          color: rgba(253, 245, 247, 0.4);
+          margin-top: 2px;
+        }
+
+        .review-initial {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: var(--averra-mauve);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--averra-cream);
+          margin-bottom: 18px;
+        }
+
+        /* Founder/System Section */
+        .founder {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          min-height: 60vh;
+        }
+
+        .founder-image {
+          background: linear-gradient(140deg, #251218 0%, #3a232d 60%, #251218 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+          min-height: 480px;
+        }
+
+        .founder-monogram {
+          font-family: 'Playfair Display', serif;
+          font-size: 180px;
+          font-weight: 300;
+          color: rgba(201, 150, 158, 0.1);
+          letter-spacing: -0.05em;
+        }
+
+        .founder-accent {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+          background: var(--averra-mauve);
+        }
+
+        .founder-text {
+          padding: 80px;
+          background: var(--averra-cream);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        /* About CTA */
+        .about-cta {
+          padding: 100px 80px;
+          background: var(--averra-blush);
+          text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+          /* PERFORMANCE OPTIMIZATION: Keep visuals, optimize rendering */
+          .ebook-glow-layer {
+            animation: ambientGlowMobile 50s ease-in-out infinite;
+            /* GPU acceleration for smooth performance */
+            transform: translateZ(0);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
+          }
+          .ebook-glow-secondary {
+            animation: ambientGlowMobile 55s ease-in-out infinite;
+            animation-delay: 3s;
+            /* GPU acceleration */
+            transform: translateZ(0);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
+          }
+
+          /* Keep same button transitions, optimize with GPU */
+          .btn-primary, .btn-outline {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateZ(0);
+          }
+
+          /* Keep same fade animations */
+          .pain-item {
+            animation: fadeInUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+
+          .hero-section { grid-template-columns: 1fr; }
+          .hero-image { display: none; }
+          .hero-text { padding: 60px 24px; }
+          .hero-headline { font-size: clamp(32px, 8vw, 52px); }
+          .hero-subtext { font-size: 14px; line-height: 1.75; }
+          .pain-section { padding: 60px 24px; }
+          .pain-headline { font-size: clamp(26px, 6vw, 40px); }
+          .pain-list { grid-template-columns: 1fr; }
+          .pain-item { font-size: 14px; padding: 24px 0; }
+          .pain-item:nth-child(odd) { padding-right: 0; border-right: none; }
+          .pain-item:nth-child(even) { padding-left: 0; }
+          .built-for-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
+          .service-item { padding: 32px 24px; }
+          .ebook-feature { grid-template-columns: 1fr; gap: 48px; padding: 70px 24px; }
+          .ebook-visual { order: -1; margin-bottom: 24px; }
+          .ebook-glow-layer { width: 400px; height: 550px; filter: blur(60px); }
+          .ebook-glow-secondary { width: 450px; height: 600px; filter: blur(80px); }
+          .ebook-cover { max-width: 360px; }
+          .ebook-content .section-headline { font-size: clamp(28px, 6vw, 42px); }
+          .section-body { font-size: 13px; }
+          .price-sale { font-size: 52px; }
+          .price-original { font-size: 20px; }
+          .chapters-section { padding: 70px 24px; }
+          .chapters-header { margin-bottom: 60px; }
+          .chapters-header .section-headline { font-size: clamp(28px, 6vw, 42px); }
+          .chapter-item { padding: 36px 0; }
+          .chapter-title { font-size: clamp(20px, 4vw, 28px); }
+          .transformation-section { padding: 70px 24px; }
+          .transformation-grid { grid-template-columns: 1fr; gap: 48px; }
+          .testimonials { padding: 60px 24px; }
+          .reviews-grid { grid-template-columns: 1fr; }
+          .founder { grid-template-columns: 1fr; }
+          .founder-image { min-height: 280px; }
+          .founder-text { padding: 60px 24px; }
+          .about-cta { padding: 70px 24px; }
+        }
+
+        @media (max-width: 600px) {
+          /* PERFORMANCE: Keep visuals, add GPU acceleration */
+          .ebook-glow-layer {
+            animation: ambientGlowMobile 55s ease-in-out infinite;
+          }
+          .ebook-glow-secondary {
+            animation: ambientGlowMobile 60s ease-in-out infinite;
+            animation-delay: 4s;
+          }
+
+          .pain-item {
+            animation: fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+
+          .btn-primary, .btn-outline {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+
+          .hero-text { padding: 48px 20px; }
+          .hero-label { font-size: 9px; margin-bottom: 20px; }
+          .hero-headline { font-size: clamp(28px, 9vw, 40px); line-height: 1.12; margin-bottom: 20px; }
+          .hero-subtext { font-size: 13px; line-height: 1.7; margin-bottom: 32px; }
+          .hero-btns { flex-direction: column; gap: 12px; }
+          .btn-primary, .btn-outline { width: 100%; padding: 16px 24px; font-size: 10px; }
+          .pain-section { padding: 48px 20px; }
+          .section-label { font-size: 9px; margin-bottom: 24px; }
+          .pain-headline { font-size: clamp(24px, 7vw, 34px); line-height: 1.2; margin-bottom: 36px; }
+          .pain-item { font-size: 13px; padding: 20px 0; line-height: 1.7; }
+          .built-for-section { padding: 48px 20px; gap: 32px; }
+          .built-for-section .section-headline { font-size: clamp(24px, 7vw, 34px); }
+          .service-grid { gap: 16px; }
+          .service-item { padding: 28px 20px; }
+          .service-name { font-size: 16px; }
+          .ebook-feature { padding: 56px 20px; gap: 40px; }
+          .ebook-glow-layer { width: 320px; height: 450px; filter: blur(50px); }
+          .ebook-glow-secondary { width: 350px; height: 480px; filter: blur(65px); }
+          .ebook-cover { max-width: 280px; box-shadow: 0 30px 60px -15px rgba(37, 18, 24, 0.18), 0 15px 30px -15px rgba(201, 150, 158, 0.22); }
+          .ebook-content .section-label { font-size: 9px; margin-bottom: 16px; }
+          .ebook-content .section-headline { font-size: clamp(26px, 7vw, 36px); line-height: 1.18; margin-bottom: 16px; }
+          .section-body { font-size: 12.5px; line-height: 1.8; margin-bottom: 28px; }
+          .ebook-price-wrap { gap: 12px; margin-bottom: 6px; }
+          .price-sale { font-size: 46px; }
+          .price-original { font-size: 18px; }
+          .price-note { font-size: 9px; margin-bottom: 32px; }
+          .cta-group { gap: 10px; margin-bottom: 20px; }
+          .btn-primary, .btn-outline { padding: 15px 20px; font-size: 10px; }
+          .cta-secondary { padding-top: 20px; }
+          .chapters-section { padding: 56px 20px; }
+          .chapters-header { margin-bottom: 48px; }
+          .chapters-header .section-label { font-size: 9px; }
+          .chapters-header .section-headline { font-size: clamp(24px, 7vw, 34px); }
+          .chapter-item { padding: 32px 0; }
+          .chapter-number { font-size: 9px; margin-bottom: 14px; }
+          .chapter-title { font-size: clamp(18px, 5vw, 24px); margin-bottom: 10px; }
+          .chapter-desc { font-size: 12.5px; line-height: 1.75; }
+          .transformation-section { padding: 56px 20px; }
+          .transformation-section .section-headline { font-size: clamp(24px, 7vw, 34px); }
+          .transformation-grid { gap: 40px; }
+          .transform-card { padding: 36px 28px; }
+          .transform-label { font-size: 9px; margin-bottom: 16px; }
+          .transform-title { font-size: 20px; margin-bottom: 14px; }
+          .transform-desc { font-size: 12.5px; line-height: 1.75; }
+          .testimonials { padding: 48px 20px; }
+          .testimonials .section-headline { font-size: clamp(24px, 7vw, 34px); }
+          .review-card { padding: 36px 28px; }
+          .review-text { font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+          .review-author { font-size: 12px; }
+          .founder { min-height: auto; }
+          .founder-image { min-height: 320px; }
+          .founder-text { padding: 48px 20px; }
+          .founder-text .section-label { font-size: 9px; }
+          .founder-text .section-headline { font-size: clamp(22px, 6vw, 32px); }
+          .founder-text .section-body { font-size: 12.5px; line-height: 1.8; }
+          .about-cta { padding: 56px 20px; }
+          .about-cta .section-headline { font-size: clamp(24px, 7vw, 34px); }
+        }
+      `}</style>
+
+      <div className="services-page">
         <Navigation />
-return (
-  <>
-    <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lora:wght@300;400;500&family=Montserrat:wght@400;500;600;700&display=swap');
 
-      .services-page-root {
-        background: #fdf5f7;
-        color: #251218;
-      }
+        {/* Marquee */}
+        <div style={{ background: '#c9969e', padding: '9px 0' }}>
+          <MarqueeScroll disableOnMobile={false} duration={180}>
+            <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#fdf5f7' }}>Building Beyond The Chair</span>
+            <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#fdf5f7' }}>The Gold Standard</span>
+            <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#fdf5f7' }}>Business Philosophy For Beauty Professionals</span>
+          </MarqueeScroll>
+        </div>
 
-      .services-page-root .pf {
-        font-family: "Playfair Display", serif;
-      }
-
-      .services-page-root .lr {
-        font-family: "Lora", serif;
-      }
-
-      .services-page-root .ms {
-        font-family: "Montserrat", sans-serif;
-      }
-    `}</style>
-
-    <div className="services-page-root min-h-screen bg-[#fdf5f7] text-[#251218]">
-      <div className="bg-[#251218] px-4 py-3 text-center">
-        <p className="ms text-[10px] font-medium uppercase tracking-[0.24em] text-[#fdf5f7] md:text-[11px]">
-          Founding Member Pricing · Limited Time Only · Up To 50% Off
-        </p>
-      </div>
-
-      <div
-        className="border-b border-[#251218]/10 bg-[#251218] px-4 py-3 text-center text-[10px] uppercase tracking-[0.22em] text-[#fdf5f7]/90 md:text-[11px]"
-        style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 500 }}
-      >
-        Founding Member Pricing · Limited Time Only · Up To 50% Off
-      <div className="border-b border-[#251218]/10 bg-[#fdf5f7]">
-        <Navigation />
-      </div>
-
-      <div className="bg-[#c9969e] py-2">
-      <div className="bg-[#c9969e] py-2.5">
-        <MarqueeScroll disableOnMobile={false} duration={28}>
-          <div
-            className="flex items-center gap-8 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-[#fdf5f7]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <div className="ms flex items-center gap-8 whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.22em] text-[#fdf5f7]">
-            <span>Founding Members Only</span>
-            <span>•</span>
-            <span>Launch Pricing Up To 50% Off</span>
-@@ -459,88 +50,50 @@ export function ServicesPage() {
-        </MarqueeScroll>
-      </div>
-
-      <section className="grid min-h-[88vh] grid-cols-1 bg-[#fdf5f7] lg:grid-cols-2">
-      <section className="grid min-h-[86vh] grid-cols-1 bg-[#fdf5f7] lg:grid-cols-2">
-        <div className="flex items-center px-6 py-16 md:px-10 lg:px-16 xl:px-20">
-          <div className="max-w-[560px]">
-            <p
-              className="mb-6 text-[10px] uppercase tracking-[0.28em] text-[#c9969e]"
-              style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-            >
-            <p className="ms mb-6 text-[10px] font-bold uppercase tracking-[0.28em] text-[#c9969e]">
-              Brand Alignment System
+        {/* Hero */}
+        <section className="hero-section">
+          <div className="hero-text">
+            <p className="hero-eyebrow">AVERRA Services</p>
+            <h1 className="hero-headline">You built something real.<br/><em>It just wasn't built to last.</em></h1>
+            <p className="hero-sub">
+              You didn't get into this industry to feel trapped. <strong>But somewhere between the early mornings, the back-to-back clients, the DMs you answer on your day off, and the bookings that never seem to be enough, the business stopped feeling like freedom.</strong>
             </p>
-
-            <h1
-              className="mb-4 text-[clamp(2.9rem,6vw,5rem)] leading-[1.02] text-[#251218]"
-              style={{
-                fontFamily: "Playfair Display, serif",
-                fontWeight: 400,
-                letterSpacing: "-0.01em",
-              }}
-            >
-            <h1 className="pf mb-4 text-[clamp(2.8rem,5.5vw,5.2rem)] leading-[1.02] text-[#251218]">
-              Your brand should work
-              <br />
-              <span className="italic text-[#c9969e]">as hard as you do.</span>
-            </h1>
-
-            <p
-              className="mb-10 max-w-[470px] text-[15px] leading-[1.9] text-[#251218]/72 md:text-[16px]"
-              style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-            >
-            <p className="lr mb-10 max-w-[470px] text-[15px] font-light leading-[1.9] text-[#251218]/72 md:text-[16px]">
-              The market is full of brands built on talent. Very few are built
-              on clarity. When your brand doesn't communicate at the level
-              you're operating at, clients hesitate, pricing becomes harder to
-              justify, and your work gets lost in a saturated market.
-            </p>
-
-            <div className="mb-8 flex items-end gap-4 md:gap-6">
-              <span
-                className="text-2xl text-[#251218]/30 line-through md:text-3xl"
-                style={{
-                  fontFamily: "Playfair Display, serif",
-                  fontWeight: 300,
-                }}
-              >
-              <span className="pf text-2xl font-light text-[#251218]/30 line-through md:text-3xl">
-                {brandAlignmentService.price}
-              </span>
-              <span
-                className="text-5xl leading-none text-[#251218] md:text-6xl"
-                style={{
-                  fontFamily: "Playfair Display, serif",
-                  fontWeight: 400,
-                }}
-              >
-              <span className="pf text-5xl leading-none text-[#251218] md:text-6xl">
-                {brandAlignmentService.salePrice}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap gap-4">
-              <button
-                onClick={handleStartBrandAlignment}
-                className={`group relative inline-block overflow-hidden bg-[#251218] px-10 py-4 text-[11px] uppercase tracking-[0.22em] text-[#fdf5f7] transition-all duration-500 ${
-                className={`ms inline-block bg-[#251218] px-10 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#fdf5f7] transition-all duration-300 ${
-                  !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
-                }`}
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-                <span className="relative z-10">Get Started</span>
-                <div
-                  className={`absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 ${
-                    !isMobile ? "group-hover:translate-x-full" : ""
-                  }`}
-                />
-                Get Started
+            <div className="hero-btns">
+              <button onClick={() => navigate("/quiz-intro")} className="btn-primary">
+                Take The Quiz
               </button>
+              <button onClick={handleDownloadEbook} className="btn-outline">
+                Get The Gold Standard
+              </button>
+            </div>
+          </div>
+          <div className="hero-image">
+            <div className="hero-image-inner">
+              <div className="hero-monogram">A</div>
+            </div>
+            <div className="hero-badge">If this is your life right now, keep reading</div>
+          </div>
+        </section>
 
-              <Link
-                to="/about"
-                className={`inline-block border border-[#251218] px-10 py-4 text-[11px] uppercase tracking-[0.22em] text-[#251218] transition-all duration-500 ${
-                className={`ms inline-block border border-[#251218] px-10 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#251218] transition-all duration-300 ${
-                  !isMobile ? "hover:bg-[#251218] hover:text-[#fdf5f7]" : ""
-                }`}
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-                The Process
-              </Link>
-@@ -554,88 +107,63 @@ export function ServicesPage() {
-            alt="AVERRA Services"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#251218]/15 via-[#251218]/50 to-[#251218]/78" />
-          <div className="absolute inset-0 bg-[#251218]/45" />
-          <div className="absolute bottom-10 left-10 bg-[#c9969e] px-5 py-2.5">
-            <p
-              className="text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7]"
-              style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-            >
-            <p className="ms text-[10px] font-bold uppercase tracking-[0.18em] text-[#fdf5f7]">
-              Clarity Through Alignment
+        {/* Pain Points */}
+        <section className="pain-section">
+          <p className="section-label">Sound Familiar?</p>
+          <h2 className="pain-headline">If you're being honest, you've probably said this before…</h2>
+          <ul className="pain-list">
+            <li className="pain-item lr">
+              I'm fully booked and still scared to take a day off
+            </li>
+            <li className="pain-item lr">
+              I'm tired of every dollar I make requiring me to show up for it
+            </li>
+            <li className="pain-item lr">
+              I haven't rested, really rested, in who knows how long
+            </li>
+            <li className="pain-item lr">
+              I'm posting, grinding, showing up and one wrong move feels like it could destroy everything
+            </li>
+            <li className="pain-item lr">
+              I know I'm worth more, I just don't know how to stop hustling for it
+            </li>
+            <li className="pain-item lr">
+              I can't remember the last time I fully stopped thinking about work
+            </li>
+          </ul>
+        </section>
+
+        {/* The Gold Standard - Premium Ebook Feature */}
+        <section className="ebook-feature">
+          <div className="ebook-visual">
+            <div className="ebook-glow-layer ebook-glow"></div>
+            <div className="ebook-glow-secondary"></div>
+            <img
+              src="/ebook-cover.svg"
+              alt="The Gold Standard eBook Cover"
+              className="ebook-cover ebook-float"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+          <div className="ebook-content">
+            <p className="section-label">Building Beyond The Chair</p>
+            <h2 className="section-headline">The Gold<br/>Standard</h2>
+
+            <p className="section-body lr">
+              You already know how to work hard. That was never the problem.
+            </p>
+
+            <p className="section-body lr">
+              The problem is that you built a business that only works if you never stop. Where being fully booked still feels unsafe. Where exhaustion became normal. Where rest feels financially dangerous. Where the business depends entirely on you showing up, no matter what.
+            </p>
+
+            <p className="section-body lr">
+              <strong>This is not burnout. This is the structure itself.</strong>
+            </p>
+
+            <p className="section-body lr">
+              Most beauty professionals never realize they built a labor model, not a business. One that rewards constant availability, punishes boundaries, and makes freedom financially impossible.
+            </p>
+
+            <p className="section-body lr" style={{ fontSize: '15px', color: '#251218', fontStyle: 'italic' }}>
+              Building Beyond The Chair means creating a business that can eventually grow beyond nonstop appointments with systems, positioning, leverage, and income opportunities that no longer require your constant physical presence.
+            </p>
+
+            <p className="section-body pf" style={{ fontSize: '18px', color: '#c9969e', fontWeight: 500, fontStyle: 'italic' }}>
+              The Gold Standard is the roadmap for building it.
+            </p>
+
+            <div className="ebook-price-wrap">
+              <span className="price-sale">$97</span>
+              <span className="price-original">$147</span>
+            </div>
+            <p className="price-note">Founder Pricing · Limited Time</p>
+
+            <div className="cta-group">
+              <button onClick={handleDownloadEbook} className="btn-primary" style={{ width: '100%' }}>
+                Download The Gold Standard
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Chapters Section */}
+        <section className="chapters-section">
+          <div className="chapters-header">
+            <p className="section-label" style={{ textAlign: 'center' }}>What's Inside</p>
+            <h2 className="section-headline pf" style={{ textAlign: 'center', fontSize: 'clamp(30px, 3.5vw, 48px)', margin: '0 auto 16px', maxWidth: '600px' }}>
+              Nine Chapters
+            </h2>
+            <p className="section-body lr" style={{ textAlign: 'center', maxWidth: '520px', margin: '0 auto' }}>
+              The complete roadmap for understanding why the business feels this way and what it takes to build beyond it.
             </p>
           </div>
-        </div>
-      </section>
 
-      <section className="bg-[#251218] px-6 py-16 md:px-10 lg:px-20">
-        <p
-          className="mb-8 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-          style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-        >
-        <p className="ms mb-8 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-          Sound Familiar?
-        </p>
-
-        <h2
-          className="mb-12 max-w-[720px] text-[clamp(2rem,4vw,3.15rem)] leading-[1.14] text-[#fdf5f7]"
-          style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-        >
-        <h2 className="pf mb-12 max-w-[720px] text-[clamp(2rem,4vw,3.2rem)] leading-[1.14] text-[#fdf5f7]">
-          If you're being honest, you've probably said this before…
-        </h2>
-
-        <div className="grid border-t border-[#fdf5f7]/10 md:grid-cols-2">
-          {painPoints.map((point, index) => (
-            <div
-              key={point}
-              className={`flex items-start gap-4 border-b border-[#fdf5f7]/10 py-6 text-[14px] leading-[1.7] text-[#fdf5f7]/82 ${
-              className={`lr flex items-start gap-4 border-b border-[#fdf5f7]/10 py-6 text-[14px] font-light leading-[1.7] text-[#fdf5f7]/82 ${
-                index % 2 === 0
-                  ? "md:border-r md:border-[#fdf5f7]/10 md:pr-10"
-                  : "md:pl-10"
-              }`}
-              style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-            >
-              <span className="mt-[2px] text-[#c9969e]">•</span>
-              <span className="mt-[2px] text-[#c9969e]">—</span>
-              <span>{point}</span>
+          <div className="chapters-list">
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter One</p>
+              <h3 className="chapter-title">The Addiction To Being Needed</h3>
+              <p className="chapter-subtitle">Why your nervous system learned to depend on urgency</p>
             </div>
-          ))}
-        </div>
 
-        <p
-          className="mt-12 text-[clamp(1.6rem,3vw,2.2rem)] italic text-[#c9969e]"
-          style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-        >
-        <p className="pf mt-12 text-[clamp(1.6rem,3vw,2.2rem)] italic text-[#c9969e]">
-          The AVERRA Brand Alignment System was built to fix exactly that.
-        </p>
-      </section>
-
-      <section className="grid grid-cols-1 gap-12 bg-[#fbf0f3] px-6 py-16 md:px-10 lg:grid-cols-2 lg:gap-20 lg:px-20">
-        <div>
-          <p
-            className="mb-5 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            Built For You
-          </p>
-
-          <h2
-            className="mb-5 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mb-5 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]">
-            If you're a beauty service provider, this is for you.
-          </h2>
-
-          <p
-            className="mb-6 text-[15px] leading-[1.9] text-[#251218]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr mb-6 text-[15px] font-light leading-[1.9] text-[#251218]/70">
-            Whether you specialize in lashes, brows, nails, hair, facials,
-            makeup, skincare, or waxing, if clients book appointments with you,
-            your brand identity determines everything. Perception, pricing,
-            loyalty, and growth all start here.
-          </p>
-
-          <p
-            className="text-[15px] leading-[1.9] text-[#251218]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr text-[15px] font-light leading-[1.9] text-[#251218]/70">
-            Any other beauty service? If you rely on clients to book, the
-            AVERRA system applies to you.
-          </p>
-@@ -645,8 +173,7 @@ export function ServicesPage() {
-          {serviceTypes.map((item) => (
-            <div
-              key={item}
-              className="border-l-2 border-[#c9969e] bg-[#fdf5f7] px-5 py-4 text-[12px] uppercase tracking-[0.1em] text-[#251218]"
-              style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
-              className="ms border-l-2 border-[#c9969e] bg-[#fdf5f7] px-5 py-4 text-[12px] font-semibold uppercase tracking-[0.1em] text-[#251218]"
-            >
-              {item}
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Two</p>
+              <h3 className="chapter-title">The Emotional Weight Nobody Sees</h3>
+              <p className="chapter-subtitle">What it actually costs to care for people this way</p>
             </div>
-@@ -661,63 +188,44 @@ export function ServicesPage() {
-            alt="The System Behind AVERRA"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#251218]/10 via-[#251218]/42 to-[#251218]/70" />
-          <div className="absolute inset-0 bg-[#251218]/40" />
-          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#c9969e]" />
-        </div>
 
-        <div className="flex items-center bg-[#fdf5f7] px-6 py-16 md:px-10 lg:px-20">
-          <div className="max-w-[620px]">
-            <p
-              className="mb-5 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-              style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-            >
-            <p className="ms mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-              The System Behind AVERRA
-            </p>
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Three</p>
+              <h3 className="chapter-title">Why The Business Still Feels Empty Even When You're Successful</h3>
+              <p className="chapter-subtitle">The structural problem that your work ethic cannot solve</p>
+            </div>
 
-            <h2
-              className="mb-5 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]"
-              style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-            >
-            <h2 className="pf mb-5 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]">
-              Built from experience, not theory.
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Four</p>
+              <h3 className="chapter-title">What Happens If Nothing Changes</h3>
+              <p className="chapter-subtitle">The future that is already forming</p>
+            </div>
+
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Five</p>
+              <h3 className="chapter-title">The Fear Of Becoming Replaceable</h3>
+              <p className="chapter-subtitle">What's really underneath the resistance to change</p>
+            </div>
+
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Six</p>
+              <h3 className="chapter-title">Who You Become If Nothing Changes And Who You Become If It Does</h3>
+              <p className="chapter-subtitle">Two futures. One choice.</p>
+            </div>
+
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Seven</p>
+              <h3 className="chapter-title">Building Beyond The Chair</h3>
+              <p className="chapter-subtitle">What your business can actually become</p>
+            </div>
+
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Eight</p>
+              <h3 className="chapter-title">The Businesses Clients Trust Most</h3>
+              <p className="chapter-subtitle">The psychology of client perception and premium positioning</p>
+            </div>
+
+            <div className="chapter-item">
+              <p className="chapter-number">Chapter Nine</p>
+              <h3 className="chapter-title">Building The Business That Finally Sets You Free</h3>
+              <p className="chapter-subtitle">The operational blueprint, step by step, season by season</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Transformation Section */}
+        <section className="transformation-section">
+          <div className="transformation-header">
+            <p className="section-label" style={{ textAlign: 'center' }}>Transformation</p>
+            <h2 className="section-headline pf" style={{ color: '#fdf5f7', textAlign: 'center', fontSize: 'clamp(28px, 3.5vw, 46px)', margin: '0 auto', maxWidth: '640px' }}>
+              What changes when you finally understand the structure
             </h2>
+          </div>
 
-            <p
-              className="mb-6 text-[15px] leading-[1.9] text-[#251218]/70"
-              style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-            >
-            <p className="lr mb-6 text-[15px] font-light leading-[1.9] text-[#251218]/70">
-              I have been exactly where you are. Building a brand without a
-              system, posting without direction, and watching clients choose
-              someone else, not because the work wasn't there, but because the
-              brand wasn't communicating it.
+          <div className="transformation-grid">
+            <div>
+              <p className="transform-col-title before-title">Before</p>
+              <ul className="transform-list before-list">
+                <li className="transform-item lr">Income disappears the moment you stop working</li>
+                <li className="transform-item lr">Rest feels financially dangerous</li>
+                <li className="transform-item lr">The business depends entirely on your physical availability</li>
+                <li className="transform-item lr">Growth only creates more appointments</li>
+                <li className="transform-item lr">Exhaustion becomes normalized as part of success</li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="transform-col-title after-title">After</p>
+              <ul className="transform-list after-list">
+                <li className="transform-item lr">Income opportunities exist beyond constant appointments</li>
+                <li className="transform-item lr">The business can eventually function with less emotional pressure</li>
+                <li className="transform-item lr">Growth creates leverage instead of only creating more labor</li>
+                <li className="transform-item lr">Systems replace dependency on nonstop availability</li>
+                <li className="transform-item lr">Sustainability becomes the foundation instead of self-sacrifice</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Built For You Section */}
+        <section className="built-for-section">
+          <div>
+            <p className="section-label">Built For You</p>
+            <h2 className="section-headline pf">If your business depends on clients booking your time, this is for you.</h2>
+            <p className="section-body">
+              Whether you specialize in lashes, brows, nails, hair, facials, makeup, skincare, waxing, injections, or another beauty service entirely, eventually the pressure starts feeling the same.
             </p>
-
-            <p
-              className="mb-6 text-[15px] leading-[1.9] text-[#251218]/70"
-              style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-            >
-            <p className="lr mb-6 text-[15px] font-light leading-[1.9] text-[#251218]/70">
-              I stopped guessing and started building with intention. The result
-              was a brand that attracted the right clients, supported premium
-              pricing, and stayed consistent as it grew. What took years to
-              figure out, AVERRA has simplified into a structured system you can
-              start using immediately.
+            <p className="section-body">
+              The business depends on you showing up constantly. The schedule never fully stops. And no matter how booked you become, the pressure somehow still follows you home.
             </p>
-
-            <p
-              className="mb-8 text-[16px] italic text-[#251218]"
-              style={{ fontFamily: "Lora, serif", fontWeight: 400 }}
-            >
-            <p className="lr mb-8 text-[16px] italic text-[#251218]">
-              Real clarity. Real alignment. Real results.
+            <p className="section-body" style={{ fontWeight: 600, color: '#251218' }}>
+              AVERRA was built for beauty professionals who are tired of feeling like the business only works when they are constantly available to hold it together.
             </p>
+          </div>
+          <div className="for-grid">
+            <div className="for-item">Lashes</div>
+            <div className="for-item">Brows</div>
+            <div className="for-item">Nails</div>
+            <div className="for-item">Makeup</div>
+            <div className="for-item">Hair</div>
+            <div className="for-item">Facials</div>
+            <div className="for-item">Skincare</div>
+            <div className="for-item">Waxing</div>
+            <div className="for-item">Injections</div>
+            <div className="for-item">And more</div>
+          </div>
+        </section>
 
-            <button
-              onClick={handleStartBrandAlignment}
-              className={`inline-block bg-[#251218] px-10 py-4 text-[11px] uppercase tracking-[0.22em] text-[#fdf5f7] transition-all duration-500 ${
-              className={`ms inline-block bg-[#251218] px-10 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#fdf5f7] transition-all duration-300 ${
-                !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
-              }`}
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                fontWeight: 700,
-              }}
-            >
+        {/* Client Reviews */}
+        <section className="testimonials">
+          <div className="testimonials-header">
+            <p className="section-label" style={{ textAlign: 'center' }}>Client Results</p>
+            <h2 className="section-headline pf" style={{ color: '#fdf5f7', textAlign: 'center', fontSize: 'clamp(28px, 3.5vw, 46px)', margin: '0 auto 16px', maxWidth: '700px' }}>
+              These shifts happened when the business finally stopped depending on nonstop survival mode.
+            </h2>
+          </div>
+          <div className="reviews-grid">
+            <div className="review-card">
+              <div className="review-initial">J</div>
+              <p className="review-text lr">
+                "Before AVERRA, I thought being exhausted was just part of owning a beauty business. I was fully booked but still constantly anxious. The biggest shift wasn't just my pricing. It was finally realizing my business needed structure, not more hustle."
+              </p>
+              <p className="review-name">Jade M.</p>
+              <p className="review-role">Lash Artist · AVERRA Client</p>
+            </div>
+            <div className="review-card">
+              <div className="review-initial">C</div>
+              <p className="review-text lr">
+                "I was constantly posting, constantly working, constantly trying to keep momentum going. AVERRA helped me realize the problem wasn't my effort. My entire business was built around me never stopping. That changed everything."
+              </p>
+              <p className="review-name">Camille R.</p>
+              <p className="review-role">Makeup Artist · AVERRA Client</p>
+            </div>
+            <div className="review-card">
+              <div className="review-initial">K</div>
+              <p className="review-text lr">
+                "For the first time, I understood why rest made me feel guilty. My business had trained me to feel unsafe anytime things slowed down. AVERRA helped me start building something that finally felt sustainable instead of emotionally exhausting."
+              </p>
+              <p className="review-name">Kezia T.</p>
+              <p className="review-role">Nail Artist · AVERRA Client</p>
+            </div>
+            <div className="review-card">
+              <div className="review-initial">S</div>
+              <p className="review-text lr">
+                "I thought I needed more discipline. What I actually needed was a better structure. AVERRA helped me stop operating in constant reaction mode and finally start building with intention instead of survival."
+              </p>
+              <p className="review-name">Simone A.</p>
+              <p className="review-role">Esthetician · AVERRA Client</p>
+            </div>
+            <div className="review-card">
+              <div className="review-initial">B</div>
+              <p className="review-text lr">
+                "My business looked successful from the outside, but behind the scenes I was overwhelmed all the time. AVERRA helped me realize how much pressure I had normalized. Everything feels clearer now, including the direction I'm building toward."
+              </p>
+              <p className="review-name">Brianna H.</p>
+              <p className="review-role">Hair Stylist · AVERRA Client</p>
+            </div>
+            <div className="review-card">
+              <div className="review-initial">M</div>
+              <p className="review-text lr">
+                "I finally stopped feeling like every dollar depended on me physically running myself into the ground. That mindset shift alone changed how I approached my business completely."
+              </p>
+              <p className="review-name">Maya L.</p>
+              <p className="review-role">Brow Artist · AVERRA Client</p>
+            </div>
+          </div>
+        </section>
+
+        {/* The System Behind AVERRA */}
+        <section className="founder">
+          <div className="founder-image">
+            <div className="founder-monogram">A</div>
+            <div className="founder-accent"></div>
+          </div>
+          <div className="founder-text">
+            <p className="section-label">The System Behind AVERRA</p>
+            <h2 className="section-headline pf">I have been exactly where you are.</h2>
+            <p className="section-body">
+              Building constantly. Posting constantly. Trying to stay visible. Trying to stay booked. Trying to keep momentum going while quietly feeling exhausted underneath all of it.
+            </p>
+            <p className="section-body">
+              And for a long time, I thought the answer was just working harder.
+            </p>
+            <p className="section-body">
+              What eventually changed everything was realizing the problem was not ambition, discipline, or talent. It was the structure the business was built on.
+            </p>
+            <p className="section-body">
+              Most beauty professionals build businesses that depend entirely on constant availability to survive. More appointments become the solution to every problem, until eventually the business starts depending on exhaustion to keep growing.
+            </p>
+            <p className="section-body">
+              AVERRA was built to help beauty professionals finally understand why the business feels this heavy and how to begin building differently.
+            </p>
+            <p className="section-body">
+              Not through fake motivation. Not through hustle culture. Through structure, positioning, clarity, and building a business that can eventually grow beyond nonstop labor.
+            </p>
+            <p className="section-body" style={{ fontStyle: 'italic', color: '#251218', fontWeight: 600 }}>
+              Real clarity. Real structure. Real sustainability.
+            </p>
+            <button onClick={handleDownloadEbook} className="btn-primary">
               Start The Process
             </button>
-@@ -727,26 +235,17 @@ export function ServicesPage() {
-
-      <section className="bg-[#fdf5f7] px-6 py-20 md:px-10 lg:px-20">
-        <div className="mx-auto max-w-[760px] text-center">
-          <p
-            className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            {brandAlignmentService.industryStandard.title}
-          </p>
-
-          <h2
-            className="mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]">
-            When any of these are off,
-            <br />
-            your value decreases.
-          </h2>
-
-          <p
-            className="mx-auto max-w-[560px] text-[15px] leading-[1.9] text-[#251218]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr mx-auto max-w-[560px] text-[15px] font-light leading-[1.9] text-[#251218]/70">
-            {brandAlignmentService.industryStandard.intro}
-          </p>
-        </div>
-@@ -755,30 +254,15 @@ export function ServicesPage() {
-          {brandAlignmentService.industryStandard.standards.map(
-            (standard, index) => (
-              <div key={standard.name} className="bg-[#fbf0f3] px-7 py-9">
-                <div
-                  className="mb-3 text-5xl text-[#c9969e]/25"
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-                <div className="pf mb-3 text-5xl text-[#c9969e]/25">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
-
-                <h3
-                  className="mb-3 text-[13px] uppercase tracking-[0.1em] text-[#251218]"
-                  style={{
-                    fontFamily: "Montserrat, sans-serif",
-                    fontWeight: 700,
-                  }}
-                >
-                <h3 className="ms mb-3 text-[13px] font-bold uppercase tracking-[0.1em] text-[#251218]">
-                  {standard.name}
-                </h3>
-
-                <p
-                  className="text-[13px] leading-[1.85] text-[#251218]/70"
-                  style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-                >
-                <p className="lr text-[13px] font-light leading-[1.85] text-[#251218]/70">
-                  {standard.description}
-                </p>
-              </div>
-@@ -787,41 +271,26 @@ export function ServicesPage() {
-        </div>
-
-        <div className="mx-auto mt-14 max-w-[720px] text-center">
-          <p
-            className="text-[18px] leading-[1.8] text-[#251218]/75"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr text-[18px] font-light leading-[1.8] text-[#251218]/75">
-            {brandAlignmentService.industryStandard.conclusionPart1}
-          </p>
-          <p
-            className="mt-2 text-[28px] italic text-[#c9969e]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <p className="pf mt-2 text-[28px] italic text-[#c9969e]">
-            {brandAlignmentService.industryStandard.conclusionPart2}
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-[#fbf0f3] px-6 py-20 md:px-10 lg:px-20">
-        <div className="mx-auto mb-14 max-w-[760px] text-center">
-          <p
-            className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            The System
-          </p>
-
-          <h2
-            className="mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]">
-            Three Stage Process
-          </h2>
-
-          <p
-            className="mx-auto max-w-[500px] text-[15px] leading-[1.9] text-[#251218]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr mx-auto max-w-[500px] text-[15px] font-light leading-[1.9] text-[#251218]/70">
-            Everything you create should leave no room for misinterpretation.
-            The AVERRA process ensures it.
-          </p>
-@@ -837,55 +306,41 @@ export function ServicesPage() {
-                className={`${isMiddle ? "bg-[#251218]" : "bg-[#fdf5f7]"} px-9 py-12`}
-              >
-                <div
-                  className={`mb-2 text-7xl ${
-                  className={`pf mb-2 text-7xl ${
-                    isMiddle ? "text-[#c9969e]/30" : "text-[#c9969e]/25"
-                  }`}
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-                  {index + 1}
-                </div>
-
-                <p
-                  className={`mb-4 text-[10px] uppercase tracking-[0.2em] ${
-                  className={`ms mb-4 text-[10px] font-bold uppercase tracking-[0.2em] ${
-                    isMiddle ? "text-[#fdf5f7]/80" : "text-[#c9969e]"
-                  }`}
-                  style={{
-                    fontFamily: "Montserrat, sans-serif",
-                    fontWeight: 700,
-                  }}
-                >
-                  Stage {["One", "Two", "Three"][index]}
-                </p>
-
-                <h3
-                  className={`mb-3 text-[28px] ${
-                  className={`pf mb-3 text-[28px] ${
-                    isMiddle ? "text-[#fdf5f7]" : "text-[#251218]"
-                  }`}
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-                  {stage.name}
-                </h3>
-
-                <p
-                  className={`mb-4 text-[14px] italic ${
-                  className={`lr mb-4 text-[14px] font-light italic ${
-                    isMiddle ? "text-[#fdf5f7]/70" : "text-[#251218]/60"
-                  }`}
-                  style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-                >
-                  {stage.subtitle}
-                </p>
-
-                <p
-                  className={`text-[14px] leading-[1.85] ${
-                  className={`lr text-[14px] font-light leading-[1.85] ${
-                    isMiddle ? "text-[#fdf5f7]/75" : "text-[#251218]/75"
-                  }`}
-                  style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-                >
-                  {stage.detail}
-                </p>
-@@ -909,13 +364,7 @@ export function ServicesPage() {
-              "Identity that scales",
-            ].map((item, index) => (
-              <div key={`${item}-${index}`} className="flex items-center">
-                <span
-                  className="px-12 text-[22px] italic text-[#fdf5f7]"
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-                <span className="pf px-12 text-[22px] italic text-[#fdf5f7]">
-                  {item}
-                </span>
-                <span className="h-1 w-1 rounded-full bg-[#fdf5f7]/50" />
-@@ -927,17 +376,11 @@ export function ServicesPage() {
-
-      <section className="bg-[#251218] px-6 py-20 md:px-10 lg:px-20">
-        <div className="mb-16 text-center">
-          <p
-            className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            Client Results
-          </p>
-
-          <h2
-            className="mx-auto max-w-[760px] text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#fdf5f7]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mx-auto max-w-[760px] text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#fdf5f7]">
-            These results aren't luck. They're what happens when a brand is
-            aligned.
-          </h2>
-@@ -949,31 +392,19 @@ export function ServicesPage() {
-              key={review.name}
-              className="border-t-2 border-[#c9969e] bg-white/[0.04] px-7 py-9"
-            >
-              <div
-                className="mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#c9969e] text-[13px] text-[#fdf5f7]"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-              >
-              <div className="ms mb-5 flex h-9 w-9 items-center justify-center rounded-full bg-[#c9969e] text-[13px] font-bold text-[#fdf5f7]">
-                {review.initial}
-              </div>
-
-              <p
-                className="mb-6 text-[13px] italic leading-[1.85] text-[#fdf5f7]/82"
-                style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-              >
-              <p className="lr mb-6 text-[13px] font-light italic leading-[1.85] text-[#fdf5f7]/82">
-                “{review.text}”
-              </p>
-
-              <p
-                className="text-[11px] uppercase tracking-[0.14em] text-[#fdf5f7]"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-              >
-              <p className="ms text-[11px] font-bold uppercase tracking-[0.14em] text-[#fdf5f7]">
-                {review.name}
-              </p>
-
-              <p
-                className="mt-1 text-[11px] text-[#fdf5f7]/45"
-                style={{ fontFamily: "Montserrat, sans-serif" }}
-              >
-              <p className="ms mt-1 text-[11px] text-[#fdf5f7]/45">
-                {review.role}
-              </p>
-            </div>
-@@ -983,24 +414,15 @@ export function ServicesPage() {
-
-      <section id="audits" className="bg-[#fdf5f7] px-6 py-20 md:px-10 lg:px-20">
-        <div className="mb-16 text-center">
-          <p
-            className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            Add On Services
-          </p>
-
-          <h2
-            className="mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]">
-            Focused Brand Audits
-          </h2>
-
-          <p
-            className="mx-auto max-w-[500px] text-[15px] leading-[1.9] text-[#251218]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr mx-auto max-w-[500px] text-[15px] font-light leading-[1.9] text-[#251218]/70">
-            Targeted evaluations for specific brand problems, standalone or as
-            an add on to your alignment system.
-          </p>
-@@ -1009,47 +431,23 @@ export function ServicesPage() {
-        <div className="mx-auto grid max-w-[980px] gap-[2px] lg:grid-cols-2">
-          {auditAddOns.map((audit) => (
-            <div key={audit.id} className="bg-[#fbf0f3] px-8 py-9">
-              <p
-                className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#c9969e]"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-              <p className="ms mb-3 text-[9px] font-bold uppercase tracking-[0.22em] text-[#c9969e]">
-                Brand Audit
-              </p>
-
-              <h3
-                className="mb-3 text-[30px] leading-[1.2] text-[#251218]"
-                style={{
-                  fontFamily: "Playfair Display, serif",
-                  fontWeight: 400,
-                }}
-              >
-              <h3 className="pf mb-3 text-[30px] leading-[1.2] text-[#251218]">
-                {audit.name}
-              </h3>
-
-              <p
-                className="mb-6 text-[13px] leading-[1.8] text-[#251218]/70"
-                style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-              >
-              <p className="lr mb-6 text-[13px] font-light leading-[1.8] text-[#251218]/70">
-                {audit.subtitle}
-              </p>
-
-              <div className="mb-6 flex items-baseline gap-3">
-                <span
-                  className="text-[32px] text-[#251218]"
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-                <span className="pf text-[32px] text-[#251218]">
-                  {audit.salePrice}
-                </span>
-                <span
-                  className="text-[14px] text-[#251218]/45 line-through"
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
-                >
-                <span className="ms text-[14px] text-[#251218]/45 line-through">
-                  {audit.price}
-                </span>
-              </div>
-@@ -1062,8 +460,7 @@ export function ServicesPage() {
-                ].map((item, index) => (
-                  <li
-                    key={`${audit.id}-${index}`}
-                    className="flex items-start gap-2 border-b border-[#251218]/10 py-3 text-[11px] text-[#251218]/70"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
-                    className="ms flex items-start gap-2 border-b border-[#251218]/10 py-3 text-[11px] text-[#251218]/70"
-                  >
-                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[#c9969e]" />
-                    <span>{item}</span>
-@@ -1082,13 +479,9 @@ export function ServicesPage() {
-                    type: "service",
-                  })
-                }
-                className={`w-full bg-[#251218] px-6 py-3.5 text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7] transition-all duration-500 ${
-                className={`ms w-full bg-[#251218] px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#fdf5f7] transition-all duration-300 ${
-                  !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
-                }`}
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-                Add to Cart
-              </button>
-@@ -1097,36 +490,24 @@ export function ServicesPage() {
-        </div>
-      </section>
-
-      <section id="digitals" className="bg-[#fbf0f3] px-6 py-20 md:px-10 lg:px-20">
-      <section id="digitals" className="bg-[#fdf5f7] px-6 py-20 md:px-10 lg:px-20">
-        <div className="mb-16 text-center">
-          <p
-            className="mb-4 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            Digital Products
-          </p>
-
-          <h2
-            className="mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mb-4 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#251218]">
-            Brand Ready Visuals
-          </h2>
-
-          <p
-            className="mx-auto max-w-[520px] text-[15px] leading-[1.9] text-[#251218]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr mx-auto max-w-[520px] text-[15px] font-light leading-[1.9] text-[#251218]/70">
-            Instant access. No revisions. Ready to use.
-          </p>
-        </div>
-
-        <div className="mx-auto mb-14 max-w-4xl">
-          <div className="border-l-2 border-[#c9969e] bg-[#fdf5f7] px-8 py-6">
-            <p
-              className="text-[13px] leading-[1.8] text-[#251218]/70"
-              style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-            >
-          <div className="border-l-2 border-[#c9969e] bg-[#fbf0f3] px-8 py-6">
-            <p className="lr text-[13px] font-light leading-[1.8] text-[#251218]/70">
-              All visuals are AI generated brand imagery created for marketing
-              and promotional use. These images are intended to elevate brand
-              presentation and should not be used to misrepresent real client
-@@ -1135,63 +516,35 @@ export function ServicesPage() {
           </div>
-        </div>
+        </section>
 
-        <div className="grid gap-[2px] lg:grid-cols-3">
-        <div className="grid gap-x-14 gap-y-14 lg:grid-cols-3">
-          {digitalProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-[#fdf5f7] px-8 py-9 transition-transform duration-200 hover:-translate-y-1"
-            >
-              <p
-                className="mb-3 text-[9px] uppercase tracking-[0.22em] text-[#c9969e]"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-            <div key={product.id}>
-              <p className="ms mb-3 text-[9px] font-bold uppercase tracking-[0.22em] text-[#c9969e]">
-                Digital Pack
-              </p>
-
-              <h3
-                className="mb-3 text-[28px] leading-[1.2] text-[#251218]"
-                style={{
-                  fontFamily: "Playfair Display, serif",
-                  fontWeight: 400,
-                }}
-              >
-              <h3 className="pf mb-4 text-[30px] leading-[1.15] text-[#251218]">
-                {product.name}
-              </h3>
-
-              <p
-                className="mb-6 text-[12px] leading-[1.85] text-[#251218]/70"
-                style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-              >
-              <p className="lr mb-8 text-[13px] font-light leading-[1.9] text-[#251218]/66">
-                {product.description}
-              </p>
-
-              <div className="mb-5 flex items-baseline gap-3">
-                <span
-                  className="text-[30px] text-[#251218]"
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-              <div className="mb-8 flex items-baseline gap-3">
-                <span className="pf text-[34px] text-[#251218]">
-                  {product.price}
-                </span>
-                <span
-                  className="text-[14px] text-[#251218]/45 line-through"
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
-                >
-                <span className="ms text-[14px] text-[#251218]/45 line-through">
-                  {product.originalPrice}
-                </span>
-              </div>
-
-              <ul className="mb-7">
-              <ul className="mb-8">
-                {product.scenes.map((scene) => (
-                  <li
-                    key={scene.title}
-                    className="flex items-start gap-2 border-b border-[#251218]/10 py-3 text-[11px] text-[#251218]/70"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
-                    className="ms flex items-start gap-2 border-b border-[#251218]/10 py-3 text-[11px] text-[#251218]/66"
-                  >
-                    <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-[#c9969e]" />
-                    <span>{scene.title}</span>
-@@ -1210,27 +563,19 @@ export function ServicesPage() {
-                    description: product.description,
-                  })
-                }
-                className={`w-full bg-[#251218] px-6 py-3.5 text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7] transition-all duration-500 ${
-                className={`ms w-full bg-[#251218] px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#fdf5f7] transition-all duration-300 ${
-                  !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
-                }`}
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                }}
-              >
-                Add to Cart
-                Add To Cart
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <p
-          className="mt-10 text-center text-[11px] leading-[1.7] text-[#251218]/60"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
-        >
-        <p className="ms mt-14 text-center text-[11px] leading-[1.7] text-[#251218]/50">
-          All digital products include commercial use rights · Files delivered
-          instantly after purchase · No edits, swaps, or personalization
-          included
-          instantly after purchase · No edits, swaps, or personalization included
-        </p>
-      </section>
-
-@@ -1239,50 +584,31 @@ export function ServicesPage() {
-        className="grid grid-cols-1 gap-12 bg-[#251218] px-6 py-20 md:px-10 lg:grid-cols-2 lg:gap-20 lg:px-20"
-      >
-        <div>
-          <p
-            className="mb-5 text-[10px] uppercase tracking-[0.25em] text-[#c9969e]"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 700 }}
-          >
-          <p className="ms mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-            The Complete System
-          </p>
-
-          <h2
-            className="mb-5 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#fdf5f7]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 400 }}
-          >
-          <h2 className="pf mb-5 text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-[#fdf5f7]">
-            AVERRA Brand Alignment
+        {/* About CTA */}
+        <section className="about-cta">
+          <p className="section-label" style={{ textAlign: 'center' }}>The Philosophy Behind AVERRA</p>
+          <h2 className="section-headline pf" style={{ textAlign: 'center', fontSize: 'clamp(30px, 3.5vw, 48px)', margin: '0 auto 16px', maxWidth: '600px' }}>
+            Built for beauty professionals ready to grow beyond nonstop labor
           </h2>
-
-          <p
-            className="mb-8 max-w-[560px] text-[15px] leading-[1.9] text-[#fdf5f7]/70"
-            style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-          >
-          <p className="lr mb-8 max-w-[560px] text-[15px] font-light leading-[1.9] text-[#fdf5f7]/70">
-            {brandAlignmentService.description}
+          <p className="section-body" style={{ textAlign: 'center', maxWidth: '480px', margin: '0 auto 40px' }}>
+            Learn more about why AVERRA was built and the approach behind helping beauty professionals create businesses that eventually support their lives instead of consuming them.
           </p>
-
-          <div
-            className="mb-2 text-[64px] leading-none text-[#c9969e]"
-            style={{ fontFamily: "Playfair Display, serif", fontWeight: 300 }}
-          >
-          <div className="pf mb-2 text-[64px] leading-none text-[#c9969e]">
-            {brandAlignmentService.salePrice}
-          </div>
-
-          <p
-            className="mb-9 text-[10px] uppercase tracking-[0.18em] text-[#fdf5f7]/45"
-            style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
-          >
-          <p className="ms mb-9 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#fdf5f7]/45">
-            Founding Member Pricing · Was {brandAlignmentService.price}
-          </p>
-
-          <button
-            onClick={handleStartBrandAlignment}
-            className={`bg-[#c9969e] px-10 py-4 text-[11px] uppercase tracking-[0.22em] text-[#251218] transition-all duration-500 ${
-            className={`ms bg-[#c9969e] px-10 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#251218] transition-all duration-300 ${
-              !isMobile ? "hover:bg-[#fdf5f7]" : ""
-            }`}
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-            }}
-          >
-            Get Started
+          <button onClick={() => navigate("/about")} className="btn-primary">
+            Learn More About AVERRA
           </button>
-@@ -1321,30 +647,15 @@ export function ServicesPage() {
-                key={module.title}
-                className="flex gap-4 border-b border-[#fdf5f7]/10 py-5"
-              >
-                <span
-                  className="w-8 shrink-0 text-[18px] text-[#c9969e]"
-                  style={{
-                    fontFamily: "Playfair Display, serif",
-                    fontWeight: 400,
-                  }}
-                >
-                <span className="pf w-8 shrink-0 text-[18px] text-[#c9969e]">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+        </section>
 
-                <div>
-                  <strong
-                    className="mb-1 block text-[13px] text-[#fdf5f7]"
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 600,
-                    }}
-                  >
-                  <strong className="ms mb-1 block text-[13px] font-semibold text-[#fdf5f7]">
-                    {module.title}
-                  </strong>
-                  <p
-                    className="text-[12px] leading-[1.75] text-[#fdf5f7]/75"
-                    style={{ fontFamily: "Lora, serif", fontWeight: 300 }}
-                  >
-                  <p className="lr text-[12px] font-light leading-[1.75] text-[#fdf5f7]/75">
-                    {module.body}
-                  </p>
-                </div>
-@@ -1354,7 +665,31 @@ export function ServicesPage() {
-        </div>
-      </section>
-
-      <section className="bg-[#fdf5f7] px-6 py-24 text-center md:px-10 lg:px-20">
-        <p className="ms mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#c9969e]">
-          Exclusive Offer · Limited Time
-        </p>
-
-        <h2 className="pf mx-auto mb-4 max-w-[760px] text-[clamp(2rem,4vw,3.4rem)] leading-[1.12] text-[#251218]">
-          Ready to be the face of your brand?
-        </h2>
-
-        <p className="lr mx-auto mb-10 max-w-[560px] text-[15px] font-light leading-[1.9] text-[#251218]/65">
-          Discover your beauty brand style. Get your palette, voice tone, and
-          next steps delivered in minutes.
-        </p>
-
-        <button
-          onClick={handleStartBrandAlignment}
-          className={`ms bg-[#251218] px-10 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-[#fdf5f7] transition-all duration-300 ${
-            !isMobile ? "hover:bg-[#c9969e] hover:text-[#251218]" : ""
-          }`}
-        >
-          Start Brand Quiz
-        </button>
-      </section>
-
-      <CTAFooter />
-    </div>
+        <CTAFooter />
+      </div>
+    </>
   );
 }
-  </>
-);

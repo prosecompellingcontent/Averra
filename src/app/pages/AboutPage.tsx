@@ -1,42 +1,38 @@
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
-import { getImageUrl } from "@/utils/imageHelpers";
+import { Link, useNavigate } from "react-router";
 import { useState, useEffect, useRef } from "react";
+import { useCart } from "@/app/context/CartContext";
+import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 
 export function AboutPage() {
   const isMobile = useIsMobile();
-  const [heroAnimationState, setHeroAnimationState] = useState<'initial' | 'rising' | 'shining' | 'subtitle-entering' | 'complete'>('initial');
+  const navigate = useNavigate();
+  const { addItem } = useCart();
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    // Hero animation sequence
-    const timeout1 = setTimeout(() => setHeroAnimationState('rising'), 300);
-    const timeout2 = setTimeout(() => setHeroAnimationState('shining'), 1500);
-    const timeout3 = setTimeout(() => setHeroAnimationState('subtitle-entering'), 3000);
-    const timeout4 = setTimeout(() => setHeroAnimationState('complete'), 4500);
+    // LUXURY TIMING: Higher threshold = less sensitive, more breathing room
+    // Mobile and desktop use SAME conservative threshold for calm, weighted reveals
+    const threshold = 0.25; // Increased from 0.08-0.15 to 0.25 for luxury pacing
 
-    return () => {
-      clearTimeout(timeout1);
-      clearTimeout(timeout2);
-      clearTimeout(timeout3);
-      clearTimeout(timeout4);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Scroll-triggered animations
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
+            entry.target.classList.add('visible');
+            // CRITICAL: Unobserve after first trigger to prevent re-animation on scroll
+            observerRef.current?.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
+      {
+        threshold,
+        rootMargin: '0px 0px -100px 0px' // Delay trigger until element is well into viewport
+      }
     );
 
-    const elements = document.querySelectorAll('.scroll-animate, .scroll-line');
+    const elements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .exp-item, .pillar');
     elements.forEach((el) => observerRef.current?.observe(el));
 
     return () => {
@@ -44,744 +40,1069 @@ export function AboutPage() {
         observerRef.current.disconnect();
       }
     };
-  }, [heroAnimationState]);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#fdf5f7]">
+    <div className="about-page">
       <Navigation />
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fdf5f7]">
-        <style>{`
-          @keyframes riseUp {
-            from {
-              opacity: 0;
-              transform: translateY(60px) scale(0.98);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0) scale(1);
-            }
-          }
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');
 
-          @keyframes gentleShine {
-            0% {
-              background-position: 0% center;
-            }
-            100% {
-              background-position: 200% center;
-            }
-          }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-          @keyframes subtitleEnter {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
+        :root {
+          --averra-cream: #fdf5f7;
+          --averra-blush: #fcf3f5;
+          --averra-dark: #251218;
+          --averra-mauve: #c9969e;
+          --averra-muted: #6b585d;
+          --averra-border: rgba(37, 18, 24, 0.1);
+          --serif: 'Playfair Display', serif;
+          --serif-alt: 'Lora', serif;
+          --sans: 'Montserrat', sans-serif;
+        }
 
-          @keyframes float {
-            0%, 100% {
-              transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-              transform: translateY(-20px) rotate(2deg);
-            }
-          }
+        html { scroll-behavior: smooth; }
 
-          @keyframes pulse {
-            0%, 100% {
-              opacity: 0.05;
-            }
-            50% {
-              opacity: 0.15;
-            }
-          }
+        .about-page {
+          background: var(--averra-dark);
+          color: var(--averra-cream);
+          font-family: var(--sans);
+          font-weight: 300;
+          overflow-x: hidden;
+        }
 
-          @keyframes slideInLeft {
-            from {
-              opacity: 0;
-              transform: translateX(-60px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0);
-            }
-          }
+        /* ── HERO ── */
+        .about-hero {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 0 4rem 8rem;
+          position: relative;
+          overflow: hidden;
+        }
 
-          @keyframes slideInRight {
-            from {
-              opacity: 0;
-              transform: translateX(60px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0);
-            }
-          }
+        .hero-bg {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(ellipse 80% 60% at 70% 40%, rgba(201,150,158,0.08) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 80% at 20% 70%, rgba(201,150,158,0.05) 0%, transparent 50%),
+            linear-gradient(160deg, #1a0e12 0%, #251218 40%, #2f1c23 100%);
+        }
 
-          @keyframes scaleIn {
-            from {
-              opacity: 0;
-              transform: scale(0.9);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
+        .hero-grain {
+          position: absolute;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+          opacity: 0.4;
+          pointer-events: none;
+        }
 
-          @keyframes drawLine {
-            from {
-              width: 0;
-            }
-            to {
-              width: 100%;
-            }
-          }
+        .hero-line {
+          position: absolute;
+          top: 0; left: 4rem;
+          width: 1px;
+          height: 100%;
+          background: linear-gradient(to bottom, transparent, rgba(201,150,158,0.2) 30%, rgba(201,150,158,0.1) 70%, transparent);
+        }
 
-          .hero-3d-text {
-            color: #251218;
-            text-shadow:
-              1px 1px 2px rgba(37, 18, 24, 0.1),
-              -0.5px -0.5px 1px rgba(253, 245, 247, 0.3),
-              0 4px 8px rgba(201, 150, 158, 0.15);
-            position: relative;
-          }
+        .hero-content {
+          position: relative;
+          max-width: 820px;
+        }
 
-          .hero-3d-text::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            background: linear-gradient(
-              110deg,
-              #251218 0%,
-              #251218 35%,
-              #c9969e 45%,
-              #fdf5f7 50%,
-              #c9969e 55%,
-              #251218 65%,
-              #251218 100%
+        .hero-eyebrow {
+          font-size: 0.65rem;
+          letter-spacing: 0.35em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 2rem;
+          opacity: 0;
+          animation: fadeUp 1s 0.3s forwards;
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+        }
+        .hero-eyebrow::before {
+          content: '';
+          display: block;
+          width: 40px;
+          height: 1px;
+          background: var(--averra-mauve);
+        }
+
+        .hero-headline {
+          font-family: var(--serif);
+          font-size: clamp(3.5rem, 7vw, 6.5rem);
+          font-weight: 300;
+          line-height: 1.05;
+          color: var(--averra-cream);
+          margin-bottom: 2rem;
+          opacity: 0;
+          animation: fadeUp 1.2s 0.5s forwards;
+        }
+        .hero-headline em {
+          font-style: italic;
+          color: var(--averra-mauve);
+        }
+
+        .hero-sub {
+          font-size: 0.85rem;
+          font-weight: 300;
+          letter-spacing: 0.08em;
+          color: var(--averra-muted);
+          line-height: 1.8;
+          max-width: 480px;
+          opacity: 0;
+          animation: fadeUp 1s 0.8s forwards;
+          margin-bottom: 3rem;
+        }
+
+        .hero-scroll {
+          opacity: 0;
+          animation: fadeUp 1s 1.2s forwards;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          font-size: 0.65rem;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+        }
+        .scroll-line {
+          width: 40px;
+          height: 1px;
+          background: var(--averra-mauve);
+          animation: scrollPulse 2s 2s infinite;
+        }
+
+        /* ── STATEMENT BREAK ── */
+        .statement-break {
+          background: var(--averra-cream);
+          padding: 8rem 4rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          position: relative;
+        }
+        .statement-break::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,150,158,0.12) 0%, transparent 70%);
+        }
+        .statement-text {
+          font-family: var(--serif);
+          font-size: clamp(2rem, 4.5vw, 4rem);
+          font-weight: 300;
+          line-height: 1.2;
+          color: var(--averra-dark);
+          text-align: center;
+          max-width: 800px;
+          position: relative;
+        }
+        .statement-text em {
+          font-style: italic;
+          color: var(--averra-mauve);
+        }
+
+        /* ── NARRATIVE ── */
+        .narrative {
+          background: var(--averra-dark);
+          padding: 8rem 4rem;
+          position: relative;
+          overflow: hidden;
+        }
+        .narrative-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6rem;
+          align-items: start;
+        }
+        .narrative-label {
+          font-size: 0.62rem;
+          letter-spacing: 0.35em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 2.5rem;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .narrative-label::before {
+          content: '';
+          display: block;
+          width: 30px;
+          height: 1px;
+          background: var(--averra-mauve);
+        }
+        .narrative-heading {
+          font-family: var(--serif);
+          font-size: clamp(2rem, 3.5vw, 3rem);
+          font-weight: 300;
+          line-height: 1.2;
+          color: var(--averra-cream);
+          margin-bottom: 2rem;
+        }
+        .narrative-body {
+          font-family: var(--serif-alt);
+          font-size: 0.88rem;
+          font-weight: 300;
+          line-height: 2;
+          color: var(--averra-muted);
+          margin-bottom: 1.5rem;
+        }
+
+        /* ── EXPERIENCE LIST ── */
+        .experience-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          padding-top: 3rem;
+        }
+        .exp-item {
+          padding: 2rem 0;
+          border-bottom: 1px solid rgba(201,150,158,0.1);
+          display: grid;
+          grid-template-columns: 32px 1fr;
+          gap: 1.5rem;
+          align-items: start;
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.6s, transform 0.6s;
+        }
+        .exp-item.visible { opacity: 1; transform: none; }
+        .exp-num {
+          font-size: 0.6rem;
+          letter-spacing: 0.1em;
+          color: var(--averra-mauve);
+          padding-top: 0.2rem;
+          font-weight: 400;
+        }
+        .exp-body {
+          font-family: var(--serif);
+          font-size: 1.15rem;
+          font-weight: 300;
+          line-height: 1.6;
+          color: var(--averra-blush);
+        }
+
+        /* ── PULL QUOTE ── */
+        .pull-quote {
+          background: #2f1c23;
+          padding: 10rem 4rem;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+        }
+        .pull-quote::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 1px;
+          height: 80px;
+          background: linear-gradient(to bottom, transparent, var(--averra-mauve));
+        }
+        .pull-quote::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 1px;
+          height: 80px;
+          background: linear-gradient(to top, transparent, var(--averra-mauve));
+        }
+        .pull-quote-text {
+          font-family: var(--serif);
+          font-size: clamp(2.2rem, 5vw, 4.5rem);
+          font-weight: 300;
+          font-style: italic;
+          line-height: 1.2;
+          color: var(--averra-cream);
+          max-width: 900px;
+          margin: 0 auto;
+        }
+        .pull-quote-text span {
+          display: block;
+          font-style: normal;
+          font-size: clamp(1rem, 2vw, 1.5rem);
+          color: var(--averra-mauve);
+          margin-top: 2rem;
+          letter-spacing: 0.08em;
+        }
+
+        /* ── MARQUEE ── */
+        .marquee-section {
+          background: var(--averra-cream);
+          padding: 3rem 0;
+          overflow: hidden;
+          position: relative;
+        }
+        .marquee-track {
+          display: flex;
+          gap: 10rem; /* Massive spacing for luxury feel */
+          animation: none !important;
+          width: max-content;
+          transform: translate3d(0,0,0); /* GPU acceleration */
+          will-change: transform;
+          padding: 0 3rem;
+        }
+        .marquee-item {
+          font-family: var(--serif);
+          font-size: 1.8rem;
+          font-weight: 300;
+          font-style: italic;
+          color: var(--averra-dark);
+          white-space: nowrap;
+          opacity: 0.7;
+        }
+        .marquee-dot {
+          color: var(--averra-mauve);
+          font-style: normal;
+        }
+        @keyframes marquee {
+          from {
+            transform: translate3d(0,0,0);
+          }
+          to {
+            transform: translate3d(-50%,0,0);
+          }
+        }
+
+        @media (max-width: 900px) {
+          .marquee-track {
+            gap: 6rem; /* Still generous spacing on mobile */
+          }
+        }
+
+
+        /* ── FOUNDER ── */
+        .founder {
+          background: var(--averra-dark);
+          padding: 0;
+          overflow: hidden;
+        }
+        .founder-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          min-height: 90vh;
+        }
+        .founder-visual {
+          position: relative;
+          background: #2f1c23;
+          overflow: hidden;
+          min-height: 600px;
+        }
+        .founder-portrait {
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(135deg, rgba(201,150,158,0.06) 0%, transparent 50%),
+            linear-gradient(to bottom, transparent 40%, rgba(37,18,24,0.8) 100%),
+            #2f1c23;
+          display: flex;
+          align-items: flex-end;
+          padding: 3rem;
+        }
+        .founder-portrait-placeholder {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0; left: 0;
+          background:
+            radial-gradient(ellipse 70% 60% at 50% 35%, rgba(201,150,158,0.07) 0%, transparent 60%),
+            repeating-linear-gradient(
+              -45deg,
+              transparent,
+              transparent 40px,
+              rgba(201,150,158,0.015) 40px,
+              rgba(201,150,158,0.015) 41px
             );
-            background-size: 200% auto;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            opacity: 0;
+        }
+        .founder-portrait-letter {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -60%);
+          font-family: var(--serif);
+          font-size: 14rem;
+          font-weight: 300;
+          color: rgba(201,150,158,0.06);
+          line-height: 1;
+          user-select: none;
+          letter-spacing: -0.05em;
+        }
+        .founder-name-overlay {
+          position: relative;
+          z-index: 2;
+        }
+        .founder-name {
+          font-family: var(--serif);
+          font-size: 2.5rem;
+          font-weight: 300;
+          color: var(--averra-cream);
+          line-height: 1;
+          margin-bottom: 0.5rem;
+        }
+        .founder-title {
+          font-size: 0.65rem;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+        }
+
+        .founder-content {
+          padding: 7rem 5rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .founder-label {
+          font-size: 0.62rem;
+          letter-spacing: 0.35em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 2.5rem;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .founder-label::before {
+          content: '';
+          display: block;
+          width: 30px;
+          height: 1px;
+          background: var(--averra-mauve);
+        }
+        .founder-headline {
+          font-family: var(--serif);
+          font-size: clamp(1.8rem, 3vw, 2.5rem);
+          font-weight: 300;
+          color: var(--averra-cream);
+          line-height: 1.3;
+          margin-bottom: 2.5rem;
+        }
+        .founder-text {
+          font-family: var(--serif-alt);
+          font-size: 0.85rem;
+          font-weight: 300;
+          line-height: 2;
+          color: var(--averra-muted);
+          margin-bottom: 1.2rem;
+        }
+        .founder-certs {
+          margin-top: 3rem;
+          padding-top: 2rem;
+          border-top: 1px solid rgba(201,150,158,0.15);
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+        .cert-tag {
+          font-size: 0.62rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          padding: 0.4rem 0.9rem;
+          border: 1px solid rgba(201,150,158,0.3);
+        }
+
+        /* ── WHAT AVERRA ── */
+        .what-averra {
+          background: var(--averra-dark);
+          padding: 8rem 4rem;
+        }
+        .what-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+        .section-header {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 6rem;
+          gap: 4rem;
+        }
+        .section-header-text { flex: 1; }
+        .section-num {
+          font-size: 0.6rem;
+          letter-spacing: 0.3em;
+          color: var(--averra-mauve);
+          text-transform: uppercase;
+          margin-bottom: 1rem;
+        }
+        .section-big-title {
+          font-family: var(--serif);
+          font-size: clamp(2.5rem, 5vw, 4.5rem);
+          font-weight: 300;
+          color: var(--averra-cream);
+          line-height: 1.1;
+        }
+        .section-big-title em { font-style: italic; color: var(--averra-mauve); }
+        .section-desc {
+          font-family: var(--serif-alt);
+          font-size: 0.82rem;
+          font-weight: 300;
+          line-height: 2;
+          color: var(--averra-muted);
+          max-width: 360px;
+          text-align: right;
+        }
+
+        .pillars {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0;
+          border: 1px solid rgba(201,150,158,0.15);
+        }
+        .pillar {
+          padding: 2.5rem 2rem;
+          border-right: 1px solid rgba(201,150,158,0.15);
+          position: relative;
+          overflow: hidden;
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.7s, transform 0.7s;
+        }
+        .pillar:last-child { border-right: none; }
+        .pillar.visible { opacity: 1; transform: none; }
+        .pillar::before {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          height: 2px;
+          background: var(--averra-mauve);
+          transform: scaleX(0);
+          transition: transform 0.4s;
+          transform-origin: left;
+        }
+        .pillar:hover::before { transform: scaleX(1); }
+        .pillar-num {
+          font-size: 0.58rem;
+          letter-spacing: 0.2em;
+          color: var(--averra-mauve);
+          margin-bottom: 1.5rem;
+          font-weight: 400;
+        }
+        .pillar-title {
+          font-family: var(--serif);
+          font-size: 1.5rem;
+          font-weight: 300;
+          color: var(--averra-cream);
+          margin-bottom: 1rem;
+          line-height: 1.2;
+        }
+        .pillar-text {
+          font-family: var(--serif-alt);
+          font-size: 0.78rem;
+          font-weight: 300;
+          line-height: 1.9;
+          color: var(--averra-muted);
+        }
+
+        /* ── CLOSING ── */
+        .closing {
+          background: var(--averra-cream);
+          padding: 10rem 4rem;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+        }
+        .closing::before {
+          content: '"';
+          position: absolute;
+          top: -2rem; left: 50%;
+          transform: translateX(-50%);
+          font-family: var(--serif);
+          font-size: 20rem;
+          color: rgba(201,150,158,0.07);
+          line-height: 1;
+          pointer-events: none;
+        }
+        .closing-inner { position: relative; max-width: 800px; margin: 0 auto; }
+        .closing-eyebrow {
+          font-size: 0.62rem;
+          letter-spacing: 0.35em;
+          text-transform: uppercase;
+          color: var(--averra-mauve);
+          margin-bottom: 3rem;
+        }
+        .closing-headline {
+          font-family: var(--serif);
+          font-size: clamp(2rem, 4.5vw, 3.8rem);
+          font-weight: 300;
+          line-height: 1.3;
+          color: var(--averra-dark);
+          margin-bottom: 3rem;
+        }
+        .closing-headline em { font-style: italic; color: var(--averra-mauve); }
+        .closing-body {
+          font-family: var(--serif-alt);
+          font-size: 0.85rem;
+          font-weight: 300;
+          line-height: 2;
+          color: #4a3842;
+          margin-bottom: 1.2rem;
+        }
+        .cta-row {
+          margin-top: 4rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2rem;
+          flex-wrap: wrap;
+        }
+        .cta-btn {
+          display: inline-block;
+          font-size: 0.68rem;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          color: var(--averra-dark);
+          text-decoration: none;
+          padding: 1.1rem 2.5rem;
+          border: 1px solid var(--averra-mauve);
+          background: transparent;
+          cursor: pointer;
+          transition: background 0.3s, color 0.3s;
+          position: relative;
+          overflow: hidden;
+        }
+        .cta-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: var(--averra-mauve);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.4s;
+          z-index: 0;
+        }
+        .cta-btn:hover::before { transform: scaleX(1); }
+        .cta-btn:hover { color: var(--averra-cream); }
+        .cta-btn span { position: relative; z-index: 1; }
+        .cta-text {
+          font-size: 0.75rem;
+          color: var(--averra-muted);
+          letter-spacing: 0.05em;
+        }
+
+        .gold-divider {
+          width: 60px;
+          height: 1px;
+          background: var(--averra-mauve);
+          margin: 3rem auto;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to   { opacity: 1; transform: none; }
+        }
+        @keyframes scrollPulse {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.3; }
+        }
+
+        /* LUXURY TIMING: Slow, weighted, cinematic reveals */
+        .reveal {
+          opacity: 0;
+          transform: translateY(40px);
+          transition: opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1), transform 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        .reveal-left {
+          opacity: 0;
+          transform: translateX(-40px);
+          transition: opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1), transform 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-left.visible { opacity: 1; transform: none; }
+
+        .reveal-right {
+          opacity: 0;
+          transform: translateX(40px);
+          transition: opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1), transform 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-right.visible { opacity: 1; transform: none; }
+
+        /* Longer delays for breathing room */
+        .delay-1 { transition-delay: 0.3s; }
+        .delay-2 { transition-delay: 0.6s; }
+        .delay-3 { transition-delay: 0.9s; }
+        .delay-4 { transition-delay: 1.2s; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+          /* PERFORMANCE: Keep visuals, optimize with GPU acceleration */
+          .reveal {
+            transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateZ(0); /* GPU acceleration */
+            will-change: opacity, transform;
+          }
+          .reveal-left, .reveal-right {
+            transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateZ(0);
+            will-change: opacity, transform;
+          }
+          .exp-item {
+            transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateZ(0);
+          }
+          .pillar {
+            transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateZ(0);
+          }
+          .delay-1 { transition-delay: 0.3s; }
+          .delay-2 { transition-delay: 0.6s; }
+          .delay-3 { transition-delay: 0.9s; }
+          .delay-4 { transition-delay: 1.2s; }
+
+          /* Keep smooth button transitions */
+          .cta-btn { transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+          .cta-btn::before { transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+          .pillar::before { transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+
+          .about-hero { padding: 0 1.5rem 4rem; min-height: 90vh; }
+          .hero-headline { font-size: clamp(2.8rem, 9vw, 4.5rem); }
+          .hero-sub { font-size: 0.82rem; }
+          .statement-break { padding: 5rem 1.5rem; }
+          .statement-text { font-size: clamp(1.6rem, 6vw, 3rem); }
+          .narrative { padding: 5rem 1.5rem; }
+          .narrative-inner { grid-template-columns: 1fr; gap: 3rem; }
+          .narrative-heading { font-size: clamp(1.6rem, 5vw, 2.5rem); }
+          .narrative-body { font-size: 0.85rem; }
+          .exp-body { font-size: 1.05rem; }
+          .pull-quote { padding: 6rem 1.5rem; }
+          .pull-quote-text { font-size: clamp(1.8rem, 6vw, 3.5rem); }
+          .founder-inner { grid-template-columns: 1fr; }
+          .founder-visual { min-height: 450px; }
+          .founder-content { padding: 4rem 1.5rem; }
+          .founder-headline { font-size: clamp(1.5rem, 4vw, 2.2rem); }
+          .founder-text { font-size: 0.82rem; }
+          .what-averra { padding: 5rem 1.5rem; }
+          .section-big-title { font-size: clamp(2rem, 6vw, 3.5rem); }
+          .pillars { grid-template-columns: 1fr 1fr; }
+          .pillar:nth-child(2) { border-right: none; }
+          .pillar:nth-child(3) { border-right: 1px solid rgba(201,150,158,0.15); }
+          .pillar { padding: 2rem 1.5rem; }
+          .section-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
+          .section-desc { text-align: left; max-width: 100%; }
+          .closing { padding: 6rem 1.5rem; }
+          .closing-headline { font-size: clamp(1.6rem, 6vw, 3rem); }
+        }
+        @media (max-width: 600px) {
+          /* PERFORMANCE: Keep same luxury timing with GPU acceleration */
+          .reveal {
+            transition: opacity 2.2s cubic-bezier(0.16, 1, 0.3, 1), transform 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .reveal-left, .reveal-right {
+            transition: opacity 2.2s cubic-bezier(0.16, 1, 0.3, 1), transform 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .exp-item {
+            transition: opacity 3.9s cubic-bezier(0.16, 1, 0.3, 1), transform 3.9s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          .pillar {
+            transition: opacity 4s cubic-bezier(0.16, 1, 0.3, 1), transform 4s cubic-bezier(0.16, 1, 0.3, 1);
           }
 
-          .rising {
-            animation: riseUp 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-          }
+          .about-hero { padding: 0 1.2rem 3rem; min-height: 85vh; }
+          .hero-eyebrow { font-size: 0.6rem; margin-bottom: 1.8rem; }
+          .hero-headline { font-size: clamp(2.2rem, 10vw, 3.2rem); line-height: 1.08; margin-bottom: 1.8rem; }
+          .hero-sub { font-size: 0.78rem; line-height: 1.7; max-width: 100%; margin-bottom: 2.5rem; }
+          .hero-scroll { font-size: 0.62rem; }
+          .statement-break { padding: 4rem 1.2rem; }
+          .statement-text { font-size: clamp(1.4rem, 7vw, 2.2rem); line-height: 1.25; }
+          .narrative { padding: 4rem 1.2rem; }
+          .narrative-label { font-size: 0.6rem; margin-bottom: 2rem; }
+          .narrative-heading { font-size: clamp(1.4rem, 6vw, 2rem); margin-bottom: 1.5rem; }
+          .narrative-body { font-size: 0.82rem; line-height: 1.9; margin-bottom: 1.3rem; }
+          .experience-list { padding-top: 2.5rem; gap: 0; }
+          .exp-item { padding: 1.8rem 0; gap: 1.2rem; }
+          .exp-body { font-size: 1rem; line-height: 1.55; }
+          .pull-quote { padding: 5rem 1.2rem; }
+          .pull-quote::before, .pull-quote::after { height: 60px; }
+          .pull-quote-text { font-size: clamp(1.5rem, 7vw, 2.5rem); }
+          .pull-quote-text span { font-size: clamp(0.85rem, 3vw, 1.2rem); margin-top: 1.5rem; }
+          .founder-visual { min-height: 380px; }
+          .founder-portrait-letter { font-size: 10rem; }
+          .founder-name { font-size: 2rem; }
+          .founder-title { font-size: 0.62rem; }
+          .founder-content { padding: 3rem 1.2rem; }
+          .founder-label { font-size: 0.6rem; margin-bottom: 2rem; }
+          .founder-headline { font-size: clamp(1.3rem, 5vw, 1.8rem); margin-bottom: 2rem; }
+          .founder-text { font-size: 0.8rem; line-height: 1.9; margin-bottom: 1rem; }
+          .founder-certs { margin-top: 2.5rem; padding-top: 1.8rem; gap: 0.8rem; }
+          .cert-tag { font-size: 0.6rem; padding: 0.35rem 0.8rem; }
+          .what-averra { padding: 4rem 1.2rem; }
+          .section-num { font-size: 0.58rem; margin-bottom: 0.8rem; }
+          .section-big-title { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+          .section-desc { font-size: 0.8rem; line-height: 1.9; }
+          .section-header { margin-bottom: 4rem; gap: 1.5rem; }
+          .pillars { grid-template-columns: 1fr; }
+          .pillar { border-right: none; border-bottom: 1px solid rgba(201,150,158,0.15); padding: 2rem 1.2rem; }
+          .pillar:last-child { border-bottom: none; }
+          .pillar-num { font-size: 0.56rem; margin-bottom: 1.2rem; }
+          .pillar-title { font-size: 1.3rem; margin-bottom: 0.8rem; }
+          .pillar-text { font-size: 0.76rem; line-height: 1.85; }
+          .closing { padding: 5rem 1.2rem; }
+          .closing::before { font-size: 15rem; top: -1.5rem; }
+          .closing-eyebrow { font-size: 0.6rem; margin-bottom: 2.5rem; }
+          .closing-headline { font-size: clamp(1.5rem, 7vw, 2.5rem); margin-bottom: 2.5rem; }
+          .closing-body { font-size: 0.82rem; line-height: 1.9; margin-bottom: 1rem; }
+          .cta-row { flex-direction: column; gap: 1rem; margin-top: 3rem; }
+          .cta-btn { font-size: 0.65rem; padding: 1rem 2rem; width: 100%; text-align: center; }
+          .cta-text { font-size: 0.72rem; }
+          .gold-divider { width: 50px; margin: 2.5rem auto; }
+        }
+      `}</style>
 
-          .shining::after {
-            animation: gentleShine 4.5s ease-in-out forwards;
-            opacity: 1;
-          }
-
-          .subtitle-enter {
-            animation: subtitleEnter 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-          }
-
-          .floating {
-            animation: float 8s ease-in-out infinite;
-          }
-
-          .pulse-glow {
-            animation: pulse 4s ease-in-out infinite;
-          }
-
-          /* Scroll animations */
-          .scroll-animate {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1s cubic-bezier(0.22, 0.61, 0.36, 1),
-                        transform 1s cubic-bezier(0.22, 0.61, 0.36, 1);
-          }
-
-          .scroll-animate.animate-in {
-            opacity: 1;
-            transform: translateY(0);
-          }
-
-          .slide-in-left {
-            animation: slideInLeft 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-          }
-
-          .slide-in-right {
-            animation: slideInRight 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-          }
-
-          .scale-in {
-            animation: scaleIn 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-          }
-
-          .scroll-shine {
-            position: relative;
-            color: #251218;
-          }
-
-          .scroll-shine::before {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            background: linear-gradient(
-              90deg,
-              #251218 0%,
-              #251218 40%,
-              #c9969e 48%,
-              #fdf5f7 50%,
-              #c9969e 52%,
-              #251218 60%,
-              #251218 100%
-            );
-            background-size: 200% auto;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            opacity: 0;
-          }
-
-          .scroll-shine.animate-in::before {
-            animation: gentleShine 3.5s ease-in-out forwards;
-            opacity: 1;
-          }
-
-          .draw-line {
-            animation: drawLine 1.5s ease-out forwards;
-          }
-
-          .bg-size-200 {
-            background-size: 200% auto;
-          }
-
-          .bg-pos-100 {
-            background-position: 100% center;
-          }
-
-          .scroll-line {
-            transition: width 1.5s ease-out 0.3s;
-          }
-
-          .scroll-line.animate-in {
-            width: 6rem !important;
-          }
-        `}</style>
-
-        <div className="absolute inset-0 opacity-10 hidden md:block">
-          <div className="absolute top-20 right-20 w-[400px] h-[400px] bg-[#c9969e] rounded-full blur-[120px] floating"></div>
-          <div className="absolute bottom-20 left-20 w-[300px] h-[300px] bg-[#c9969e] rounded-full blur-[100px] floating" style={{ animationDelay: "3s" }}></div>
-          <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-[#c9969e] rounded-full blur-[150px] pulse-glow"></div>
-        </div>
-
-        <div className="relative z-10 text-center px-8">
-          <h1
-            data-text="AVERRA"
-            className={`text-[clamp(6rem,20vw,16rem)] leading-[0.85] mb-8 hero-3d-text ${
-              heroAnimationState === 'rising' || heroAnimationState === 'shining' || heroAnimationState === 'subtitle-entering' || heroAnimationState === 'complete' ? 'rising' : 'opacity-0'
-            } ${
-              heroAnimationState === 'shining' || heroAnimationState === 'subtitle-entering' || heroAnimationState === 'complete' ? 'shining' : ''
-            }`}
-            style={{
-              fontFamily: "Cormorant Garamond, serif",
-              fontWeight: 600,
-              letterSpacing: "0.05em"
-            }}
-          >
-            AVERRA
+      {/* HERO */}
+      <section className="about-hero">
+        <div className="hero-bg"></div>
+        <div className="hero-grain"></div>
+        <div className="hero-line"></div>
+        <div className="hero-content">
+          <p className="hero-eyebrow">About AVERRA</p>
+          <h1 className="hero-headline">
+            Building businesses<br/>that can eventually<br/><em>support your life.</em>
           </h1>
-
-          <p
-            data-text="The Beauty Industry's Gold Standard."
-            className={`text-xl tracking-wide hero-3d-text ${
-              heroAnimationState === 'subtitle-entering' || heroAnimationState === 'complete' ? 'subtitle-enter' : 'opacity-0'
-            }`}
-            style={{
-              fontFamily: "Cormorant Garamond, serif",
-              fontWeight: 400
-            }}
-          >
-            The Beauty Industry's Gold Standard.
+          <p className="hero-sub">
+            Not consume all of it.
           </p>
-        </div>
-
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-px h-16 bg-gradient-to-b from-[#c9969e] to-transparent"></div>
+          <div className="hero-scroll">
+            <div className="scroll-line"></div>
+            Scroll to explore
+          </div>
         </div>
       </section>
 
-      {/* Who We Are */}
-      <section className="relative py-40 bg-[#fdf5f7] overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-[#c9969e] rounded-full blur-[120px] scroll-animate" style={{ transitionDelay: "0.5s" }}></div>
-          <div className="absolute bottom-1/4 -right-20 w-[350px] h-[350px] bg-[#251218] rounded-full blur-[100px] scroll-animate" style={{ transitionDelay: "0.7s" }}></div>
-        </div>
+      {/* STATEMENT BREAK 1 */}
+      <div className="statement-break">
+        <p className="statement-text reveal">
+          You built this business with your hands,<br/>
+          your time, and years of learning<br/>
+          how to be good at what you do.<br/><br/>
+          <em>Nobody warned you the business itself<br/>would eventually become the exhausting part.</em>
+        </p>
+      </div>
 
-        <div className="max-w-5xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-16 relative">
-            <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-32 h-32 bg-[#c9969e]/10 rounded-full blur-2xl scroll-animate"></div>
-            <h2
-              className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-            >
-              Who We Are
+      {/* NARRATIVE SECTION 1 */}
+      <section className="narrative">
+        <div className="narrative-inner">
+          <div>
+            <div className="narrative-label reveal">The Pattern</div>
+            <h2 className="narrative-heading reveal delay-1">
+              At first, being fully booked felt exciting.
             </h2>
-            <div className="mx-auto mt-6 h-1 bg-[#c9969e] scroll-line" style={{ width: "0" }}></div>
+            <p className="narrative-body reveal delay-2">
+              Then your days started revolving around cancellations, reschedules, last minute messages, and trying to fit more hours into a schedule that already feels full.
+            </p>
+            <p className="narrative-body reveal delay-3">
+              The business keeps moving. But only if you do.
+            </p>
+            <p className="narrative-body reveal delay-4">
+              That is the part most beauty professionals were never taught how to fix. Not the service. Not the artistry. The structure behind the business itself.
+            </p>
           </div>
-
-          <div className="relative">
-            <div className="absolute -inset-12 rounded-3xl opacity-0 scroll-animate"
-                 style={{
-                   background: "radial-gradient(circle at center, rgba(201, 150, 158, 0.08) 0%, transparent 70%)",
-                   transitionDelay: "0.4s"
-                 }}></div>
-
-            <div className="relative bg-white/40 backdrop-blur-sm rounded-2xl p-12 border border-[#c9969e]/20 scroll-animate shadow-lg" style={{ transitionDelay: "0.5s" }}>
-              <p className="text-xl text-[#251218] leading-relaxed text-center max-w-4xl mx-auto" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                AVERRA is a Creative Direction and Brand Alignment company focused within the beauty industry. We operate on one core function:{" "}
-                <span
-                  data-text="translating a brand's intended identity into a clear, consistent, and accurate visual expression."
-                  className="scroll-shine font-semibold text-2xl inline-block relative"
-                  style={{ color: "#251218" }}>
-                  translating a brand's intended identity into a clear, consistent, and accurate visual expression.
-                </span>
-              </p>
+          <div className="experience-list reveal-right">
+            <div className="exp-item" style={{ transitionDelay: '0s' }}>
+              <div className="exp-num">01</div>
+              <div className="exp-body">You were taught how to perfect the service. Not how to build beyond it.</div>
             </div>
-
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-[#c9969e]/10 blur-2xl scroll-animate" style={{ transitionDelay: "0.7s" }}></div>
+            <div className="exp-item" style={{ transitionDelay: '0.1s' }}>
+              <div className="exp-num">02</div>
+              <div className="exp-body">The stylist who was fully booked and still financially stressed.</div>
+            </div>
+            <div className="exp-item" style={{ transitionDelay: '0.2s' }}>
+              <div className="exp-num">03</div>
+              <div className="exp-body">The lash artist answering messages late at night because silence felt expensive.</div>
+            </div>
+            <div className="exp-item" style={{ transitionDelay: '0.3s' }}>
+              <div className="exp-num">04</div>
+              <div className="exp-body">The esthetician who kept calling the exhaustion "dedication" because everyone around her looked tired too.</div>
+            </div>
+            <div className="exp-item" style={{ transitionDelay: '0.4s' }}>
+              <div className="exp-num">05</div>
+              <div className="exp-body">The talent was never the issue. The structure was.</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* The Problem */}
-      <section className="relative py-40 bg-[#fdf5f7] overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-[#c9969e] rounded-full blur-[100px] scroll-animate floating"></div>
-          <div className="absolute top-1/3 right-1/4 w-[250px] h-[250px] bg-[#251218] rounded-full blur-[90px] scroll-animate" style={{ transitionDelay: "0.3s", animationDelay: "2s" }}></div>
-        </div>
+      {/* CINEMATIC PULL QUOTE 1 */}
+      <div className="pull-quote">
+        <p className="pull-quote-text reveal">
+          Most providers are not lazy.<br/>They are trapped inside<br/>labor dependent business models.
+          <span>— A pattern impossible to ignore</span>
+        </p>
+      </div>
 
-        <div className="max-w-5xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-20 relative">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 scroll-animate" style={{ transitionDelay: "0.2s" }}>
-              <div className="w-48 h-48 bg-[#c9969e]/10 rounded-full blur-3xl"></div>
+      {/* MARQUEE */}
+      <div className="marquee-section">
+        <div className="marquee-track">
+          <span className="marquee-item">Structure <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Positioning <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Systems <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Expansion <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Freedom <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Strategy <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Scalable Growth <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Financial Freedom <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Structure <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Positioning <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Systems <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Expansion <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Freedom <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Strategy <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Scalable Growth <span className="marquee-dot">·</span></span>
+          <span className="marquee-item">Financial Freedom <span className="marquee-dot">·</span></span>
+        </div>
+      </div>
+
+      {/* FOUNDER SECTION */}
+      <section className="founder">
+        <div className="founder-inner">
+          <div className="founder-visual">
+            <div className="founder-portrait-placeholder"></div>
+            <div className="founder-portrait-letter">JS</div>
+            <div className="founder-portrait">
+              <div className="founder-name-overlay">
+                <h3 className="founder-name">Jayla Smith</h3>
+                <p className="founder-title">Founder &amp; CEO, AVERRA</p>
+              </div>
             </div>
-            <h2
-              className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-            >
-              The Problem
+          </div>
+          <div className="founder-content">
+            <div className="founder-label reveal-right">Meet The CEO</div>
+            <h2 className="founder-headline reveal-right delay-1">
+              She did not build AVERRA<br/>from the outside looking in.
             </h2>
-            <div className="flex justify-center mt-8 gap-2">
-              <div className="w-2 h-2 bg-[#c9969e] rounded-full scroll-animate" style={{ transitionDelay: "0.4s" }}></div>
-              <div className="w-2 h-2 bg-[#c9969e] rounded-full scroll-animate" style={{ transitionDelay: "0.5s" }}></div>
-              <div className="w-2 h-2 bg-[#c9969e] rounded-full scroll-animate" style={{ transitionDelay: "0.6s" }}></div>
-            </div>
-          </div>
-
-          <div className="space-y-12 max-w-4xl mx-auto">
-            <div className="relative">
-              <div className="absolute -inset-8 bg-gradient-to-r from-[#c9969e]/5 via-[#c9969e]/10 to-[#c9969e]/5 rounded-3xl opacity-0 scroll-animate blur-2xl" style={{ transitionDelay: "0.3s" }}></div>
-              <p className="text-2xl text-[#c9969e] leading-relaxed scroll-animate font-semibold text-center relative bg-white/30 backdrop-blur-sm py-8 px-6 rounded-2xl border border-[#c9969e]/30 shadow-lg" style={{ fontFamily: "Lora, serif", transitionDelay: "0.4s" }}>
-                The beauty industry does not have a talent problem. It has a translation problem.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-br from-[#c9969e]/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="relative bg-white/40 backdrop-blur-sm p-8 rounded-xl border-l-4 border-[#c9969e] scroll-animate shadow-md hover:shadow-xl transition-shadow duration-500" style={{ transitionDelay: "0.5s" }}>
-                  <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                    Professionals are skilled and actively building, but there is a consistent breakdown between what they intend to communicate, what they actually produce, and how it is perceived.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-br from-[#c9969e]/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="relative bg-white/40 backdrop-blur-sm p-8 rounded-xl border-l-4 border-[#c9969e] scroll-animate shadow-md hover:shadow-xl transition-shadow duration-500" style={{ transitionDelay: "0.6s" }}>
-                  <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                    That gap is where brands lose clarity, consistency, and perceived value.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-[#c9969e]/20 to-transparent blur-xl opacity-0 scroll-animate" style={{ transitionDelay: "0.7s" }}></div>
-              <div className="relative bg-white/50 backdrop-blur-sm p-10 rounded-xl scroll-animate border border-[#c9969e]/30 shadow-lg" style={{ transitionDelay: "0.8s" }}>
-                <p className="text-lg text-[#251218]/80 leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                  Most brands build based on what they see. They follow existing aesthetics, replicate what appears to be working, and create without a defined structure. Over time this leads to unaligned visuals, inconsistent content, and a scattered identity.
-                </p>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="absolute -inset-6 bg-gradient-to-br from-[#c9969e]/20 via-transparent to-[#c9969e]/20 rounded-3xl opacity-0 scroll-animate blur-2xl" style={{ transitionDelay: "0.9s" }}></div>
-              <div className="relative bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-md p-12 border-l-4 border-[#c9969e] scroll-animate shadow-2xl rounded-2xl hover:scale-105 transition-transform duration-700" style={{ transitionDelay: "1s" }}>
-                <div className="absolute top-4 right-4 text-8xl text-[#c9969e]/10 select-none" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
-                <p className="text-xl text-[#251218] leading-relaxed italic font-medium relative z-10" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                  This is how markets become oversaturated. Not from too many people, but from too many brands looking and communicating the same.
-                </p>
-                <div className="absolute bottom-4 left-4 text-8xl text-[#c9969e]/10 select-none rotate-180" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
-              </div>
+            <p className="founder-text reveal-right delay-2">
+              Jayla Smith is the Founder of AVERRA, a self made entrepreneur, investor, and business strategist focused on helping beauty professionals build businesses that can grow beyond nonstop labor.
+            </p>
+            <p className="founder-text reveal-right delay-3">
+              She grew up inside salon and spa environments watching beauty professionals work long hours to build something for themselves while quietly carrying the pressure of keeping the entire business running every day. Her stepmother owned a salon. Her father handled the business operations and bookkeeping.
+            </p>
+            <p className="founder-text reveal-right delay-4">
+              From a young age, she was exposed to both sides of the industry at the same time: the artistry and the structure behind keeping a business alive.
+            </p>
+            <p className="founder-text reveal-right delay-4">
+              She worked inside beauty businesses herself, performed services, studied client behavior, and later worked in beauty school admissions where she saw firsthand how many providers entered the industry passionate about beauty but unprepared for the business realities waiting for them afterward.
+            </p>
+            <div className="founder-certs reveal-right delay-4">
+              <span className="cert-tag">Digital Marketing</span>
+              <span className="cert-tag">Brand Strategy</span>
+              <span className="cert-tag">Consumer Psychology</span>
+              <span className="cert-tag">Ecommerce</span>
+              <span className="cert-tag">Analytics</span>
+              <span className="cert-tag">Media Communication</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* The Standard */}
-      <section className="relative py-40 bg-[#fdf5f7] overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-[#c9969e] rounded-full blur-[120px] scroll-animate floating" style={{ animationDelay: "1s" }}></div>
-          <div className="absolute bottom-1/3 left-1/4 w-[350px] h-[350px] bg-[#251218] rounded-full blur-[110px] scroll-animate" style={{ transitionDelay: "0.5s" }}></div>
-        </div>
+      {/* PULL QUOTE 2 */}
+      <div className="pull-quote" style={{ background: '#2f1c23' }}>
+        <p className="pull-quote-text reveal">
+          Talented providers were becoming<br/>fully booked while still<br/>financially overwhelmed.
+          <span>The gap nobody was filling</span>
+        </p>
+      </div>
 
-        <div className="max-w-6xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-20 relative">
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 w-64 h-64 bg-[#c9969e]/10 rounded-full blur-3xl opacity-0 scroll-animate" style={{ transitionDelay: "0.2s" }}></div>
-            <h2
-              className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-            >
-              The Standard
-            </h2>
-            <div className="relative mt-8 flex justify-center gap-4">
-              <div className="w-16 h-px bg-[#c9969e] scroll-animate" style={{ transitionDelay: "0.4s" }}></div>
-              <div className="w-2 h-2 bg-[#c9969e] rounded-full scroll-animate -mt-1" style={{ transitionDelay: "0.5s" }}></div>
-              <div className="w-16 h-px bg-[#c9969e] scroll-animate" style={{ transitionDelay: "0.6s" }}></div>
-            </div>
-          </div>
-
-          <div className="space-y-16 max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-              {["Perception", "Translation", "Visual Clarity", "Consistency"].map((factor, i) => (
-                <div
-                  key={factor}
-                  className="relative group scroll-animate"
-                  style={{ transitionDelay: `${0.3 + i * 0.15}s` }}
-                >
-                  <div className="absolute -inset-2 bg-gradient-to-br from-[#c9969e]/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700"></div>
-                  <div className="relative p-8 bg-white/50 backdrop-blur-sm rounded-xl border-t-4 border-[#c9969e] shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-700">
-                    <div className="absolute -top-4 -right-4 w-12 h-12 bg-[#c9969e]/20 rounded-full blur-lg"></div>
-                    <div className="absolute top-2 right-2 text-6xl font-bold text-[#c9969e]/5 select-none" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                      {String(i + 1).padStart(2, '0')}
-                    </div>
-                    <p className="text-xl font-semibold text-[#251218] relative z-10" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                      {factor}
-                    </p>
-                    <div className="mt-4 w-12 h-1 bg-[#c9969e] opacity-0 group-hover:opacity-100 group-hover:w-full transition-all duration-700"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="relative">
-              <div className="absolute -inset-8 bg-gradient-to-r from-transparent via-[#c9969e]/10 to-transparent rounded-3xl opacity-0 scroll-animate blur-2xl" style={{ transitionDelay: "0.8s" }}></div>
-              <div className="relative bg-white/60 backdrop-blur-md p-12 rounded-2xl scroll-animate border border-[#c9969e]/30 shadow-xl text-center" style={{ transitionDelay: "0.9s" }}>
-                <p className="text-xl text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                  Every brand in this industry is measured against four factors: Perception, Translation, Visual Clarity, and Consistency. When any one of these is off, your value drops and your brand starts to blend in instead of stand out.
-                </p>
-              </div>
-            </div>
-
-            <div className="relative scroll-animate" style={{ transitionDelay: "1.1s" }}>
-              <div className="absolute -inset-12 bg-gradient-to-br from-[#c9969e]/20 via-[#c9969e]/10 to-transparent rounded-full blur-3xl opacity-70"></div>
-              <div className="relative inline-block mx-auto">
-                <div className="absolute inset-0 bg-[#c9969e]/10 blur-2xl scale-110"></div>
-                <div className="relative bg-gradient-to-r from-[#c9969e] to-[#251218] text-transparent bg-clip-text">
-                  <p className="text-4xl md:text-5xl leading-relaxed font-bold px-12 py-6 text-center" style={{ fontFamily: "Playfair Display, serif" }}>
-                    AVERRA exists to correct that.
-                  </p>
-                </div>
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-4 bg-[#c9969e]/30 blur-xl"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Meet The CEO */}
-      <section className="relative py-40 bg-[#fdf5f7]">
-        <div className="absolute inset-0 opacity-5 hidden md:block">
-          <div className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] bg-[#c9969e] rounded-full blur-[110px]"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-20">
-            <h2
-              className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate"
-              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-            >
-              Meet The CEO
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            {/* CEO Photo */}
-            <div className="relative scroll-animate" style={{ transitionDelay: "0.2s" }}>
-              <div className="absolute -inset-8 bg-gradient-to-br from-[#c9969e]/30 via-[#c9969e]/15 to-transparent blur-3xl animate-in opacity-0" style={{ transitionDelay: "0.3s", transitionDuration: "1.5s" }}></div>
-              <div className="absolute -inset-6 bg-gradient-to-tr from-transparent via-[#fdf5f7]/50 to-transparent blur-2xl animate-in opacity-0" style={{ transitionDelay: "0.4s", transitionDuration: "1.5s" }}></div>
-
-              <div className="relative group">
-                <div className="absolute -inset-2 bg-gradient-to-br from-[#c9969e]/40 to-[#251218]/20 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-1000"></div>
-                <div className="relative aspect-[3/4] rounded-xl overflow-hidden shadow-[0_30px_80px_rgba(74,26,58,0.3)] hover:shadow-[0_40px_100px_rgba(74,26,58,0.4)] transition-all duration-700 border-4 border-white/50">
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#251218]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  <img
-                    src={getImageUrl("/meet-the-ceo.png")}
-                    alt="Jayla Smith, CEO of AVERRA"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-10 text-center relative">
-                <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-32 h-32 bg-[#c9969e]/10 rounded-full blur-2xl"></div>
-                <div className="relative bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-[#c9969e]/30 shadow-lg inline-block">
-                  <p className="text-3xl text-[#251218] mb-3" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 500 }}>
-                    Jayla Smith
-                  </p>
-                  <div className="w-24 h-px bg-[#c9969e] mx-auto mb-3"></div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#c9969e]" style={{ fontFamily: "Cormorant Garamond, sans-serif", fontWeight: 400 }}>
-                    Founder, CEO & Creative Director
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* CEO Bio */}
-            <div className="space-y-8 scroll-animate" style={{ transitionDelay: "0.4s" }}>
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                    Growing up in a salon has its perks, besides the free styles. From a young age, Jayla Smith, Founder, CEO, and Creative Director of AVERRA, was already embedded in the industry. Not as just a client, but as someone who was always present, observing, assisting, and developing a real understanding of how businesses functioned beyond what they chose to show. That environment shaped her perception long before she formally entered the space.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="absolute -inset-6 bg-gradient-to-br from-[#c9969e]/20 to-transparent rounded-2xl blur-2xl opacity-70"></div>
-                <div className="relative bg-gradient-to-br from-white/70 to-white/50 backdrop-blur-md p-8 rounded-2xl border border-[#c9969e]/40 shadow-xl">
-                  <div className="absolute top-4 left-4 text-6xl text-[#c9969e]/10 select-none" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
-                  <p className="text-xl text-[#251218] leading-relaxed italic font-medium relative z-10 text-center" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                    Beauty was never something Jayla approached from the outside. It was something she developed from within.
-                  </p>
-                  <div className="absolute bottom-4 right-4 text-6xl text-[#c9969e]/10 select-none rotate-180" style={{ fontFamily: "Cormorant Garamond, serif" }}>"</div>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                    As she moved further into the beauty industry, Jayla began working directly with individuals entering the space and encountered the same pattern without exception. The talent was undeniable. The creativity was there. What was consistently missing was structure. The kind that transforms raw creative ability into something controlled, recognizable, and built to last. Talent was entering the industry full of potential and slowly losing direction within it. Not because of what they lacked, but because nothing had been built to hold what they already had.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                    That experience pushed her to look deeper. Her background in digital marketing and media advertising, supported by formal education and multiple certifications in brand development, perception, and positioning, gave her a lens that bridged both worlds. It refined how she understood the relationship between identity, visuals, and the way a brand is received. And the more she understood that relationship, the more one thing became clear.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="absolute -inset-8 bg-gradient-to-r from-[#c9969e]/20 via-[#c9969e]/10 to-[#c9969e]/20 rounded-3xl blur-3xl opacity-80"></div>
-                <div className="relative bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg p-10 border-l-4 border-[#c9969e] rounded-2xl shadow-2xl hover:scale-105 transition-transform duration-700">
-                  <div className="absolute -top-3 -left-3 w-6 h-6 bg-[#c9969e] rounded-full"></div>
-                  <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-[#c9969e] rounded-full"></div>
-                  <p className="text-2xl text-[#251218] leading-relaxed italic font-semibold" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                    The work was never the problem. The translation of it was.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-[#c9969e]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                <div className="relative bg-white/40 backdrop-blur-sm p-6 rounded-xl border-l-4 border-[#c9969e]/50 hover:border-[#c9969e] transition-colors duration-500 shadow-md hover:shadow-lg">
-                  <p className="text-lg text-[#251218] leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                    AVERRA was built from that recognition. It exists to bring precision and structure to what already exists, aligning identity, visuals, and communication into something deliberate, consistent, and understood at the level it is intended to occupy. Because in this industry, success is not defined by talent alone. It is defined by how that talent is perceived, positioned, and sustained over time.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* The System */}
-      <section className="relative py-40 bg-[#fdf5f7] overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/4 left-1/3 w-[450px] h-[450px] bg-[#c9969e] rounded-full blur-[130px] scroll-animate floating"></div>
-          <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-[#251218] rounded-full blur-[120px] scroll-animate" style={{ transitionDelay: "0.4s", animationDelay: "3s" }}></div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-20 relative">
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 w-72 h-72 bg-gradient-to-br from-[#c9969e]/10 to-transparent rounded-full blur-3xl opacity-0 scroll-animate" style={{ transitionDelay: "0.2s" }}></div>
-            <h2
-              className="text-[clamp(3rem,8vw,5rem)] text-[#251218] leading-[0.95] scroll-animate relative"
-              style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 400, letterSpacing: "-0.01em" }}
-            >
-              The System
-            </h2>
-            <div className="mt-8 flex justify-center items-center gap-3">
-              <div className="w-20 h-px bg-gradient-to-r from-transparent to-[#c9969e] scroll-animate" style={{ transitionDelay: "0.4s" }}></div>
-              <div className="flex gap-1">
-                <div className="w-1 h-1 bg-[#c9969e] rounded-full scroll-animate" style={{ transitionDelay: "0.5s" }}></div>
-                <div className="w-1 h-1 bg-[#c9969e] rounded-full scroll-animate" style={{ transitionDelay: "0.55s" }}></div>
-                <div className="w-1 h-1 bg-[#c9969e] rounded-full scroll-animate" style={{ transitionDelay: "0.6s" }}></div>
-              </div>
-              <div className="w-20 h-px bg-gradient-to-l from-transparent to-[#c9969e] scroll-animate" style={{ transitionDelay: "0.65s" }}></div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-10 mb-20">
-            {[
-              { stage: "Interpretation", desc: "Define what your brand communicates", color: "from-[#c9969e]/20 to-transparent" },
-              { stage: "Alignment", desc: "Correct visual inconsistencies", color: "from-[#251218]/10 to-transparent" },
-              { stage: "Stabilization", desc: "Maintain brand consistency", color: "from-[#c9969e]/15 to-transparent" }
-            ].map((item, i) => (
-              <div
-                key={item.stage}
-                className="relative group scroll-animate"
-                style={{ transitionDelay: `${0.3 + i * 0.2}s` }}
-              >
-                <div className={`absolute -inset-6 bg-gradient-to-br ${item.color} rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000`}></div>
-                <div className="relative">
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-[#c9969e] to-[#251218] rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
-                    <span className="text-white font-bold text-2xl" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                      {i + 1}
-                    </span>
-                  </div>
-                  <div className="pt-12 pb-8 px-8 bg-white/60 backdrop-blur-md rounded-2xl border-t-4 border-[#c9969e] shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-700">
-                    <h3 className="text-2xl text-[#251218] mb-4 text-center" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 600 }}>
-                      {item.stage}
-                    </h3>
-                    <div className="w-16 h-1 bg-[#c9969e] mx-auto mb-4 opacity-0 group-hover:opacity-100 group-hover:w-full transition-all duration-700"></div>
-                    <p className="text-base text-[#251218]/70 text-center leading-relaxed" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-                      {item.desc}
-                    </p>
-                  </div>
-                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-6 bg-[#c9969e]/20 blur-xl"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="space-y-12 max-w-5xl mx-auto">
-            <div className="relative">
-              <div className="absolute -inset-10 bg-gradient-to-r from-transparent via-[#c9969e]/15 to-transparent rounded-3xl blur-2xl opacity-0 scroll-animate" style={{ transitionDelay: "0.9s" }}></div>
-              <div className="relative bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg p-12 rounded-3xl border border-[#c9969e]/40 shadow-2xl scroll-animate text-center" style={{ transitionDelay: "1s" }}>
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-[#c9969e] to-[#251218] rounded-full">
-                  <span className="text-white text-xs uppercase tracking-wider font-semibold" style={{ fontFamily: "Montserrat, sans-serif" }}>Three-Stage Process</span>
-                </div>
-                <p className="text-xl text-[#251218] leading-relaxed mt-4" style={{ fontFamily: "Cormorant Garamond, serif", fontWeight: 300 }}>
-                  AVERRA operates through a structured three-stage alignment system: Interpretation, Alignment, and Stabilization. Its design is to define, correct, and maintain your brand at the level it is intended to occupy.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8 scroll-animate" style={{ transitionDelay: "1.2s" }}>
-              <a
-                href="/services"
-                className="group relative inline-block px-16 py-6 bg-gradient-to-r from-[#c9969e] to-[#251218] text-[#fdf5f7] text-sm uppercase tracking-[0.3em] overflow-hidden hover:scale-110 transition-all duration-700 shadow-2xl rounded-lg"
-                style={{ fontFamily: "Cormorant Garamond, sans-serif", fontWeight: 600 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#fdf5f7]/0 via-white/30 to-[#fdf5f7]/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                <span className="relative z-10 flex items-center gap-3">
-                  Learn more
-                  <svg className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Apply The Standard - CTA */}
-      <section className="relative py-40 bg-[#251218] overflow-hidden">
-        {/* Smooth gradient at top */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#fdf5f7] to-transparent pointer-events-none"></div>
-
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-40 left-20 w-[350px] h-[350px] bg-[#c9969e] rounded-full blur-[110px] floating"></div>
-          <div className="absolute bottom-20 right-20 w-[300px] h-[300px] bg-[#fdf5f7] rounded-full blur-[100px] floating" style={{ animationDelay: "2s" }}></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#c9969e] rounded-full blur-[140px] pulse-glow"></div>
-        </div>
-
-        <div className="max-w-5xl mx-auto px-8 text-center relative z-10">
-          <div className="scroll-animate mb-16">
-            <div className="relative inline-block">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#c9969e]/20 via-[#fdf5f7]/20 to-[#c9969e]/20 blur-3xl scale-150"></div>
-              <h2
-                className="text-[clamp(3rem,8vw,6rem)] text-[#fdf5f7] leading-[0.95] italic relative mb-6"
-                style={{
-                  fontFamily: "Cormorant Garamond, serif",
-                  fontWeight: 400,
-                  letterSpacing: "-0.01em",
-                  textShadow: "0 4px 20px rgba(201, 150, 158, 0.4)"
-                }}
-              >
-                Apply The Standard
+      {/* WHAT AVERRA IS */}
+      <section className="what-averra">
+        <div className="what-inner">
+          <div className="section-header">
+            <div className="section-header-text reveal-left">
+              <p className="section-num">What AVERRA actually is</p>
+              <h2 className="section-big-title">
+                A business growth system.<br/><em>Not another course.</em>
               </h2>
             </div>
-            <div className="flex justify-center items-center gap-4 mt-8">
-              <div className="w-32 h-px bg-gradient-to-r from-transparent via-[#c9969e] to-[#c9969e]/50"></div>
-              <div className="w-3 h-3 bg-[#c9969e] rounded-full animate-pulse"></div>
-              <div className="w-32 h-px bg-gradient-to-l from-transparent via-[#c9969e] to-[#c9969e]/50"></div>
-            </div>
+            <p className="section-desc reveal-right">
+              AVERRA is built specifically for beauty professionals ready to grow beyond nonstop appointments, overbooking, and income tied only to working more hours.
+            </p>
           </div>
-
-          <div className="space-y-8 scroll-animate" style={{ transitionDelay: "0.3s" }}>
-            <div className="relative inline-block group">
-              <div className="absolute -inset-8 bg-gradient-to-r from-[#c9969e]/30 via-[#fdf5f7]/20 to-[#c9969e]/30 rounded-full blur-2xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000"></div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-[#c9969e] to-[#fdf5f7] rounded-2xl blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-700"></div>
-              <a
-                href="/brand-intake"
-                className={`relative block px-24 py-8 bg-gradient-to-r from-[#c9969e] via-[#fdf5f7] to-[#c9969e] bg-size-200 text-[#251218] text-sm uppercase tracking-[0.5em] overflow-hidden shadow-[0_20px_60px_rgba(201,150,158,0.5)] rounded-xl ${
-                  !isMobile ? "hover:bg-pos-100 hover:scale-110 hover:shadow-[0_30px_80px_rgba(253,245,247,0.6)]" : ""
-                } transition-all duration-1000`}
-                style={{
-                  fontFamily: "Cormorant Garamond, sans-serif",
-                  fontWeight: 700,
-                  backgroundSize: "200% auto"
-                }}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-r from-white/0 via-white/40 to-white/0 -translate-x-full ${!isMobile ? "group-hover:translate-x-full" : ""} transition-transform duration-1500`}></div>
-                <span className="relative z-10 flex items-center justify-center gap-4">
-                  Apply The Standard
-                  <svg className="w-6 h-6 group-hover:translate-x-2 group-hover:scale-110 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-              </a>
+          <div className="pillars">
+            <div className="pillar" style={{ transitionDelay: '0s' }}>
+              <p className="pillar-num">01</p>
+              <h3 className="pillar-title">Structure</h3>
+              <p className="pillar-text">Business architecture designed for longevity, not just tomorrow's bookings.</p>
             </div>
-
-            <div className="space-y-4">
-              <p className="text-[#fdf5f7]/80 text-base" style={{ fontFamily: "Lora, serif", fontStyle: "italic" }}>
-                Begin your brand transformation today
-              </p>
-              <div className="flex justify-center gap-2">
-                <div className="w-2 h-2 bg-[#c9969e] rounded-full animate-pulse" style={{ animationDelay: "0s" }}></div>
-                <div className="w-2 h-2 bg-[#c9969e] rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></div>
-                <div className="w-2 h-2 bg-[#c9969e] rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></div>
-              </div>
+            <div className="pillar" style={{ transitionDelay: '0.12s' }}>
+              <p className="pillar-num">02</p>
+              <h3 className="pillar-title">Positioning</h3>
+              <p className="pillar-text">How perception shapes what clients pay, and who they trust before they ever book.</p>
+            </div>
+            <div className="pillar" style={{ transitionDelay: '0.24s' }}>
+              <p className="pillar-num">03</p>
+              <h3 className="pillar-title">Systems</h3>
+              <p className="pillar-text">Replacing your physical presence with processes that work even when you don't.</p>
+            </div>
+            <div className="pillar" style={{ transitionDelay: '0.36s' }}>
+              <p className="pillar-num">04</p>
+              <h3 className="pillar-title">Expansion</h3>
+              <p className="pillar-text">Income that can grow beyond the chair, the hour, and your physical availability.</p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* CLOSING MANIFESTO */}
+      <section className="closing">
+        <div className="closing-inner">
+          <p className="closing-eyebrow reveal">The goal was never just to stay booked</p>
+          <div className="gold-divider reveal"></div>
+          <h2 className="closing-headline reveal delay-1">
+            Your artistry is irreplaceable.<br/><em>Your burnout is not.</em>
+          </h2>
+          <p className="closing-body reveal delay-2">
+            Your clients matter. Constant exhaustion should not be the requirement for keeping them.
+          </p>
+          <p className="closing-body reveal delay-3">
+            The goal is financial freedom, stronger structure, scalable growth, and building something that can eventually outgrow the chair itself.
+          </p>
+          <p className="closing-body reveal delay-3">
+            Your business should eventually support your life. Not consume all of it.
+          </p>
+          <p className="closing-body reveal delay-4">
+            If you have been looking for a smarter way to grow without feeling like you need to work every hour to keep the business moving, you are exactly where you need to be.
+          </p>
+          <div className="cta-row reveal delay-4">
+            <button
+              onClick={() => {
+                addItem({
+                  id: "gold-standard-ebook",
+                  name: "The Gold Standard: Building Beyond The Chair",
+                  price: 97,
+                  originalPrice: 147,
+                  type: "digital"
+                });
+                navigate("/checkout");
+              }}
+              className="cta-btn"
+            >
+              <span>Get The Gold Standard</span>
+            </button>
+            <span className="cta-text">or</span>
+            <button onClick={() => navigate("/services")} className="cta-btn">
+              <span>Explore What AVERRA Offers</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom Spacer */}
+      <div style={{ paddingBottom: '4rem' }}></div>
     </div>
   );
 }

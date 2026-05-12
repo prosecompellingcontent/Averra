@@ -1,8 +1,11 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { useCart } from "@/app/context/CartContext";
 
 export function CTAFooter() {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
   
   return (
     <section className="bg-[#251218] py-32 px-8 pb-0 relative">
@@ -11,34 +14,43 @@ export function CTAFooter() {
       <div className="max-w-4xl mx-auto text-center space-y-12 pb-0 relative z-10">
         <div className="space-y-6">
           <h2 className="text-[clamp(2.5rem,8vw,5rem)] text-[#fdf5f7] leading-tight" style={{ fontFamily: 'Playfair Display, serif', fontWeight: 300 }}>
-            Ready to be the face of your brand?
+            Ready to build beyond the chair?
           </h2>
           <p className="text-lg text-[#fdf5f7]/70 font-light max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Lora, serif', fontWeight: 300 }}>
-            Discover your beauty brand style. Get your palette, voice tone, and next steps delivered in 2 minutes.
+            Take the quiz to discover where you are now and what to build next. Get The Gold Standard eBook and start restructuring your business today.
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link
-            to="/quiz"
+            to="/quiz-intro"
             className={`inline-block px-12 py-4 bg-[#c9969e] text-[#251218] text-sm uppercase tracking-[0.3em] font-light ${!isMobile ? 'hover:bg-[#fdf5f7] transition-all duration-300' : ''} shadow-lg`}
             style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 400 }}
           >
-            Start Brand Quiz
+            Take The Quiz
           </Link>
 
-          <Link
-            to="/services"
+          <button
+            onClick={() => {
+              addItem({
+                id: "gold-standard-ebook",
+                name: "The Gold Standard: Building Beyond The Chair",
+                price: 97,
+                originalPrice: 147,
+                type: "digital"
+              });
+              navigate("/checkout");
+            }}
             className={`inline-block px-12 py-4 border border-[#c9969e] text-[#fdf5f7] text-sm uppercase tracking-[0.3em] font-light ${!isMobile ? 'hover:bg-[#c9969e] hover:text-[#251218] transition-all duration-300' : ''}`}
             style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 400 }}
           >
-            View All Services
-          </Link>
+            Get The eBook
+          </button>
         </div>
 
         <div className="pt-8">
           <p className="text-sm text-[#BFBBA7]/80 font-light italic" style={{ fontFamily: 'Cormorant, serif' }}>
-            No more cheap templates. No more guessing. Just branded excellence, by design.
+            Your business should eventually support your life. Not consume all of it.
           </p>
         </div>
 

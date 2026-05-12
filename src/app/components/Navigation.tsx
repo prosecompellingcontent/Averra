@@ -32,8 +32,8 @@ export function Navigation() {
             </button>
           ) : (
             <div className="flex items-center gap-16">
-              <Link 
-                to="/quiz" 
+              <Link
+                to="/quiz-intro"
                 className="text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors"
               >
                 Quiz
@@ -72,20 +72,20 @@ export function Navigation() {
             </Link>
           ) : (
             <div className="flex items-center gap-16">
-              <Link 
-                to="/about" 
+              <Link
+                to="/about"
                 className="text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors"
               >
                 About
               </Link>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className="text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-200 transition-colors"
               >
                 Contact
               </Link>
-              <Link 
-                to="/cart" 
+              <Link
+                to="/cart"
                 className="text-neutral-400 hover:text-neutral-200 transition-colors relative"
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -102,34 +102,34 @@ export function Navigation() {
 
       {/* Mobile Menu Overlay */}
       {isMobile && mobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/95 z-[99] pt-20"
           onClick={() => setMobileMenuOpen(false)}
         >
           <div className="flex flex-col items-center gap-8 px-6 py-8">
-            <Link 
-              to="/quiz" 
+            <Link
+              to="/quiz-intro"
               className="text-sm uppercase tracking-[0.3em] text-white/80 hover:text-white transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Quiz
             </Link>
-            <Link 
-              to="/services" 
+            <Link
+              to="/services"
               className="text-sm uppercase tracking-[0.3em] text-white/80 hover:text-white transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Services
             </Link>
-            <Link 
-              to="/about" 
+            <Link
+              to="/about"
               className="text-sm uppercase tracking-[0.3em] text-white/80 hover:text-white transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               About
             </Link>
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               className="text-sm uppercase tracking-[0.3em] text-white/80 hover:text-white transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >

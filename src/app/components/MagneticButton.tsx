@@ -23,7 +23,7 @@ export function MagneticButton({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
-  const springConfig = { damping: 15, stiffness: 150 };
+  const springConfig = { damping: 25, stiffness: 50 };
   const xSpring = useSpring(x, springConfig);
   const ySpring = useSpring(y, springConfig);
 
@@ -66,7 +66,7 @@ export function MagneticButton({
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        transition={{ type: "spring", stiffness: 60, damping: 20 }}
       >
         {children}
       </Component>

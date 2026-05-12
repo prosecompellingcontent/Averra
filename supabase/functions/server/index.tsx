@@ -6,6 +6,103 @@ import Stripe from "npm:stripe@20.4.1";
 import { handleSendPurchaseEmail } from "./send-purchase-email.tsx";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+// ============================================
+// EBOOK ACCESS MANAGEMENT (Inlined)
+// ============================================
+
+interface EbookAccess {
+  user_id: string;
+  email: string;
+  stripe_customer_id: string;
+  stripe_payment_id: string;
+  purchase_timestamp: string;
+  access_granted: boolean;
+}
+
+interface ReadingProgress {
+  email: string;
+  current_section: string;
+  scroll_position: number;
+  last_updated: string;
+}
+
+interface DownloadRecord {
+  email: string;
+  device: string;
+  download_timestamp: string;
+}
+
+async function grantEbookAccess(data: {
+  email: string;
+  stripe_customer_id: string;
+  stripe_payment_id: string;
+}): Promise<void> {
+  const accessRecord: EbookAccess = {
+    user_id: crypto.randomUUID(),
+    email: data.email,
+    stripe_customer_id: data.stripe_customer_id,
+    stripe_payment_id: data.stripe_payment_id,
+    purchase_timestamp: new Date().toISOString(),
+    access_granted: true,
+  };
+
+  await kv.set(`ebook_access:${data.email}`, JSON.stringify(accessRecord));
+  console.log(`✅ Ebook access granted to ${data.email}`);
+}
+
+async function verifyEbookAccess(email: string): Promise<EbookAccess | null> {
+  const record = await kv.get(`ebook_access:${email}`);
+  if (!record) return null;
+
+  try {
+    const accessData = JSON.parse(record) as EbookAccess;
+    return accessData.access_granted ? accessData : null;
+  } catch (error) {
+    console.error("Error parsing ebook access record:", error);
+    return null;
+  }
+}
+
+async function recordDownload(email: string, device: string): Promise<void> {
+  const downloadRecord: DownloadRecord = {
+    email,
+    device,
+    download_timestamp: new Date().toISOString(),
+  };
+
+  const downloadKey = `ebook_download:${email}:${Date.now()}`;
+  await kv.set(downloadKey, JSON.stringify(downloadRecord));
+  console.log(`📥 Download recorded for ${email} on ${device}`);
+}
+
+async function saveReadingProgress(data: {
+  email: string;
+  current_section: string;
+  scroll_position: number;
+}): Promise<void> {
+  const progressRecord: ReadingProgress = {
+    email: data.email,
+    current_section: data.current_section,
+    scroll_position: data.scroll_position,
+    last_updated: new Date().toISOString(),
+  };
+
+  await kv.set(`ebook_progress:${data.email}`, JSON.stringify(progressRecord));
+  console.log(`💾 Progress saved for ${data.email}: ${data.current_section} @ ${data.scroll_position}px`);
+}
+
+async function getReadingProgress(email: string): Promise<ReadingProgress | null> {
+  const record = await kv.get(`ebook_progress:${email}`);
+  if (!record) return null;
+
+  try {
+    return JSON.parse(record) as ReadingProgress;
+  } catch (error) {
+    console.error("Error parsing reading progress:", error);
+    return null;
+  }
+}
+
 const app = new Hono();
 
 // Initialize Stripe with your secret key
@@ -684,6 +781,117 @@ app.post("/make-server-61755bec/track-action", async (c) => {
   }
 });
 
+// Save diagnostic result from AVERRA Diagnostic System
+app.post("/make-server-61755bec/save-diagnostic-result", async (c) => {
+  try {
+    const resultData = await c.req.json();
+
+    const {
+      session_id,
+      primary_result,
+      secondary_result,
+      question_1_answer,
+      question_2_answer,
+      question_3_answer,
+      question_4_answer,
+      question_5_answer,
+      question_6_answer,
+      question_7_answer,
+      question_8_answer,
+      question_9_answer,
+      question_10_answer,
+      question_11_answer,
+      question_12_answer,
+      question_13_answer,
+      question_14_answer,
+      question_15_answer,
+      traffic_source,
+      device_type
+    } = resultData;
+
+    if (!session_id || !primary_result) {
+      return c.json({ error: "Missing required fields: session_id and primary_result" }, 400);
+    }
+
+    // Store diagnostic result with session_id as key
+    const diagnosticKey = `diagnostic_result_${session_id}`;
+
+    await kv.set(diagnosticKey, {
+      created_at: new Date().toISOString(),
+      session_id,
+      primary_result,
+      secondary_result,
+      question_1_answer,
+      question_2_answer,
+      question_3_answer,
+      question_4_answer,
+      question_5_answer,
+      question_6_answer,
+      question_7_answer,
+      question_8_answer,
+      question_9_answer,
+      question_10_answer,
+      question_11_answer,
+      question_12_answer,
+      question_13_answer,
+      question_14_answer,
+      question_15_answer,
+      ebook_cta_clicked: false,
+      ebook_purchased: false,
+      traffic_source: traffic_source || null,
+      device_type: device_type || null,
+      type: "diagnostic_result"
+    });
+
+    console.log("Diagnostic result saved:", diagnosticKey, "Primary:", primary_result, "Secondary:", secondary_result);
+
+    return c.json({ success: true, session_id });
+  } catch (error) {
+    console.error("Error saving diagnostic result:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Failed to save diagnostic result" },
+      500
+    );
+  }
+});
+
+// Update diagnostic result CTA click status
+app.put("/make-server-61755bec/diagnostic-result/:sessionId/cta-click", async (c) => {
+  try {
+    const sessionId = c.req.param("sessionId");
+
+    if (!sessionId) {
+      return c.json({ error: "Missing session_id parameter" }, 400);
+    }
+
+    const diagnosticKey = `diagnostic_result_${sessionId}`;
+
+    // Get existing result
+    const existingResult = await kv.get(diagnosticKey);
+
+    if (!existingResult) {
+      return c.json({ error: "Diagnostic result not found" }, 404);
+    }
+
+    // Update with CTA clicked flag
+    await kv.set(diagnosticKey, {
+      ...existingResult,
+      ebook_cta_clicked: true,
+      cta_clicked_at: new Date().toISOString()
+    });
+
+    console.log("Diagnostic CTA click tracked:", sessionId);
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.error("Error updating diagnostic CTA click:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Failed to update CTA click" },
+      500
+    );
+  }
+});
+
 // Get analytics summary
 app.get("/make-server-61755bec/analytics-summary", async (c) => {
   try {
@@ -724,6 +932,103 @@ app.get("/make-server-61755bec/analytics-summary", async (c) => {
     console.error("Error generating analytics summary:", error);
     return c.json(
       { error: error instanceof Error ? error.message : "Failed to generate analytics summary" },
+      500
+    );
+  }
+});
+
+// Get diagnostic analytics for admin dashboard
+app.get("/make-server-61755bec/diagnostic-analytics", async (c) => {
+  try {
+    // Get all diagnostic results
+    const diagnosticResults = await kv.getByPrefix("diagnostic_result_");
+
+    // Filter to only diagnostic result records
+    const results = diagnosticResults.filter((item: any) => item.type === "diagnostic_result");
+
+    // Calculate primary diagnosis counts
+    const primaryCounts: { [key: string]: number } = {};
+    results.forEach((result: any) => {
+      const primary = result.primary_result;
+      primaryCounts[primary] = (primaryCounts[primary] || 0) + 1;
+    });
+
+    // Calculate secondary diagnosis counts
+    const secondaryCounts: { [key: string]: number } = {};
+    results.forEach((result: any) => {
+      const secondary = result.secondary_result;
+      if (secondary) {
+        secondaryCounts[secondary] = (secondaryCounts[secondary] || 0) + 1;
+      }
+    });
+
+    // Calculate answer patterns for each question
+    const questionAnswers: { [key: string]: { [key: string]: number } } = {};
+    for (let i = 1; i <= 15; i++) {
+      questionAnswers[`question_${i}`] = {};
+    }
+
+    results.forEach((result: any) => {
+      for (let i = 1; i <= 15; i++) {
+        const answerKey = `question_${i}_answer`;
+        const answer = result[answerKey];
+        if (answer) {
+          questionAnswers[`question_${i}`][answer] = (questionAnswers[`question_${i}`][answer] || 0) + 1;
+        }
+      }
+    });
+
+    // Calculate conversion metrics
+    const totalResults = results.length;
+    const ctaClicks = results.filter((r: any) => r.ebook_cta_clicked).length;
+    const purchases = results.filter((r: any) => r.ebook_purchased).length;
+
+    const ctaClickRate = totalResults > 0 ? (ctaClicks / totalResults) * 100 : 0;
+    const purchaseRate = totalResults > 0 ? (purchases / totalResults) * 100 : 0;
+
+    // Top diagnosis combinations (primary + secondary)
+    const combinationCounts: { [key: string]: number } = {};
+    results.forEach((result: any) => {
+      const combo = `${result.primary_result}+${result.secondary_result || 'none'}`;
+      combinationCounts[combo] = (combinationCounts[combo] || 0) + 1;
+    });
+
+    // Sort combinations by frequency
+    const topCombinations = Object.entries(combinationCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([combo, count]) => ({ combination: combo, count }));
+
+    // Device type breakdown
+    const deviceCounts: { [key: string]: number } = {};
+    results.forEach((result: any) => {
+      const device = result.device_type || 'unknown';
+      deviceCounts[device] = (deviceCounts[device] || 0) + 1;
+    });
+
+    console.log("Diagnostic analytics generated for", totalResults, "results");
+
+    return c.json({
+      totalCompletions: totalResults,
+      completionRate: 100, // This would need quiz start tracking to calculate accurately
+      primaryDiagnoses: primaryCounts,
+      secondaryDiagnoses: secondaryCounts,
+      topCombinations,
+      questionAnswerPatterns: questionAnswers,
+      conversionMetrics: {
+        totalResults,
+        ctaClicks,
+        ctaClickRate: ctaClickRate.toFixed(2),
+        purchases,
+        purchaseRate: purchaseRate.toFixed(2)
+      },
+      deviceBreakdown: deviceCounts,
+      lastUpdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error generating diagnostic analytics:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Failed to generate diagnostic analytics" },
       500
     );
   }
@@ -836,6 +1141,80 @@ app.post("/make-server-61755bec/update-onboarding-status", async (c) => {
     console.error("Error updating onboarding status:", error);
     return c.json(
       { error: error instanceof Error ? error.message : "Failed to update onboarding status" },
+      500
+    );
+  }
+});
+
+// ============================================
+// CREATE USER WITH AUTO-CONFIRMED EMAIL
+// ============================================
+app.post("/make-server-61755bec/create-user", async (c) => {
+  try {
+    const { email, password, fullName, membershipType, isFounderPricing } = await c.req.json();
+
+    if (!email || !password || !fullName || !membershipType) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    // Create Supabase admin client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    console.log("Creating user with auto-confirmed email:", email);
+
+    // Create user with admin API (auto-confirms email)
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true, // Auto-confirm email
+      user_metadata: {
+        full_name: fullName,
+      },
+    });
+
+    if (authError) {
+      console.error("User creation error:", authError);
+      return c.json({ error: authError.message }, 400);
+    }
+
+    if (!authData.user) {
+      return c.json({ error: "Failed to create user" }, 500);
+    }
+
+    console.log("User created successfully:", authData.user.id);
+
+    // Create profile in database
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        id: authData.user.id,
+        email: email,
+        full_name: fullName,
+        membership_type: membershipType,
+        membership_status: 'active',
+        founder_pricing: isFounderPricing || false,
+        created_at: new Date().toISOString(),
+      });
+
+    if (profileError) {
+      console.error("Profile creation error:", profileError);
+      return c.json({ error: "Failed to create profile: " + profileError.message }, 500);
+    }
+
+    console.log("Profile created successfully");
+
+    return c.json({
+      success: true,
+      userId: authData.user.id,
+      email: authData.user.email,
+    });
+  } catch (error) {
+    console.error("Error in create-user endpoint:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "User creation failed" },
       500
     );
   }
@@ -1341,7 +1720,34 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
         console.log("📊 Customer:", customerName, "|", customerEmail);
         console.log("💰 Amount:", (session.amount_total / 100).toFixed(2));
         console.log("🎨 Service Tier:", serviceTier);
-        
+
+        // ============================================
+        // THE GOLD STANDARD EBOOK ACCESS GRANT
+        // ============================================
+
+        // Check if The Gold Standard was purchased
+        const goldStandardItem = items.find((item: any) =>
+          item.name.includes('The Gold Standard') ||
+          item.name.includes('gold-standard-ebook') ||
+          item.name.toLowerCase().includes('gold standard')
+        );
+
+        if (goldStandardItem && customerEmail !== "N/A") {
+          try {
+            console.log("📚 The Gold Standard ebook purchased - granting permanent access");
+
+            await grantEbookAccess({
+              email: customerEmail,
+              stripe_customer_id: session.customer as string || '',
+              stripe_payment_id: session.payment_intent as string || session.id
+            });
+
+            console.log("✅ Permanent ebook access granted to:", customerEmail);
+          } catch (ebookError) {
+            console.error("❌ Error granting ebook access:", ebookError);
+          }
+        }
+
         // ============================================
         // EMAIL AUTOMATION BASED ON PURCHASE TYPE
         // ============================================
@@ -1589,9 +1995,144 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
               console.error("❌ Error sending service tier email:", emailError);
             }
           }
-          
+
           // ============================================
-          // EMAIL #2: DIGITAL PRODUCTS INSTANT DELIVERY
+          // EMAIL #2: THE GOLD STANDARD EBOOK ACCESS
+          // ============================================
+          if (goldStandardItem) {
+            try {
+              console.log(`📚 EBOOK ACCESS: Sending Gold Standard access email to ${customerEmail} NOW!`);
+              const ebookEmailStartTime = Date.now();
+
+              const origin = Deno.env.get("PUBLIC_SITE_URL") || "https://averraaistudio.com";
+
+              const emailResponse = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${resendApiKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  from: "AVERRA Studio <hello@averraaistudio.com>",
+                  to: [customerEmail],
+                  subject: "Your Gold Standard Access is Ready ✨",
+                  html: `
+                    <div style="font-family: 'Lora', Georgia, serif; max-width: 600px; margin: 0 auto; padding: 0; background: #fdf5f7;">
+                      <!-- AVERRA Header -->
+                      <div style="background: #251218; padding: 40px 20px; text-align: center;">
+                        <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 48px; font-weight: 300; color: #fdf5f7; margin: 0; letter-spacing: 0.15em;">
+                          AVERRA
+                        </h1>
+                        <p style="color: rgba(253, 245, 247, 0.7); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; margin: 12px 0 0 0; font-family: 'Montserrat', sans-serif;">
+                          Building Beyond The Chair
+                        </p>
+                      </div>
+
+                      <!-- Main Content -->
+                      <div style="background: #ffffff; padding: 50px 40px; border-left: 1px solid rgba(37, 18, 24, 0.1); border-right: 1px solid rgba(37, 18, 24, 0.1);">
+                        <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 300; color: #251218; margin-bottom: 30px; text-align: center; line-height: 1.3;">
+                          Welcome to<br/>The Gold Standard
+                        </h2>
+
+                        <p style="color: #251218; line-height: 1.9; margin-bottom: 24px; font-size: 16px;">
+                          Hi ${customerName},
+                        </p>
+
+                        <p style="color: #251218; line-height: 1.9; margin-bottom: 24px; font-size: 16px;">
+                          Your payment has been confirmed. You now have permanent access to The Gold Standard: Building Beyond The Chair.
+                        </p>
+
+                        <p style="color: #6b585d; line-height: 1.9; margin-bottom: 32px; font-size: 15px; font-style: italic;">
+                          This is not just an ebook. It's the complete roadmap for understanding why your business feels the way it does—and what it takes to build beyond it.
+                        </p>
+
+                        <!-- Read Now Button -->
+                        <div style="text-align: center; margin: 40px 0;">
+                          <a href="${origin}/ebook?email=${encodeURIComponent(customerEmail)}"
+                             style="display: inline-block; padding: 18px 48px; background: linear-gradient(135deg, rgba(201,150,158,0.9) 0%, rgba(201,150,158,0.7) 100%); color: #fdf5f7; text-decoration: none; font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 500; border: 1px solid rgba(201,150,158,0.4);">
+                            Read Now
+                          </a>
+                        </div>
+
+                        <div style="background: rgba(201,150,158,0.08); padding: 30px; margin: 40px 0; border-left: 3px solid #c9969e;">
+                          <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; color: #251218; margin-bottom: 18px;">
+                            Your Access Includes
+                          </h3>
+
+                          <ul style="color: #251218; line-height: 2; padding-left: 24px; margin: 0; font-size: 15px;">
+                            <li><strong>Cross-Device Access</strong> — Read from any browser, phone, tablet, or desktop</li>
+                            <li><strong>Auto-Saved Progress</strong> — Your chapter and scroll position sync across all devices</li>
+                            <li><strong>Download Access</strong> — Download as TXT now (PDF & EPUB coming soon)</li>
+                            <li><strong>Permanent Lifetime Access</strong> — No expiration, no subscription, it's yours forever</li>
+                            <li><strong>Premium Reading Experience</strong> — Beautiful typography, smooth navigation, audio playback</li>
+                          </ul>
+                        </div>
+
+                        <div style="background: rgba(37,18,24,0.03); padding: 28px; margin: 30px 0; border-radius: 4px;">
+                          <p style="color: #251218; font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+                            📱 How to Access on Any Device
+                          </p>
+                          <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 12px 0;">
+                            <strong>Desktop/Laptop:</strong> Click "Read Now" above, or visit <strong style="color: #251218;">${origin}/ebook</strong>
+                          </p>
+                          <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 12px 0;">
+                            <strong>Phone/Tablet:</strong> Open this email on your device and tap "Read Now"
+                          </p>
+                          <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 16px 0;">
+                            <strong>Returning Later:</strong> Visit ${origin}/ebook and enter: <strong style="color: #251218;">${customerEmail}</strong>
+                          </p>
+                          <p style="color: #251218; font-size: 13px; font-weight: 600; margin: 16px 0 8px 0; padding-top: 16px; border-top: 1px solid rgba(37,18,24,0.1);">
+                            💾 To Download
+                          </p>
+                          <p style="color: #6b585d; font-size: 14px; line-height: 1.8; margin: 0;">
+                            Once inside the ebook reader, click the "↓ DOWNLOAD" button in the navigation bar to save a copy to your device.
+                          </p>
+                        </div>
+
+                        <p style="color: #251218; line-height: 1.9; margin-top: 40px; font-size: 15px;">
+                          Your business was never supposed to feel this heavy. This is how you change that.
+                        </p>
+
+                        <p style="color: #251218; line-height: 1.9; margin-top: 24px;">
+                          — The AVERRA Team
+                        </p>
+                      </div>
+
+                      <!-- Footer -->
+                      <div style="background: #251218; padding: 30px 20px; text-align: center; border-top: 1px solid rgba(253, 245, 247, 0.1);">
+                        <p style="color: rgba(253, 245, 247, 0.6); font-size: 13px; margin-bottom: 0;">
+                          Questions? Reply to this email or visit <a href="${origin}" style="color: #c9969e; text-decoration: none;">averraaistudio.com</a>
+                        </p>
+
+                        <p style="color: rgba(253, 245, 247, 0.4); font-size: 11px; margin-top: 20px;">
+                          © ${new Date().getFullYear()} AVERRA. All rights reserved.
+                        </p>
+                      </div>
+                    </div>
+                  `,
+                }),
+              });
+
+              const ebookEmailEndTime = Date.now();
+              const ebookEmailDuration = (ebookEmailEndTime - ebookEmailStartTime) / 1000;
+
+              if (emailResponse.ok) {
+                const resendData = await emailResponse.json();
+                console.log(`✅ Gold Standard access email sent to: ${customerEmail}`);
+                console.log(`⚡ Sent in ${ebookEmailDuration.toFixed(2)} seconds`);
+                console.log(`📬 Resend Email ID: ${resendData.id}`);
+              } else {
+                const errorData = await emailResponse.json();
+                console.error("❌ Gold Standard email failed:", errorData);
+                console.error(`⏱️ Failed after ${ebookEmailDuration.toFixed(2)} seconds`);
+              }
+            } catch (emailError) {
+              console.error("❌ Error sending Gold Standard email:", emailError);
+            }
+          }
+
+          // ============================================
+          // EMAIL #3: OTHER DIGITAL PRODUCTS INSTANT DELIVERY
           // ============================================
           if (digitalProducts.length > 0) {
             try {
@@ -1825,6 +2366,310 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
       { error: error instanceof Error ? error.message : "Webhook processing failed" },
       500
     );
+  }
+});
+
+// ============================================
+// ADMIN SETUP AND MANAGEMENT ENDPOINTS
+// ============================================
+
+// Set admin status for a user (run this once to make your account admin)
+app.post("/make-server-61755bec/admin/set-admin", async (c) => {
+  try {
+    const { email } = await c.req.json();
+
+    if (!email) {
+      return c.json({ error: "Email is required" }, 400);
+    }
+
+    // Create Supabase admin client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // First, ensure the is_admin column exists by trying to update
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ is_admin: true })
+      .eq('email', email);
+
+    if (updateError) {
+      console.error("Error setting admin status:", updateError);
+      return c.json({ error: "Failed to set admin status: " + updateError.message }, 500);
+    }
+
+    console.log("Admin status set for:", email);
+
+    return c.json({ success: true, email });
+  } catch (error) {
+    console.error("Error in set-admin endpoint:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Admin setup failed" },
+      500
+    );
+  }
+});
+
+// ============================================
+// ADMIN MESSAGING ENDPOINTS
+// ============================================
+
+// Send direct message to a member
+app.post("/make-server-61755bec/admin/send-message", async (c) => {
+  try {
+    const { recipientId, message, senderId } = await c.req.json();
+
+    if (!recipientId || !message || !senderId) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    // Create Supabase client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Create message in database (you'll need to create a messages table)
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({
+        sender_id: senderId,
+        recipient_id: recipientId,
+        content: message,
+        created_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error sending message:", error);
+      return c.json({ error: "Failed to send message" }, 500);
+    }
+
+    console.log("Message sent:", data.id);
+
+    return c.json({ success: true, messageId: data.id });
+  } catch (error) {
+    console.error("Error in send-message endpoint:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Message send failed" },
+      500
+    );
+  }
+});
+
+// Send notification to all members
+app.post("/make-server-61755bec/admin/send-notification", async (c) => {
+  try {
+    const { title, message, senderId } = await c.req.json();
+
+    if (!title || !message || !senderId) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    // Create Supabase client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Get all members
+    const { data: members, error: membersError } = await supabase
+      .from('profiles')
+      .select('id');
+
+    if (membersError) {
+      console.error("Error loading members:", membersError);
+      return c.json({ error: "Failed to load members" }, 500);
+    }
+
+    // Create notification for each member
+    const notifications = members?.map(member => ({
+      user_id: member.id,
+      title,
+      message,
+      created_at: new Date().toISOString(),
+      read: false,
+    })) || [];
+
+    const { error: notifError } = await supabase
+      .from('notifications')
+      .insert(notifications);
+
+    if (notifError) {
+      console.error("Error creating notifications:", notifError);
+      return c.json({ error: "Failed to create notifications" }, 500);
+    }
+
+    console.log("Notifications sent to", members?.length || 0, "members");
+
+    return c.json({ success: true, recipientCount: members?.length || 0 });
+  } catch (error) {
+    console.error("Error in send-notification endpoint:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Notification send failed" },
+      500
+    );
+  }
+});
+
+// Send mass email to members
+app.post("/make-server-61755bec/admin/send-mass-email", async (c) => {
+  try {
+    const { subject, htmlContent, membershipType } = await c.req.json();
+
+    if (!subject || !htmlContent) {
+      return c.json({ error: "Missing required fields" }, 400);
+    }
+
+    // Create Supabase client
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Get members to email
+    let query = supabase.from('profiles').select('email');
+
+    if (membershipType && membershipType !== 'all') {
+      query = query.eq('membership_type', membershipType);
+    }
+
+    const { data: members, error: membersError } = await query;
+
+    if (membersError) {
+      console.error("Error loading members:", membersError);
+      return c.json({ error: "Failed to load members" }, 500);
+    }
+
+    const emails = members?.map(m => m.email).filter(Boolean) || [];
+
+    if (emails.length === 0) {
+      return c.json({ error: "No members found" }, 400);
+    }
+
+    // Send email via Resend
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+
+    if (!resendApiKey) {
+      return c.json({ error: "Resend API key not configured" }, 500);
+    }
+
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "AVERRA <hello@averraaistudio.com>",
+        to: emails,
+        subject,
+        html: htmlContent,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error sending mass email via Resend:", errorData);
+      return c.json({ error: "Failed to send email" }, 500);
+    }
+
+    console.log("Mass email sent to", emails.length, "members");
+
+    return c.json({ success: true, recipientCount: emails.length });
+  } catch (error) {
+    console.error("Error in send-mass-email endpoint:", error);
+    return c.json(
+      { error: error instanceof Error ? error.message : "Mass email send failed" },
+      500
+    );
+  }
+});
+
+// ============================================
+// EBOOK ACCESS MANAGEMENT ENDPOINTS
+// ============================================
+
+// Verify ebook access by email
+app.post("/make-server-61755bec/ebook/verify-access", async (c) => {
+  try {
+    const { email } = await c.req.json();
+
+    if (!email) {
+      return c.json({ error: "Email required" }, 400);
+    }
+
+    const access = await verifyEbookAccess(email);
+
+    if (access) {
+      return c.json({
+        hasAccess: true,
+        user_id: access.user_id,
+        email: access.email,
+        purchase_date: access.purchase_timestamp
+      });
+    }
+
+    return c.json({ hasAccess: false }, 200);
+  } catch (error) {
+    console.error("Error verifying ebook access:", error);
+    return c.json({ error: "Access verification failed" }, 500);
+  }
+});
+
+// Record ebook download
+app.post("/make-server-61755bec/ebook/record-download", async (c) => {
+  try {
+    const { email, device } = await c.req.json();
+
+    if (!email) {
+      return c.json({ error: "Email required" }, 400);
+    }
+
+    await recordDownload(email, device || "unknown");
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.error("Error recording download:", error);
+    return c.json({ error: "Failed to record download" }, 500);
+  }
+});
+
+// Save reading progress
+app.post("/make-server-61755bec/ebook/save-progress", async (c) => {
+  try {
+    const progressData = await c.req.json();
+
+    if (!progressData.email) {
+      return c.json({ error: "Email required" }, 400);
+    }
+
+    await saveReadingProgress(progressData);
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.error("Error saving reading progress:", error);
+    return c.json({ error: "Failed to save progress" }, 500);
+  }
+});
+
+// Get reading progress
+app.get("/make-server-61755bec/ebook/progress/:email", async (c) => {
+  try {
+    const email = c.req.param("email");
+
+    if (!email) {
+      return c.json({ error: "Email required" }, 400);
+    }
+
+    const progress = await getReadingProgress(email);
+
+    return c.json({ progress: progress || null });
+  } catch (error) {
+    console.error("Error getting reading progress:", error);
+    return c.json({ error: "Failed to get progress" }, 500);
   }
 });
 

@@ -2,7 +2,10 @@
 @import './tailwind.css';
 @import './theme.css';
 
-/* Slick carousel custom styling for luxury aesthetic */
+/* =========================
+   SLICK CAROUSEL
+========================= */
+
 .slick-slider {
   position: relative;
   display: block;
@@ -60,23 +63,34 @@
 .slick-dots li button {
   font-size: 0;
   line-height: 0;
+
   display: block;
+
   width: 8px;
   height: 8px;
+
   padding: 0;
+
   cursor: pointer;
+
   color: transparent;
+
   border: 0;
   outline: none;
+
   background: rgba(191, 187, 167, 0.4);
+
   border-radius: 50%;
+
   transition: all 0.3s ease;
 }
 
 .slick-dots li.slick-active button {
   width: 32px;
   height: 8px;
+
   background: #DCDACC;
+
   border-radius: 4px;
 }
 
@@ -84,15 +98,83 @@
   background: rgba(191, 187, 167, 0.7);
 }
 
-/* Mobile performance optimizations */
+/* =========================
+   STABLE LUXURY MARQUEE
+========================= */
+
+.marquee-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+
+  animation-name: marqueeScroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  contain: content;
+}
+
+.marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+
+  gap: 6rem;
+  padding-right: 6rem;
+
+  white-space: nowrap;
+}
+
+@keyframes marqueeScroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* =========================
+   MOBILE OPTIMIZATION
+========================= */
+
 @media (max-width: 768px) {
   * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
-  /* Hide carousel dots/numbers on mobile - bar indicator is enough */
+
   .slick-dots {
     display: none !important;
   }
+
+  .marquee-group {
+    gap: 4rem;
+    padding-right: 4rem;
+  }
+
+  .marquee-track {
+    will-change: auto;
+  }
+}
+
+/* STOP ALL MARQUEE ANIMATIONS */
+.marquee-track {
+  animation: none !important;
+}
+
+.flex.whitespace-nowrap {
+  animation: none !important;
 }
