@@ -15,8 +15,8 @@ declare global {
 // Try to get from global first, fallback to extracting from existing client
 export const projectId =
   (typeof window !== 'undefined' && window.__FIGMA_MAKE__?.supabase?.projectId) ||
-  'ikgostf4f7x25n4op5tf4lsidaltob55znnfax3gono7d4h7kzql';
+  'zfzwknmljpotidwyoefk';
 
 export const publicAnonKey =
   (typeof window !== 'undefined' && window.__FIGMA_MAKE__?.supabase?.publicAnonKey) ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrZ29zdGY0Zjd4MjVuNG9wNXRmNGxzaWRhbHRvYjU1em5uZmF4M2dvbm83ZDRoN2t6cWwiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc0MzYzNzUyNywiZXhwIjoyMDU5MjEzNTI3fQ.yOiSvbRKJhfP-twPXnFbp8B3l84Gl98sN7ZrOk0UthY';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmendrbm1sanBvdGlkd3lvZWZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3ODQxNTMsImV4cCI6MjA4NTM2MDE1M30.zz_eMP7Xg04HI69y0sgpQzs4osujmMJ1Dt6fkDwLvPI';
