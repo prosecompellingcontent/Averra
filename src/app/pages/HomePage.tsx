@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring, useInView } from "motion/react";
+import { Link } from "react-router";
 
 import { Navigation } from "@/app/components/Navigation";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
@@ -257,7 +258,7 @@ export function HomePage() {
                       >
                         {!isMobile ? (
                           <MagneticButton
-                            href="/quiz"
+                            to="/quiz-intro"
                             className={`inline-block bg-transparent border-2 border-[#DCDACC] text-[#DCDACC] uppercase tracking-[0.3em] shadow-2xl px-12 py-4 text-[1rem] hover:bg-[#DCDACC] hover:text-[#301710] transition-all duration-300`}
                             style={{
                               fontFamily: "Inter, sans-serif",
@@ -268,8 +269,8 @@ export function HomePage() {
                             Take The Quiz →
                           </MagneticButton>
                         ) : (
-                          <a
-                            href="/quiz"
+                          <Link
+                            to="/quiz-intro"
                             className="inline-block bg-transparent border-2 border-[#DCDACC] text-[#DCDACC] uppercase tracking-[0.3em] shadow-2xl px-6 py-3 text-[0.75rem] w-full max-w-xs"
                             style={{
                               fontFamily: "Inter, sans-serif",
@@ -278,7 +279,7 @@ export function HomePage() {
                             }}
                           >
                             Take The Quiz →
-                          </a>
+                          </Link>
                         )}
                       </motion.div>
                     </div>
@@ -390,7 +391,7 @@ export function HomePage() {
                           <FadeInUp delay={0.5}>
                             {!isMobile ? (
                               <MagneticButton
-                                href="/quiz"
+                                to="/quiz-intro"
                                 className="bg-white text-black uppercase tracking-[0.3em] text-center px-8 py-5 text-sm hover:bg-white/90 transition-all duration-300"
                                 style={{
                                   fontFamily: "Inter, sans-serif",
@@ -401,8 +402,8 @@ export function HomePage() {
                                 Take The Quiz →
                               </MagneticButton>
                             ) : (
-                              <a
-                                href="/quiz"
+                              <Link
+                                to="/quiz-intro"
                                 className="block bg-white text-black uppercase tracking-[0.3em] text-center px-6 py-4 text-[0.7rem]"
                                 style={{
                                   fontFamily: "Inter, sans-serif",
@@ -411,14 +412,14 @@ export function HomePage() {
                                 }}
                               >
                                 Take The Quiz →
-                              </a>
+                              </Link>
                             )}
                           </FadeInUp>
                           
                           <FadeInUp delay={0.6}>
                             {!isMobile ? (
                               <MagneticButton
-                                href="/services"
+                                to="/services"
                                 className="bg-transparent border-2 border-white/70 text-white uppercase tracking-[0.3em] text-center px-8 py-5 text-sm hover:bg-white/10 transition-all duration-300"
                                 style={{
                                   fontFamily: "Inter, sans-serif",
@@ -429,8 +430,8 @@ export function HomePage() {
                                 View Services
                               </MagneticButton>
                             ) : (
-                              <a
-                                href="/services"
+                              <Link
+                                to="/services"
                                 className="block bg-transparent border-2 border-white/70 text-white uppercase tracking-[0.3em] text-center px-6 py-4 text-[0.7rem]"
                                 style={{
                                   fontFamily: "Inter, sans-serif",
@@ -439,7 +440,7 @@ export function HomePage() {
                                 }}
                               >
                                 View Services
-                              </a>
+                              </Link>
                             )}
                           </FadeInUp>
                         </div>

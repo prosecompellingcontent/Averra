@@ -1,0 +1,69 @@
+<svg width="600" height="800" viewBox="0 0 600 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Premium gradient background -->
+  <defs>
+    <linearGradient id="premiumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fdf5f7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#fcf3f5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5e8eb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#c9969e;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#c9969e;stop-opacity:0.8" />
+    </linearGradient>
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Book cover background -->
+  <rect width="600" height="800" fill="url(#premiumGrad)"/>
+
+  <!-- Subtle top accent -->
+  <rect x="0" y="0" width="600" height="200" fill="url(#accentGrad)" opacity="0.15"/>
+
+  <!-- Elegant border frame -->
+  <rect x="40" y="40" width="520" height="720" fill="none" stroke="#c9969e" stroke-width="0.5" opacity="0.4"/>
+  <rect x="50" y="50" width="500" height="700" fill="none" stroke="#c9969e" stroke-width="0.5" opacity="0.6"/>
+
+  <!-- Top section -->
+  <text x="300" y="180" font-family="'Playfair Display', serif" font-size="16" font-weight="400" letter-spacing="0.3em" fill="#c9969e" text-anchor="middle" opacity="0.9">
+    BUILDING BEYOND THE CHAIR
+  </text>
+
+  <!-- Main title -->
+  <text x="300" y="340" font-family="'Playfair Display', serif" font-size="72" font-weight="400" fill="#251218" text-anchor="middle" filter="url(#softShadow)">
+    The Gold
+  </text>
+  <text x="300" y="420" font-family="'Playfair Display', serif" font-size="72" font-weight="400" fill="#251218" text-anchor="middle" filter="url(#softShadow)">
+    Standard
+  </text>
+
+  <!-- Decorative accent line -->
+  <line x1="200" y1="460" x2="400" y2="460" stroke="#c9969e" stroke-width="1" opacity="0.5"/>
+
+  <!-- Subtitle -->
+  <text x="300" y="520" font-family="'Lora', serif" font-size="18" font-style="italic" font-weight="300" fill="#6b585d" text-anchor="middle" opacity="0.85">
+    The Business Philosophy
+  </text>
+  <text x="300" y="550" font-family="'Lora', serif" font-size="18" font-style="italic" font-weight="300" fill="#6b585d" text-anchor="middle" opacity="0.85">
+    For Beauty Professionals
+  </text>
+
+  <!-- Bottom branding -->
+  <text x="300" y="720" font-family="'Playfair Display', serif" font-size="28" font-weight="300" letter-spacing="0.25em" fill="#c9969e" text-anchor="middle" opacity="0.8">
+    AVERRA
+  </text>
+
+  <!-- Ambient glow effect circles -->
+  <circle cx="300" cy="350" r="250" fill="#c9969e" opacity="0.03"/>
+  <circle cx="300" cy="350" r="200" fill="#c9969e" opacity="0.04"/>
+  <circle cx="300" cy="350" r="150" fill="#c9969e" opacity="0.05"/>
+</svg>
