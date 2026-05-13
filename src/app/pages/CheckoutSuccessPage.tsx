@@ -200,20 +200,6 @@ export function CheckoutSuccessPage() {
           </p>
         </div>
 
-        {/* eBook Preview */}
-        <div className="flex justify-center mb-12">
-          <div className="relative">
-            <div className="absolute inset-0 bg-[#c9969e]/10 blur-3xl"></div>
-            <img
-              src="/ebook-hero.jpg"
-              alt="The Gold Standard eBook Cover"
-              className="relative w-64 md:w-80 h-auto drop-shadow-2xl"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
           <Link

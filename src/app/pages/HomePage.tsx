@@ -11,7 +11,6 @@ import { CookieConsent } from "@/app/components/CookieConsent";
 // All gallery images from /public folder - hero is first
 const galleryImages = [
   '/about-hero.png',
-  '/archive-portrait.png', // The Archive - stunning orange eyeshadow beauty closeup (SLIDE 2)
   '/hair-braiding.png', // Beautiful red hair braiding moment (SLIDE 3)
   '/carousel-6.webp', // THE AVERRA METHOD image (SLIDE 4)
   '/carousel-5.webp', // Nail photo (SLIDE 5)
@@ -22,12 +21,6 @@ const galleryImages = [
 // Editorial content overlays for select slides
 const editorialContent = [
   null, // Hero has its own content
-  {
-    number: "01",
-    title: "THE ARCHIVE",
-    subtitle: "Building Beyond The Chair",
-    archiveDate: "Spring 2026"
-  },
   {
     splitText: {
       top: "Most beauty professionals struggle not because they're lazy.",

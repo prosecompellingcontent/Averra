@@ -263,7 +263,7 @@ export function ServicesPage() {
         }
 
         .ebook-cover {
-          max-width: 460px;
+          max-width: 900px;
           width: 100%;
           height: auto;
           display: block;
