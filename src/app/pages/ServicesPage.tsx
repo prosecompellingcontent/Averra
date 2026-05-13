@@ -735,22 +735,22 @@ export function ServicesPage() {
           <h2 className="pain-headline">If you're being honest, you've probably said this before…</h2>
           <ul className="pain-list">
             <li className="pain-item lr">
-              I'm fully booked and still scared to take a day off
+              "I'm fully booked and terrified to take a day off..."
             </li>
             <li className="pain-item lr">
-              I'm tired of every dollar I make requiring me to show up for it
+              "I'm tired! Every dollar I make requires me to show up for it..."
             </li>
             <li className="pain-item lr">
-              I haven't rested, really rested, in who knows how long
+              "Rest? I haven't rested in who knows how long..."
             </li>
             <li className="pain-item lr">
-              I'm posting, grinding, showing up and one wrong move feels like it could destroy everything
+              "I'm posting, grinding, showing up and one wrong move feels like it could destroy everything..."
             </li>
             <li className="pain-item lr">
-              I know I'm worth more, I just don't know how to stop hustling for it
+              "I know I'm worth more than this, I just don't know any other way but hustling..."
             </li>
             <li className="pain-item lr">
-              I can't remember the last time I fully stopped thinking about work
+              "I can't remember the last time I fully stopped thinking about work..."
             </li>
           </ul>
         </section>
