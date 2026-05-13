@@ -80,7 +80,7 @@ export function ContactPage() {
                   className="text-lg md:text-xl text-[#251218]/80 max-w-2xl mx-auto leading-relaxed"
                   style={{ fontFamily: 'Lora, serif', fontWeight: 300 }}
                 >
-                  For service inquiries, licensing clarification, or support we're here to help you find the perfect tier for your vision.
+                  For service inquiries, clarification, or support we're here to help you find the perfect solution for your inquiry.
                 </p>
               </div>
 
@@ -133,11 +133,10 @@ export function ContactPage() {
                         For questions regarding:
                       </p>
                       <ul className="space-y-2 text-sm text-[#251218]/80" style={{ fontFamily: 'Lora, serif' }}>
-                        <li>• Tier selection</li>
-                        <li>• Digital products</li>
-                        <li>• Licensing clarification</li>
-                        <li>• Delivery timelines</li>
-                        <li>• Payment support</li>
+                        <li>• Service Selections</li>
+                        <li>• Digital Products</li>
+                        <li>• Delivery Timelines</li>
+                        <li>• Payment Support</li>
                       </ul>
                     </div>
                   </div>
@@ -172,12 +171,6 @@ export function ContactPage() {
                           className="block text-[#251218] hover:text-[#c9969e] transition-colors text-sm font-medium"
                         >
                           → Refund Policy
-                        </Link>
-                        <Link
-                          to="/membership-terms"
-                          className="block text-[#251218] hover:text-[#c9969e] transition-colors text-sm font-medium"
-                        >
-                          → Membership Terms
                         </Link>
                       </div>
                     </div>

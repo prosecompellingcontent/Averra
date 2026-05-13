@@ -2050,12 +2050,26 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                           This is not just an ebook. It's the complete roadmap for understanding why your business feels the way it does—and what it takes to build beyond it.
                         </p>
 
-                        <!-- Read Now Button -->
+                        <!-- Action Buttons -->
                         <div style="text-align: center; margin: 40px 0;">
-                          <a href="${origin}/ebook?email=${encodeURIComponent(customerEmail)}"
-                             style="display: inline-block; padding: 18px 48px; background: linear-gradient(135deg, rgba(201,150,158,0.9) 0%, rgba(201,150,158,0.7) 100%); color: #fdf5f7; text-decoration: none; font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 500; border: 1px solid rgba(201,150,158,0.4);">
-                            Read Now
-                          </a>
+                          <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto;">
+                            <tr>
+                              <td style="padding: 8px;">
+                                <a href="https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/ebooks/the-gold-standard.pdf"
+                                   style="display: inline-block; padding: 18px 42px; background: linear-gradient(135deg, rgba(201,150,158,0.9) 0%, rgba(201,150,158,0.7) 100%); color: #fdf5f7; text-decoration: none; font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 500; border: 1px solid rgba(201,150,158,0.4);">
+                                  Download PDF
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding: 8px;">
+                                <a href="${origin}/checkout/success"
+                                   style="display: inline-block; padding: 16px 38px; background: transparent; color: #251218; text-decoration: none; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; font-family: 'Montserrat', sans-serif; font-weight: 400; border: 1.5px solid #251218;">
+                                  Return to AVERRA
+                                </a>
+                              </td>
+                            </tr>
+                          </table>
                         </div>
 
                         <div style="background: rgba(201,150,158,0.08); padding: 30px; margin: 40px 0; border-left: 3px solid #c9969e;">
@@ -2066,7 +2080,7 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
                           <ul style="color: #251218; line-height: 2; padding-left: 24px; margin: 0; font-size: 15px;">
                             <li><strong>Cross-Device Access</strong> — Read from any browser, phone, tablet, or desktop</li>
                             <li><strong>Auto-Saved Progress</strong> — Your chapter and scroll position sync across all devices</li>
-                            <li><strong>Download Access</strong> — Download as TXT now (PDF & EPUB coming soon)</li>
+                            <li><strong>Download PDF</strong> — Click "Download PDF" above to save a permanent copy to your device</li>
                             <li><strong>Permanent Lifetime Access</strong> — No expiration, no subscription, it's yours forever</li>
                             <li><strong>Premium Reading Experience</strong> — Beautiful typography, smooth navigation, audio playback</li>
                           </ul>
@@ -2074,22 +2088,19 @@ app.post("/make-server-61755bec/webhooks/stripe", async (c) => {
 
                         <div style="background: rgba(37,18,24,0.03); padding: 28px; margin: 30px 0; border-radius: 4px;">
                           <p style="color: #251218; font-size: 14px; font-weight: 600; margin-bottom: 16px;">
-                            📱 How to Access on Any Device
+                            📖 How to Access Your Ebook
                           </p>
                           <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 12px 0;">
-                            <strong>Desktop/Laptop:</strong> Click "Read Now" above, or visit <strong style="color: #251218;">${origin}/ebook</strong>
+                            <strong>Download PDF:</strong> Click "Download PDF" above to save the complete ebook to your device
                           </p>
                           <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 12px 0;">
-                            <strong>Phone/Tablet:</strong> Open this email on your device and tap "Read Now"
+                            <strong>Read Online:</strong> Click "Return to AVERRA" then "Read Now" for the immersive web experience
                           </p>
-                          <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 16px 0;">
-                            <strong>Returning Later:</strong> Visit ${origin}/ebook and enter: <strong style="color: #251218;">${customerEmail}</strong>
+                          <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0 0 12px 0;">
+                            <strong>Listen Aloud:</strong> Access the audio narration feature from your AVERRA library
                           </p>
-                          <p style="color: #251218; font-size: 13px; font-weight: 600; margin: 16px 0 8px 0; padding-top: 16px; border-top: 1px solid rgba(37,18,24,0.1);">
-                            💾 To Download
-                          </p>
-                          <p style="color: #6b585d; font-size: 14px; line-height: 1.8; margin: 0;">
-                            Once inside the ebook reader, click the "↓ DOWNLOAD" button in the navigation bar to save a copy to your device.
+                          <p style="color: #6b585d; font-size: 14px; line-height: 1.9; margin: 0;">
+                            <strong>Returning Later:</strong> Visit ${origin}/checkout/success to access all reading options
                           </p>
                         </div>
 

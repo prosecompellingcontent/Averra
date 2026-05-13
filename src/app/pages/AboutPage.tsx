@@ -402,44 +402,25 @@ export function AboutPage() {
           overflow: hidden;
           min-height: 600px;
         }
-        .founder-portrait {
-          position: absolute;
-          inset: 0;
-          background:
-            linear-gradient(135deg, rgba(201,150,158,0.06) 0%, transparent 50%),
-            linear-gradient(to bottom, transparent 40%, rgba(37,18,24,0.8) 100%),
-            #2f1c23;
-          display: flex;
-          align-items: flex-end;
-          padding: 3rem;
-        }
-        .founder-portrait-placeholder {
+        .founder-visual {
           width: 100%;
           height: 100%;
-          position: absolute;
-          top: 0; left: 0;
-          background:
-            radial-gradient(ellipse 70% 60% at 50% 35%, rgba(201,150,158,0.07) 0%, transparent 60%),
-            repeating-linear-gradient(
-              -45deg,
-              transparent,
-              transparent 40px,
-              rgba(201,150,158,0.015) 40px,
-              rgba(201,150,158,0.015) 41px
-            );
+          position: relative;
+          overflow: hidden;
         }
-        .founder-portrait-letter {
+        .founder-portrait-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        .founder-portrait {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -60%);
-          font-family: var(--serif);
-          font-size: 14rem;
-          font-weight: 300;
-          color: rgba(201,150,158,0.06);
-          line-height: 1;
-          user-select: none;
-          letter-spacing: -0.05em;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 3rem;
+          background: rgba(37,18,24,0.75);
         }
         .founder-name-overlay {
           position: relative;
@@ -972,8 +953,11 @@ export function AboutPage() {
       <section className="founder">
         <div className="founder-inner">
           <div className="founder-visual">
-            <div className="founder-portrait-placeholder"></div>
-            <div className="founder-portrait-letter">JS</div>
+            <img
+              src="/meet-the-ceo.png"
+              alt="Jayla Smith - Founder"
+              className="founder-portrait-image"
+            />
             <div className="founder-portrait">
               <div className="founder-name-overlay">
                 <h3 className="founder-name">Jayla Smith</h3>
@@ -982,7 +966,7 @@ export function AboutPage() {
             </div>
           </div>
           <div className="founder-content">
-            <div className="founder-label reveal-right">Meet The CEO</div>
+            <div className="founder-label reveal-right">Meet The Founder</div>
             <h2 className="founder-headline reveal-right delay-1">
               She did not build AVERRA<br/>from the outside looking in.
             </h2>

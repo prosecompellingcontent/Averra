@@ -49,37 +49,6 @@ export function ServicesPage() {
         .lr { font-family: 'Lora', serif; }
         .ms { font-family: 'Montserrat', sans-serif; }
 
-        @keyframes ambientGlow {
-          0%, 100% {
-            opacity: 0.5;
-            transform: scale3d(1, 1, 1); /* GPU accelerated */
-          }
-          50% {
-            opacity: 0.75;
-            transform: scale3d(1.05, 1.05, 1); /* GPU accelerated */
-          }
-        }
-
-        @keyframes ambientGlowMobile {
-          0%, 100% {
-            opacity: 0.4;
-            transform: scale3d(1, 1, 1); /* GPU accelerated */
-          }
-          50% {
-            opacity: 0.65;
-            transform: scale3d(1.03, 1.03, 1); /* GPU accelerated */
-          }
-        }
-
-        @keyframes softFloat {
-          0%, 100% {
-            transform: translate3d(0, 0, 0); /* GPU accelerated */
-          }
-          50% {
-            transform: translate3d(0, -12px, 0); /* GPU accelerated */
-          }
-        }
-
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -91,17 +60,6 @@ export function ServicesPage() {
           }
         }
 
-        .ebook-glow {
-          animation: ambientGlow 50s ease-in-out infinite;
-        }
-
-        .ebook-float {
-          animation: softFloat 8s ease-in-out infinite;
-          /* PERFORMANCE: GPU acceleration for smooth animation */
-          transform: translateZ(0);
-          will-change: transform;
-          backface-visibility: hidden;
-        }
 
         .pain-item {
           animation: fadeInUp 2.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -210,28 +168,17 @@ export function ServicesPage() {
         }
 
         .hero-image {
-          position: relative;
-          overflow: hidden;
-          background: var(--averra-blush);
-        }
-
-        .hero-image-inner {
           width: 100%;
           height: 100%;
-          background: linear-gradient(160deg, #3a232d 0%, #251218 40%, #1a0e12 100%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          overflow: hidden;
+          position: relative;
         }
 
-        .hero-monogram {
-          font-family: 'Playfair Display', serif;
-          font-size: 220px;
-          font-weight: 300;
-          color: rgba(201, 150, 158, 0.12);
-          letter-spacing: -0.05em;
-          user-select: none;
-          line-height: 1;
+        .hero-image-tag {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
         }
 
         .hero-badge {
@@ -308,51 +255,19 @@ export function ServicesPage() {
         }
 
         .ebook-visual {
-          position: relative;
+          width: 100%;
+          height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
-        .ebook-glow-layer {
-          position: absolute;
-          width: 600px;
-          height: 800px;
-          background: radial-gradient(
-            circle,
-            rgba(201, 150, 158, 0.4) 0%,
-            rgba(201, 150, 158, 0.25) 30%,
-            rgba(255, 220, 200, 0.15) 50%,
-            transparent 75%
-          );
-          border-radius: 50%;
-          filter: blur(80px);
-        }
-
-        .ebook-glow-secondary {
-          position: absolute;
-          width: 700px;
-          height: 900px;
-          background: radial-gradient(
-            circle,
-            rgba(255, 235, 220, 0.2) 0%,
-            rgba(201, 150, 158, 0.15) 40%,
-            transparent 70%
-          );
-          border-radius: 50%;
-          filter: blur(100px);
-          animation: ambientGlow 8s ease-in-out infinite;
-          animation-delay: 1s;
-        }
-
         .ebook-cover {
-          position: relative;
           max-width: 460px;
           width: 100%;
-          box-shadow:
-            0 40px 80px -20px rgba(37, 18, 24, 0.2),
-            0 20px 40px -20px rgba(201, 150, 158, 0.25);
-          border-radius: 8px;
+          height: auto;
+          display: block;
+          object-fit: cover;
         }
 
         .ebook-content .section-headline {
@@ -619,21 +534,18 @@ export function ServicesPage() {
         }
 
         .founder-image {
-          background: linear-gradient(140deg, #251218 0%, #3a232d 60%, #251218 100%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
+          width: 100%;
+          height: 100%;
           overflow: hidden;
+          position: relative;
           min-height: 480px;
         }
 
-        .founder-monogram {
-          font-family: 'Playfair Display', serif;
-          font-size: 180px;
-          font-weight: 300;
-          color: rgba(201, 150, 158, 0.1);
-          letter-spacing: -0.05em;
+        .founder-image-tag {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
         }
 
         .founder-accent {
@@ -663,21 +575,6 @@ export function ServicesPage() {
         /* Responsive */
         @media (max-width: 900px) {
           /* PERFORMANCE OPTIMIZATION: Keep visuals, optimize rendering */
-          .ebook-glow-layer {
-            animation: ambientGlowMobile 50s ease-in-out infinite;
-            /* GPU acceleration for smooth performance */
-            transform: translateZ(0);
-            will-change: opacity, transform;
-            backface-visibility: hidden;
-          }
-          .ebook-glow-secondary {
-            animation: ambientGlowMobile 55s ease-in-out infinite;
-            animation-delay: 3s;
-            /* GPU acceleration */
-            transform: translateZ(0);
-            will-change: opacity, transform;
-            backface-visibility: hidden;
-          }
 
           /* Keep same button transitions, optimize with GPU */
           .btn-primary, .btn-outline {
@@ -705,8 +602,6 @@ export function ServicesPage() {
           .service-item { padding: 32px 24px; }
           .ebook-feature { grid-template-columns: 1fr; gap: 48px; padding: 70px 24px; }
           .ebook-visual { order: -1; margin-bottom: 24px; }
-          .ebook-glow-layer { width: 400px; height: 550px; filter: blur(60px); }
-          .ebook-glow-secondary { width: 450px; height: 600px; filter: blur(80px); }
           .ebook-cover { max-width: 360px; }
           .ebook-content .section-headline { font-size: clamp(28px, 6vw, 42px); }
           .section-body { font-size: 13px; }
@@ -728,14 +623,6 @@ export function ServicesPage() {
         }
 
         @media (max-width: 600px) {
-          /* PERFORMANCE: Keep visuals, add GPU acceleration */
-          .ebook-glow-layer {
-            animation: ambientGlowMobile 55s ease-in-out infinite;
-          }
-          .ebook-glow-secondary {
-            animation: ambientGlowMobile 60s ease-in-out infinite;
-            animation-delay: 4s;
-          }
 
           .pain-item {
             animation: fadeInUp 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -761,8 +648,6 @@ export function ServicesPage() {
           .service-item { padding: 28px 20px; }
           .service-name { font-size: 16px; }
           .ebook-feature { padding: 56px 20px; gap: 40px; }
-          .ebook-glow-layer { width: 320px; height: 450px; filter: blur(50px); }
-          .ebook-glow-secondary { width: 350px; height: 480px; filter: blur(65px); }
           .ebook-cover { max-width: 280px; box-shadow: 0 30px 60px -15px rgba(37, 18, 24, 0.18), 0 15px 30px -15px rgba(201, 150, 158, 0.22); }
           .ebook-content .section-label { font-size: 9px; margin-bottom: 16px; }
           .ebook-content .section-headline { font-size: clamp(26px, 7vw, 36px); line-height: 1.18; margin-bottom: 16px; }
@@ -835,9 +720,11 @@ export function ServicesPage() {
             </div>
           </div>
           <div className="hero-image">
-            <div className="hero-image-inner">
-              <div className="hero-monogram">A</div>
-            </div>
+            <img
+              src="/services-hero.png"
+              alt="AVERRA Services"
+              className="hero-image-tag"
+            />
             <div className="hero-badge">If this is your life right now, keep reading</div>
           </div>
         </section>
@@ -871,12 +758,10 @@ export function ServicesPage() {
         {/* The Gold Standard - Premium Ebook Feature */}
         <section className="ebook-feature">
           <div className="ebook-visual">
-            <div className="ebook-glow-layer ebook-glow"></div>
-            <div className="ebook-glow-secondary"></div>
             <img
-              src="/ebook-cover.svg"
+              src="/ebook-hero.jpg"
               alt="The Gold Standard eBook Cover"
-              className="ebook-cover ebook-float"
+              className="ebook-cover"
               loading="lazy"
               decoding="async"
             />
@@ -1119,7 +1004,11 @@ export function ServicesPage() {
         {/* The System Behind AVERRA */}
         <section className="founder">
           <div className="founder-image">
-            <div className="founder-monogram">A</div>
+            <img
+              src="/meet-the-ceo.png"
+              alt="The System Behind AVERRA"
+              className="founder-image-tag"
+            />
             <div className="founder-accent"></div>
           </div>
           <div className="founder-text">

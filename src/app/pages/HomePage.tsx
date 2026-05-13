@@ -305,7 +305,7 @@ export function HomePage() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: dur(0.6), delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
                         >
-                          Start Here
+                          Apply
                         </motion.p>
                         <motion.p
                           className={`text-white/80 tracking-wide ${isMobile ? "text-xs" : "text-lg xl:text-xl"}`}

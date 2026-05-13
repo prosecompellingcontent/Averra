@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 
 // Product descriptions for checkout
 const productDescriptions: Record<string, string> = {
+  "The Gold Standard: Building Beyond The Chair": "A premium editorial publication for beauty professionals ready to build a business that no longer depends entirely on nonstop appointments and constant availability.",
   "The Lash Collection": "Digital brand visuals designed for lash artists ready to present their work with an established brand presence.",
   "AVERRA Brand Alignment System": "A complete brand alignment system designed to position your brand for success based on its specific identity through Interpretation, Alignment, and Stabilization.",
   // Legacy tier descriptions for historical orders
@@ -260,7 +261,7 @@ export function CheckoutPage() {
                   >
                     Terms of Service
                   </Link>
-                  , including the Global Privacy Policy, AI Disclosure Statement, and Refund Policy. I acknowledge that all digital products are AI-generated and non-refundable upon purchase.
+                  , including the Global Privacy Policy and Refund Policy. I acknowledge that all digital products are non-refundable upon purchase.
                 </span>
               </label>
             </div>
@@ -272,34 +273,34 @@ export function CheckoutPage() {
               <h2 className={`text-[#301710] mb-8 ${isMobile ? 'text-2xl' : 'text-3xl'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
                 Order Summary
               </h2>
-              
+
               {/* Items List */}
-              <div className="space-y-4 mb-8 pb-8 border-b border-[#b76e79]/20">
+              <div className="space-y-6 mb-8 pb-8 border-b border-[#b76e79]/20">
                 {items.map((item) => (
-                  <div key={item.id} className="space-y-2">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <p className={`text-[#301710] font-medium mb-1 ${isMobile ? 'text-sm' : 'text-base'}`} style={{ fontFamily: 'Cormorant, serif' }}>
-                          {item.name}
-                        </p>
-                        <p className="text-[#654331]/60 text-xs uppercase tracking-wider mb-2">
-                          Digital Product • Instant Download
-                        </p>
-                      </div>
-                      <p className={`text-[#301710] font-medium flex-shrink-0 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                  <div key={item.id} className="space-y-3">
+                    <div className="space-y-2">
+                      <p className={`text-[#301710] font-medium ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 500 }}>
+                        {item.name}
+                      </p>
+                      <p className={`text-[#654331]/80 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                        {productDescriptions[item.name] || "A premium editorial publication for beauty professionals ready to build a business that no longer depends entirely on nonstop appointments and constant availability."}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-2">
+                      <p className={`text-[#654331]/60 uppercase tracking-wider ${isMobile ? 'text-[9px]' : 'text-[10px]'}`}>
+                        Premium Digital Publication • Instant Access
+                      </p>
+                      <p className={`text-[#301710] font-medium ${isMobile ? 'text-xl' : 'text-2xl'}`} style={{ fontFamily: 'Cormorant, serif', fontWeight: 600 }}>
                         ${item.price}
                       </p>
                     </div>
-                    <p className={`text-[#654331]/70 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif', fontStyle: 'italic' }}>
-                      {productDescriptions[item.name] || "Strategic brand visuals designed for beauty professionals ready to elevate their presence."}
-                    </p>
                   </div>
                 ))}
               </div>
 
               {/* Total */}
               <div className="mb-8 pb-8 border-b border-[#b76e79]/20">
-                <div className="flex justify-between items-baseline mb-2">
+                <div className="flex justify-between items-baseline mb-3">
                   <span className={`text-[#654331] uppercase tracking-wider ${isMobile ? 'text-xs' : 'text-sm'}`}>
                     Subtotal
                   </span>
@@ -317,32 +318,51 @@ export function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Usage Rights */}
+              {/* What's Included */}
               <div className="mb-6 pb-6 border-b border-[#b76e79]/20">
-                <h3 className={`text-[#301710] font-medium mb-3 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
-                  Usage Rights
+                <h3 className={`text-[#301710] font-medium mb-4 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                  What's Included
                 </h3>
-                <p className={`text-[#654331]/80 leading-relaxed mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
-                  Includes a commercial use license for marketing and promotional materials.
-                </p>
-                <p className={`text-[#654331]/70 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
-                  Resale, redistribution, or claiming the visuals as original photography is not permitted.
-                </p>
+                <div className="space-y-2">
+                  {[
+                    'Instant digital access',
+                    'Read on mobile, tablet, or desktop',
+                    'Downloadable PDF version',
+                    'Immersive reading experience',
+                    'Listen Aloud functionality',
+                    'Lifetime access'
+                  ].map((feature, i) => (
+                    <p key={i} className={`text-[#654331]/80 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                      — {feature}
+                    </p>
+                  ))}
+                </div>
               </div>
 
               {/* What Happens Next */}
               <div className="mb-6 pb-6 border-b border-[#b76e79]/20">
-                <h3 className={`text-[#301710] font-medium mb-3 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                <h3 className={`text-[#301710] font-medium mb-4 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
                   What Happens Next
                 </h3>
-                <p className={`text-[#654331]/80 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
-                  After purchase you will receive an email with an instant download link to access your files.
+                <p className={`text-[#654331]/80 leading-relaxed mb-3 ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                  After purchase, you will receive an email containing:
                 </p>
+                <div className="space-y-2">
+                  {[
+                    'access to your ebook',
+                    'a downloadable PDF copy',
+                    'a link back to AVERRA to begin reading immediately'
+                  ].map((item, i) => (
+                    <p key={i} className={`text-[#654331]/80 leading-relaxed ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>
+                      — {item}
+                    </p>
+                  ))}
+                </div>
               </div>
 
               {/* Secure Checkout Info */}
               <div className="mb-8">
-                <h3 className={`text-[#301710] font-medium mb-3 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
+                <h3 className={`text-[#301710] font-medium mb-4 ${isMobile ? 'text-base' : 'text-lg'}`} style={{ fontFamily: 'Cormorant, serif' }}>
                   Secure Checkout
                 </h3>
                 <p className={`text-[#654331]/80 leading-relaxed mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ fontFamily: 'Lora, serif' }}>

@@ -34,100 +34,213 @@ const sections = [
 ];
 
 /* ════════════════════════════════════════════════════════
-   AI TTS HOOK  — OpenAI "nova" voice via api-server
+   PREMIUM READ ALOUD SYSTEM — Browser SpeechSynthesis
+   Luxury voice direction: calm, emotionally intelligent, immersive
+   Future-ready: structured for custom audio file replacement
 ════════════════════════════════════════════════════════ */
+
+// Select the most premium natural voice available
+function selectPremiumVoice(): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices();
+
+  // Priority 1: Natural, premium female voices
+  const premiumFemaleNames = [
+    'Samantha', 'Karen', 'Moira', 'Tessa', 'Fiona', // macOS premium voices
+    'Google US English', 'Google UK English Female', // Google voices
+    'Microsoft Zira', 'Microsoft Eva', // Windows premium
+  ];
+
+  // Try to find a premium female voice
+  for (const name of premiumFemaleNames) {
+    const voice = voices.find(v =>
+      v.name.includes(name) &&
+      (v.lang.startsWith('en-') || v.lang === 'en')
+    );
+    if (voice) return voice;
+  }
+
+  // Fallback: any natural-sounding female English voice
+  const femaleVoice = voices.find(v =>
+    v.name.toLowerCase().includes('female') &&
+    v.lang.startsWith('en-')
+  );
+  if (femaleVoice) return femaleVoice;
+
+  // Last resort: default English voice
+  return voices.find(v => v.lang.startsWith('en-')) || voices[0] || null;
+}
+
+// Extract text chunks with breathing room between paragraphs
 function getTextChunks(): string[] {
   const el = document.getElementById("ebook-content");
   if (!el) return [];
-  const raw = (el as HTMLElement).innerText || "";
-  const paras = raw.split(/\n{2,}/).map(s => s.trim()).filter(s => s.length > 12);
-  const chunks: string[] = [];
-  let buf = "";
-  for (const p of paras) {
-    if ((buf + " " + p).length > 900) {
-      if (buf) chunks.push(buf.trim());
-      buf = p;
-    } else {
-      buf = buf ? buf + "  " + p : p;
-    }
-  }
-  if (buf) chunks.push(buf.trim());
-  return chunks;
-}
 
-async function fetchAudioChunk(text: string): Promise<HTMLAudioElement> {
-  const res = await fetch("/api/tts", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, voice: "nova" }),
-  });
-  if (!res.ok) throw new Error(`TTS error: ${res.status}`);
-  const { audio } = await res.json() as { audio: string };
-  const binary = atob(audio);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  const blob = new Blob([bytes], { type: "audio/mp3" });
-  const url  = URL.createObjectURL(blob);
-  const el   = new Audio(url);
-  el.addEventListener("ended", () => URL.revokeObjectURL(url), { once: true });
-  return el;
+  const raw = (el as HTMLElement).innerText || "";
+  const paragraphs = raw
+    .split(/\n{2,}/)
+    .map(s => s.trim())
+    .filter(s => s.length > 20); // Skip very short fragments
+
+  return paragraphs;
 }
 
 function useReadAloud() {
   const [speaking, setSpeaking] = useState(false);
-  const [paused,   setPaused]   = useState(false);
-  const [loading,  setLoading]  = useState(false);
-  const stopped    = useRef(false);
-  const currentAudio = useRef<HTMLAudioElement | null>(null);
-  const chunkIdx   = useRef(0);
-  const chunks     = useRef<string[]>([]);
+  const [paused, setPaused] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
+  const stopped = useRef(false);
+  const chunkIdx = useRef(0);
+  const chunks = useRef<string[]>([]);
+  const utterance = useRef<SpeechSynthesisUtterance | null>(null);
 
-  const playNext = useCallback(async () => {
-    if (stopped.current || chunkIdx.current >= chunks.current.length) {
-      setSpeaking(false); setLoading(false); return;
-    }
-    const idx = chunkIdx.current;
-    setLoading(true);
-    try {
-      const audio = await fetchAudioChunk(chunks.current[idx]);
-      if (stopped.current) { audio.src = ""; return; }
-      currentAudio.current = audio;
-      setLoading(false);
-      audio.play();
-      audio.addEventListener("ended", () => {
-        chunkIdx.current = idx + 1;
-        playNext();
-      }, { once: true });
-    } catch {
-      setSpeaking(false); setLoading(false);
+  // Ensure voices are loaded on mount
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = window.speechSynthesis?.getVoices() || [];
+      if (voices.length > 0) {
+        setVoicesLoaded(true);
+      }
+    };
+
+    loadVoices();
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+      return () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      };
     }
   }, []);
 
+  const speakChunk = useCallback((text: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (!window.speechSynthesis) {
+        reject(new Error('Speech synthesis not supported in this browser'));
+        return;
+      }
+
+      const utt = new SpeechSynthesisUtterance(text);
+      const voice = selectPremiumVoice();
+
+      if (voice) {
+        utt.voice = voice;
+        utt.lang = voice.lang;
+      } else {
+        utt.lang = 'en-US';
+      }
+
+      // LUXURY VOICE SETTINGS
+      // Slower, calmer pacing for emotional intelligence
+      utt.rate = 0.75;  // 25% slower than default for reflective pacing
+      utt.pitch = 1.0;  // Natural pitch, no artificial modulation
+      utt.volume = 0.9; // Balanced, calm volume
+
+      utt.onend = () => {
+        // Add breathing room between paragraphs (800ms pause)
+        setTimeout(() => resolve(), 800);
+      };
+
+      utt.onerror = (e) => {
+        console.error('Speech synthesis error:', e);
+        const errorMsg = e.error || 'Unknown speech synthesis error';
+        reject(new Error(`Speech failed: ${errorMsg}`));
+      };
+
+      utterance.current = utt;
+
+      // Cancel any existing speech before starting new
+      window.speechSynthesis.cancel();
+
+      // Small delay to ensure cancel completes
+      setTimeout(() => {
+        window.speechSynthesis.speak(utt);
+      }, 100);
+    });
+  }, []);
+
+  const playNext = useCallback(async () => {
+    if (stopped.current || chunkIdx.current >= chunks.current.length) {
+      setSpeaking(false);
+      setLoading(false);
+      return;
+    }
+
+    const idx = chunkIdx.current;
+    setLoading(true);
+
+    try {
+      await speakChunk(chunks.current[idx]);
+      if (stopped.current) return;
+
+      setLoading(false);
+      chunkIdx.current = idx + 1;
+      playNext();
+    } catch (error) {
+      console.error('Read aloud error:', error);
+      alert('Speech synthesis encountered an error. Please try again or use a different browser.');
+      setSpeaking(false);
+      setLoading(false);
+    }
+  }, [speakChunk]);
+
   const start = useCallback(() => {
+    if (!window.speechSynthesis) {
+      alert('Speech synthesis is not supported in this browser. Please try Chrome, Safari, or Edge.');
+      return;
+    }
+
+    // Wait for voices to be loaded
+    if (!voicesLoaded) {
+      alert('Loading voice options... Please try again in a moment.');
+      return;
+    }
+
     stopped.current = false;
     chunkIdx.current = 0;
     chunks.current = getTextChunks();
-    currentAudio.current?.pause();
-    currentAudio.current = null;
-    setSpeaking(true); setPaused(false);
-    playNext();
-  }, [playNext]);
+
+    if (chunks.current.length === 0) {
+      alert('No text content found to read aloud.');
+      return;
+    }
+
+    window.speechSynthesis.cancel(); // Clear any existing speech
+    setSpeaking(true);
+    setPaused(false);
+
+    // Start playing after a brief delay to ensure everything is ready
+    setTimeout(() => playNext(), 200);
+  }, [playNext, voicesLoaded]);
 
   const togglePause = useCallback(() => {
-    const audio = currentAudio.current;
-    if (!audio) return;
-    if (audio.paused) { audio.play(); setPaused(false); }
-    else              { audio.pause(); setPaused(true); }
+    if (!window.speechSynthesis) return;
+
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      setPaused(false);
+    } else if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      setPaused(true);
+    }
   }, []);
 
   const stop = useCallback(() => {
     stopped.current = true;
-    currentAudio.current?.pause();
-    currentAudio.current = null;
-    setSpeaking(false); setPaused(false); setLoading(false);
+    window.speechSynthesis.cancel();
+    setSpeaking(false);
+    setPaused(false);
+    setLoading(false);
   }, []);
 
-  useEffect(() => () => { stopped.current = true; currentAudio.current?.pause(); }, []);
+  useEffect(() => {
+    return () => {
+      stopped.current = true;
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   return { speaking, paused, loading, start, togglePause, stop };
 }
@@ -174,9 +287,18 @@ async function downloadEbook(userEmail: string, format: 'txt' | 'pdf' | 'epub' =
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } else if (format === 'pdf' || format === 'epub') {
-      // Show coming soon message for PDF/EPUB
-      alert(`${format.toUpperCase()} download coming soon! For now, you can download as TXT or continue reading online.`);
+    } else if (format === 'pdf') {
+      // Download PDF from Supabase Storage
+      const a = document.createElement("a");
+      a.href = "https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/ebooks/the-gold-standard.pdf";
+      a.download = "AVERRA-The-Gold-Standard.pdf";
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else if (format === 'epub') {
+      // Show coming soon message for EPUB
+      alert(`EPUB download coming soon! For now, you can download as PDF or TXT, or continue reading online.`);
     }
   } catch (error) {
     console.error("Error downloading ebook:", error);
@@ -405,7 +527,6 @@ function Cover({ onEnter }: { onEnter:()=>void }) {
       backgroundImage: "url(/ebook-hero.jpg)",
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundBlendMode: "soft-light",
       padding: isMobile ? "6rem 1.5rem" : "2rem",
       paddingTop: isMobile ? "calc(6rem + env(safe-area-inset-top, 0px))" : "2rem",
       paddingBottom: isMobile ? "calc(3rem + env(safe-area-inset-bottom, 0px))" : "2rem",
@@ -546,18 +667,31 @@ function Cover({ onEnter }: { onEnter:()=>void }) {
 /* ════════════════════════════════════════════════════════
    EBOOK READER COMPONENT
 ════════════════════════════════════════════════════════ */
-function EbookReader() {
+function EbookReader({ userEmail = "" }: { userEmail?: string }) {
   const [toc, setToc]             = useState(false);
   const [active, setActive]       = useState("cover");
   const [started, setStarted]     = useState(false);
   const [progress, setProgress]   = useState(0);
   const { speaking, paused, loading, start, togglePause, stop } = useReadAloud();
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const autoplayTriggered = useRef(false);
 
   const go = (id:string) => {
     document.getElementById(id)?.scrollIntoView({ behavior:"smooth" });
     setToc(false); setActive(id);
   };
+
+  // Handle autoplay from URL parameter
+  useEffect(() => {
+    if (started && !autoplayTriggered.current) {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('autoplay') === 'true') {
+        autoplayTriggered.current = true;
+        setTimeout(() => start(), 1000);
+      }
+    }
+  }, [started, start]);
 
   useEffect(() => {
     if (!started) return;
@@ -588,16 +722,14 @@ function EbookReader() {
     </div>
   );
 
-  const isMobile = useIsMobile();
-
   const iconBtn: React.CSSProperties = {
     background:"none", border:"none", cursor:"pointer",
-    color:wine, fontFamily:fBody, fontSize: isMobile ? "0.5rem" : "0.62rem",
-    letterSpacing:"0.22em", display: isMobile ? "none" : "flex", alignItems:"center", gap:"0.4rem",
-    padding:"0.3rem 0.6rem",
+    color:wine, fontFamily:fBody, fontSize: isMobile ? "0.45rem" : "0.62rem",
+    letterSpacing: isMobile ? "0.15em" : "0.22em", display:"flex", alignItems:"center", gap: isMobile ? "0.2rem" : "0.4rem",
+    padding: isMobile ? "0.25rem 0.4rem" : "0.3rem 0.6rem",
   };
 
-  const navHeight = isMobile ? 50 : 58;
+  const navHeight = isMobile ? 45 : 58;
   const safeTopOffset = isMobile ? "env(safe-area-inset-top, 0px)" : "0px";
 
   return (
@@ -625,18 +757,20 @@ function EbookReader() {
         background:`rgba(252,243,245,0.97)`,
         backdropFilter:"blur(18px)",
         borderBottom:`0.5px solid rgba(107,88,93,0.25)`,
-        padding: isMobile ? "0.6rem 1rem" : "0.85rem 2rem",
+        padding: isMobile ? "0.5rem 0.6rem" : "0.85rem 2rem",
         display:"flex",
         alignItems:"center",
         justifyContent:"space-between",
-        gap: isMobile ? "0.5rem" : "1rem",
+        gap: isMobile ? "0.3rem" : "1rem",
+        overflowX: isMobile ? "hidden" : "visible"
       }}>
         <button onClick={()=>setStarted(false)} style={{
           background:"none", border:"none", cursor:"pointer",
           fontFamily:fTitle, color:wine,
-          fontSize: isMobile ? "0.85rem" : "1rem",
-          letterSpacing: isMobile ? "0.15em" : "0.2em",
-          whiteSpace:"nowrap"
+          fontSize: isMobile ? "0.75rem" : "1rem",
+          letterSpacing: isMobile ? "0.12em" : "0.2em",
+          whiteSpace:"nowrap",
+          flexShrink: 0
         }}>
           AVERRA
         </button>
@@ -647,30 +781,26 @@ function EbookReader() {
           </span>
         )}
 
-        <div style={{ display:"flex", alignItems:"center", gap: isMobile ? "0.3rem" : "0.5rem" }}>
+        <div style={{ display:"flex", alignItems:"center", gap: isMobile ? "0.25rem" : "0.5rem", flexWrap: isMobile ? "nowrap" : "wrap", overflowX: isMobile ? "auto" : "visible" }}>
           {!speaking ? (
             <button style={iconBtn} onClick={start} title="Listen">
-              <span style={{ fontSize:"0.85rem" }}>♪</span> LISTEN
+              {isMobile ? "♪" : <><span style={{ fontSize:"0.85rem" }}>♪</span> LISTEN</>}
             </button>
           ) : (
             <>
               <button style={{ ...iconBtn, opacity: loading ? 0.5 : 1 }} onClick={togglePause} disabled={loading} title={paused ? "Resume" : "Pause"}>
-                {loading ? "·  ·  ·" : paused ? "▶ RESUME" : "⏸ PAUSE"}
+                {loading ? "···" : paused ? (isMobile ? "▶" : "▶ RESUME") : (isMobile ? "⏸" : "⏸ PAUSE")}
               </button>
               <button style={iconBtn} onClick={stop} title="Stop">
-                ■ STOP
+                {isMobile ? "■" : "■ STOP"}
               </button>
             </>
           )}
-          {!isMobile && (
-            <>
-              <div style={{ width:"0.5px", height:"1.1rem", background:`rgba(37,18,24,0.2)` }} />
-              <button style={iconBtn} onClick={() => downloadEbook(userEmail, 'txt')} title="Download as TXT">
-                ↓ DOWNLOAD
-              </button>
-              <div style={{ width:"0.5px", height:"1.1rem", background:`rgba(37,18,24,0.2)` }} />
-            </>
-          )}
+          <div style={{ width:"0.5px", height: isMobile ? "0.9rem" : "1.1rem", background:`rgba(37,18,24,0.2)` }} />
+          <button style={iconBtn} onClick={() => downloadEbook(userEmail, 'pdf')} title="Download PDF">
+            {isMobile ? "↓" : "↓ DOWNLOAD"}
+          </button>
+          <div style={{ width:"0.5px", height: isMobile ? "0.9rem" : "1.1rem", background:`rgba(37,18,24,0.2)` }} />
           <button
             onClick={()=>setToc(!toc)}
             style={{
@@ -678,10 +808,11 @@ function EbookReader() {
               border:`0.5px solid rgba(107,88,93,0.5)`,
               color:wine,
               cursor:"pointer",
-              padding: isMobile ? "0.35rem 0.7rem" : "0.4rem 1rem",
+              padding: isMobile ? "0.3rem 0.5rem" : "0.4rem 1rem",
               fontFamily:fBody,
-              fontSize: isMobile ? "0.5rem" : "0.62rem",
-              letterSpacing: isMobile ? "0.2em" : "0.3em"
+              fontSize: isMobile ? "0.45rem" : "0.62rem",
+              letterSpacing: isMobile ? "0.15em" : "0.3em",
+              whiteSpace:"nowrap"
             }}
           >
             {isMobile ? "TOC" : "CHAPTERS"}
@@ -860,10 +991,14 @@ export function EbookPage() {
   useEffect(() => {
     const accessToken = searchParams.get("access");
     const storedAccess = sessionStorage.getItem("ebook_access");
+    const storedEmail = sessionStorage.getItem("ebook_email");
 
     if (accessToken === "granted" || storedAccess === "true") {
       setIsUnlocked(true);
       sessionStorage.setItem("ebook_access", "true");
+      if (storedEmail) {
+        setEmail(storedEmail);
+      }
     }
   }, [searchParams]);
 
@@ -882,12 +1017,14 @@ export function EbookPage() {
       if (response.ok) {
         setIsUnlocked(true);
         sessionStorage.setItem("ebook_access", "true");
+        sessionStorage.setItem("ebook_email", email);
       } else {
         setError("We couldn't verify your purchase. Please check your email or contact support.");
       }
     } catch (err) {
       setIsUnlocked(true);
       sessionStorage.setItem("ebook_access", "true");
+      sessionStorage.setItem("ebook_email", email);
     } finally {
       setIsVerifying(false);
     }
@@ -967,5 +1104,5 @@ export function EbookPage() {
     );
   }
 
-  return <EbookReader />;
+  return <EbookReader userEmail={email} />;
 }

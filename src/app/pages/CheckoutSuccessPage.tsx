@@ -200,8 +200,22 @@ export function CheckoutSuccessPage() {
           </p>
         </div>
 
+        {/* eBook Preview */}
+        <div className="flex justify-center mb-12">
+          <div className="relative">
+            <div className="absolute inset-0 bg-[#c9969e]/10 blur-3xl"></div>
+            <img
+              src="/ebook-hero.jpg"
+              alt="The Gold Standard eBook Cover"
+              className="relative w-64 md:w-80 h-auto drop-shadow-2xl"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
           <Link
             to="/ebook?access=granted"
             className="group inline-flex items-center gap-3 px-10 py-4 bg-[#251218] text-[#DCDACC] uppercase tracking-[0.3em] hover:bg-[#251218]/90 transition-all shadow-lg hover:shadow-xl"
@@ -212,13 +226,24 @@ export function CheckoutSuccessPage() {
           </Link>
 
           <Link
-            to="/quiz-intro"
+            to="/ebook?access=granted&autoplay=true"
             className="group inline-flex items-center gap-3 px-10 py-4 border-2 border-[#301710] text-[#251218] uppercase tracking-[0.3em] hover:bg-[#251218] hover:text-[#DCDACC] transition-all"
             style={{ fontFamily: 'Lora, serif', fontWeight: 600, fontSize: '11px' }}
           >
-            Take The Quiz
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
+            Listen Aloud
+            <span className="group-hover:translate-x-1 transition-transform">♪</span>
           </Link>
+
+          <a
+            href="https://zfzwknmljpotidwyoefk.supabase.co/storage/v1/object/public/ebooks/the-gold-standard.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-3 px-10 py-4 border-2 border-[#c9969e] text-[#c9969e] uppercase tracking-[0.3em] hover:bg-[#c9969e] hover:text-[#DCDACC] transition-all"
+            style={{ fontFamily: 'Lora, serif', fontWeight: 600, fontSize: '11px' }}
+          >
+            Download PDF
+            <span className="group-hover:translate-y-1 transition-transform">↓</span>
+          </a>
         </div>
 
         {/* Footer note */}
