@@ -934,35 +934,12 @@ function EbookReader({ userEmail = "" }: { userEmail?: string }) {
 
         <Wrap id="intro">
           <ChHead title="The Business You Built Is Starting To Own You" number="Introduction" />
-          <P>You didn't become a beauty professional for the money. That's not how this starts for most people. You became one because you felt something when your hands moved, because the transformation you could create in someone else felt like the truest thing you'd ever done. You wanted to be your own boss, set your own schedule, build something that was yours. And you did. You actually did.</P>
-          <P>Which is exactly why nobody prepared you for this feeling.</P>
-          <P>The feeling that something is wrong, even though everything looks right. The feeling that you are working harder than you ever have and somehow moving slower than you expected. The feeling that you are the business, that if you stepped away for even two weeks everything would unravel. That the schedule you built is now a cage you maintain. That the clients you love are starting to feel like obligations. That the passion that once felt like oxygen now feels like labor.</P>
-          <Pull>You are not burned out because you love your craft less. You are burned out because the business model you are operating inside of was never designed to sustain you.</Pull>
-          <P>This is not a book about motivation. You don't need another person telling you to believe in yourself. You've already proven that you believe in yourself. The proof is that you're still standing. Still booking. Still showing up. Still building.</P>
-          <P>What this book is about is architecture. The invisible architecture of a beauty business that has quietly organized itself around your labor, your presence, your energy, your body, and what it actually takes to rebuild it around something more durable. Around systems, authority, and a kind of wealth that doesn't require you to sacrifice yourself every single day to maintain it.</P>
-          <Stat>According to the Professional Beauty Association, the beauty industry employs over 1.2 million people in the United States, the vast majority of whom operate as independent contractors, sole proprietors, or small business owners. Of those, nearly 60% report feeling financially stressed despite being consistently booked, and more than half report symptoms consistent with clinical burnout within the first five years of operation.</Stat>
-          <P>These aren't statistics about people who made bad decisions. These are statistics about people who made every right decision the beauty industry told them to make and still ended up here. Still exhausted. Still trading time for money. Still terrified that slowing down means falling behind.</P>
-          <P>This book is going to move through something uncomfortable before it becomes hopeful. That's intentional. Because the thing standing between you and a different kind of business isn't information. The thing standing between you and a different kind of business is recognition. The kind that can only happen when someone finally names the exact thing you've been feeling but couldn't articulate.</P>
-          <P>So let's start there. Let's start with the truth.</P>
+          <P>Click The Download Button To Access Your eBook!</P>
         </Wrap>
-
-        {/* Remaining chapters would continue here following the same pattern from the read-aloud-hook.ts file */}
-        {/* For brevity, I'm including key sections. The full ebook content from lines 510-718 of read-aloud-hook.ts would be inserted here */}
 
         <Wrap id="final">
           <ChHead title="For The Provider Reading This Exhausted Late At Night" />
-          <P>I know what time it probably is.</P>
-          <P>I know you probably should be sleeping. I know that tomorrow is already built, the appointments lined up, the early alarm set, the outfit somewhere in the pile of things that haven't been dealt with because there hasn't been time to deal with them.</P>
-          <P>I know that you are tired in a way that is hard to explain to people who haven't lived this specific kind of tired. Not just physically. Not just mentally. The kind of tired that accumulates in layers over years of showing up fully for other people while privately running on less and less of yourself. The kind of tired that feels, some nights, like it goes all the way down.</P>
-          <P>I want you to know something.</P>
-          <P>What you've been feeling is real. The contradiction of being successful and still feeling like something is wrong, that is not confusion, that is not ingratitude, that is not you being difficult. That is intelligence. That is your deepest self recognizing that the model you've been executing, perfectly, bravely, with an extraordinary amount of grace, was never going to give you what you actually needed. And that you deserve something more than a beautiful cage.</P>
-          <P>You are not too late. You have not missed your window. The fact that you're reading this, exhausted, late, still hungry enough to look for another way, that is the evidence that the window is open. Timing is not your enemy. The only enemy is the decision to keep waiting until conditions are perfect, until you feel fully ready, until the fear goes completely quiet.</P>
-          <Pull>You were never just a service provider. You were always a builder. The chair is where you started. It is not where you end.</Pull>
-          <P>That thing that was visible in you when you first started is still there. It's underneath the exhaustion and the fear and the conditioning and the accumulated weight of the years. It's still the truest thing about you in this work. And it is more than enough to build something new. Something that doesn't require you to sacrifice yourself. Something that finally, finally, matches the scale of what you've always been capable of.</P>
-          <P>You don't have to figure it all out tonight. You don't have to have the plan. You don't have to feel ready or confident or unafraid.</P>
-          <P>You just have to decide, quietly, firmly, somewhere in the part of you that's been waiting for this conversation, that you are no longer willing to accept a definition of success that costs you yourself.</P>
-          <P>That decision. That one decision. Is the beginning of everything different.</P>
-          <P>Rest now. Tomorrow, we build.</P>
+          <P>Click The Download Button To Access Your eBook!</P>
           <Orn />
           <div style={{ textAlign:"center", paddingTop:"2rem", paddingBottom:"4rem" }}>
             <div style={{ fontFamily:fTitle, fontSize:"2.4rem", color:wine, letterSpacing:"0.18em", marginBottom:"0.8rem" }}>AVERRA</div>
